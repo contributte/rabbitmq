@@ -1,0 +1,25 @@
+{
+	"name": "gamee-backend/gamee-rabbitmq",
+	"type": "library",
+	"homepage": "https://gitlab.cleevio.cz/gamee-backend/gamee-redis",
+	"support": {
+		"issues": "https://gitlab.cleevio.cz/gamee-backend/gamee-redis/issues"
+	},
+	"autoload": {
+		"psr-4": {
+			"Gamee\\Rabbitmq\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Gamee\\Rabbitmq\\Tests\\": "tests"
+		}
+	},
+	"require": {
+		"bunny/bunny": "^0.2.4"
+	},
+	"require-dev": {
+		"tracy/tracy": "^2.4",
+		"nette/tester": "^1.7"
+	}
+}
