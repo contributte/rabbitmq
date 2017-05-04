@@ -1,6 +1,6 @@
 <?php
 
-namespace Gamee\Rabbitmq\Tests\Cases;
+namespace Gamee\RabbitMQ\Tests\Cases;
 
 use Bunny\Channel;
 use Bunny\Client;

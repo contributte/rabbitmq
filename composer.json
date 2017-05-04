@@ -7,12 +7,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Gamee\\Rabbitmq\\": "src/"
+			"Gamee\\RabbitMQ\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Gamee\\Rabbitmq\\Tests\\": "tests"
+			"Gamee\\RabbitMQ\\Tests\\": "tests"
 		}
 	},
 	"require": {
