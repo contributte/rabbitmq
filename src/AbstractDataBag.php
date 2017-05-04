@@ -27,11 +27,11 @@ abstract class AbstractDataBag
 
 	public function getDataBykey(string $key): array
 	{
-		if (!isset($data[$key])) {
+		if (!isset($this->data[$key])) {
 			throw new \InvalidArgumentException("Data at key [$key] not found");
 		}
 
-		return (array) $data[$name];
+		return (array) $this->data[$key];
 	}
 
 }

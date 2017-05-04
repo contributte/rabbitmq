@@ -10,12 +10,40 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Connection;
 
+use Bunny;
+
 final class Connection
 {
 
+	/**
+	 * @var Bunny\Client
+	 */
+	private $bunnyClient;
+
+
 	public function __construct($host, $port, $user, $password, $vhost)
 	{
-		
+		$this->host = $host;
+		$this->port = $port;
+		$this->user = $user;
+		$this->password = $password;
+		$this->vhost = $vhost;
+
+		$this->bunnyClient = new Bunny\Client([
+			'host' => $this->host,
+			'port' => $this->port,
+			'user' => $this->user,
+			'password' => $this->password,
+			'vhost' => $this->vhost
+		]);
+
+		$this->bunnyClient->connect();
+	}
+
+
+	public function __destruct()
+	{
+		$this->bunnyClient->disconnect();
 	}
 
 }

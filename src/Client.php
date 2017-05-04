@@ -10,7 +10,10 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ;
 
+use Gamee\RabbitMQ\Connection\ConnectionFactory;
 use Gamee\RabbitMQ\DI\DataBag\ProducersDataBag;
+use Gamee\RabbitMQ\Producer\Producer;
+use Gamee\RabbitMQ\Producer\ProducerFactory;
 
 final class Client
 {
@@ -38,19 +41,19 @@ final class Client
 
 	public function __construct(
 		ProducerFactory $producerFactory,
-		ConnectionFactory $connectionFactory,
-		ConsumerFactory $consumerFactory
+		ConnectionFactory $connectionFactory//,
+		//ConsumerFactory $consumerFactory
 	) {
 		$this->producerFactory = $producerFactory;
 		$this->connectionFactory = $connectionFactory;
-		$this->consumerFactory = $consumerFactory;
+		//$this->consumerFactory = $consumerFactory;
 	}
 
 
 	public function getProducer(string $name): Producer
 	{
 		try {
-			return $this->producerFactory->create($this, $name);
+			return $this->producerFactory->create($name);
 
 		} catch (Exception $e) {
 			

@@ -64,17 +64,13 @@ final class ConnectionFactory
 			throw new ConnectionFactoryException("Connection [$name] does not exist");
 		}
 
-		$connection = new Connection(
+		return new Connection(
 			$connectionData['host'],
 			$connectionData['port'],
 			$connectionData['user'],
 			$connectionData['password'],
 			$connectionData['vhost']
 		);
-
-		$connection->connect();
-
-		return $connection;
 	}
 
 }
