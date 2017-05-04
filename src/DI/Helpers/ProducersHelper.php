@@ -10,7 +10,11 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\DI\Helpers;
 
-use Gamee\RabbitMQ\Producer;
+use Gamee\RabbitMQ\Producer\ProducersDataBag;
+use Gamee\RabbitMQ\Producer\Producer;
+use Gamee\RabbitMQ\Producer\ProducerFactory;
+use Nette\DI\ContainerBuilder;
+use Nette\DI\ServiceDefinition;
 
 final class ProducersHelper extends AbstractHelper
 {
@@ -19,7 +23,7 @@ final class ProducersHelper extends AbstractHelper
 	 * @var array
 	 */
 	protected $defaults = [
-		'connection' => 'default'
+		'connection' => 'default',
 		'exchange' => [],
 		'queue' => [],
 		'contentType' => 'text/plain',
@@ -27,15 +31,27 @@ final class ProducersHelper extends AbstractHelper
 	];
 
 
-	public function setupProducers(ContainerBuilder $builder, array $config): void
-	{
-		if (empty($config)) {
-			return;
+	public function setup(
+		ContainerBuilder $builder,
+		array $config = [],
+		ServiceDefinition $connectionFactoryDefinition
+	): ServiceDefinition {
+		$producersConfig = [];
+
+		foreach ($config as $producerName => $producerData) {
+			$producersConfig[$producerName] = $this->extension->validateConfig(
+				$this->getDefaults(),
+				$producerData
+			);
 		}
 
-		$config = $this->validateConfig($this->getDefaults(), $config);
+		$producersDataBag = $builder->addDefinition($this->extension->prefix('producersDataBag'))
+			->setClass(ProducersDataBag::class)
+			->setArguments([$producersConfig]);
 
-		dump($config); die;
+		return $builder->addDefinition($this->extension->prefix('producerFactory'))
+			->setClass(ProducerFactory::class)
+			->setArguments([$producersDataBag, $connectionFactoryDefinition]);
 	}
 
 }

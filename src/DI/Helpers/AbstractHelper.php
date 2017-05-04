@@ -10,13 +10,26 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\DI\Helpers;
 
-abstract class AbstractHelper extends AbstractHelper
+use Gamee\RabbitMQ\DI\RabbitMQExtension;
+
+abstract class AbstractHelper
 {
 
 	/**
 	 * @var array
 	 */
 	protected $defaults = [];
+
+	/**
+	 * @var RabbitMQExtension
+	 */
+	protected $extension;
+
+
+	public function __construct(RabbitMQExtension $extension)
+	{
+		$this->extension = $extension;
+	}
 
 
 	public function getDefaults(): array

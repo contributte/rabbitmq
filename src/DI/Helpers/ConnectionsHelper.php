@@ -10,18 +10,43 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\DI\Helpers;
 
-final class ConnectionsHelper
+use Gamee\RabbitMQ\Connection\ConnectionFactory;
+use Gamee\RabbitMQ\Connection\ConnectionsDataBag;
+use Nette\DI\ContainerBuilder;
+
+final class ConnectionsHelper extends AbstractHelper
 {
 
 	/**
 	 * @var array
 	 */
 	protected $defaults = [
-		'host': '127.0.0.1',
-		'port': '5672',
-		'user': 'guest',
-		'password': 'guest',
-		'vhost': '/'
+		'host' => '127.0.0.1',
+		'port' => '5672',
+		'user' => 'guest',
+		'password' => 'guest',
+		'vhost' => '/'
 	];
+
+
+	public function setup(ContainerBuilder $builder, array $config = [])
+	{
+		$connectionsConfig = [];
+
+		foreach ($config as $connectionName => $connectionData) {
+			$connectionsConfig[$connectionName] = $this->extension->validateConfig(
+				$this->getDefaults(),
+				$connectionData
+			);
+		}
+
+		$connectionsDataBag = $builder->addDefinition($this->extension->prefix('connectionsDataBag'))
+			->setClass(ConnectionsDataBag::class)
+			->setArguments([$connectionsConfig]);
+
+		return $builder->addDefinition($this->extension->prefix('connectionFactory'))
+			->setClass(ConnectionFactory::class)
+			->setArguments([$connectionsDataBag]);
+	}
 
 }

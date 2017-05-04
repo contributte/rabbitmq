@@ -8,20 +8,20 @@ declare(strict_types=1);
  * @package     Gamee
  */
 
-namespace Gamee\RabbitMQ\DataBag;
+namespace Gamee\RabbitMQ\Connection;
 
-final class ProducersDataBag
+final class ConnectionsDataBag
 {
 
 	/**
 	 * @var array
 	 */
-	private $producersData;
+	private $connectionsData = [];
 
 
-	public function __construct(array $producersData)
+	public function __construct(array $connectionsData)
 	{
-		
+		$this->connectionsData = $connectionsData;
 	}
 
 }

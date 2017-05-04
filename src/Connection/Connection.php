@@ -8,16 +8,14 @@ declare(strict_types=1);
  * @package     Gamee
  */
 
-namespace Gamee\RabbitMQ\DI\Helpers;
+namespace Gamee\RabbitMQ\Connection;
 
-use Nette\DI\ContainerBuilder;
-
-final class ConsumersHelper
+final class Connection
 {
 
-	public function setup(ContainerBuilder $builder, array $config = NULL)
+	public function __construct($host, $port, $user, $password, $vhost)
 	{
-		// Code here
+		
 	}
 
 }

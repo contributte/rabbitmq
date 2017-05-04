@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @package     Gamee
  */
 
-namespace Gamee\RabbitMQ;
+namespace Gamee\RabbitMQ\Producer;
 
 final class Producer
 {

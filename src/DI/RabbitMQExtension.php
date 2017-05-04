@@ -10,11 +10,13 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\DI;
 
+use Gamee\RabbitMQ\Client;
 use Gamee\RabbitMQ\DI\Helpers\ConnectionsHelper;
 use Gamee\RabbitMQ\DI\Helpers\ConsumersHelper;
 use Gamee\RabbitMQ\DI\Helpers\ProducersHelper;
+use Nette\DI\CompilerExtension;
 
-final class RabbitMQExtension extends Nette\DI\CompilerExtension
+final class RabbitMQExtension extends CompilerExtension
 {
 
 	/**
@@ -44,9 +46,9 @@ final class RabbitMQExtension extends Nette\DI\CompilerExtension
 
 	public function __construct()
 	{
-		$this->connectionsHelper = new ConnectionsHelper;
-		$this->producersHelper = new ProducersHelper;
-		$this->consumersHelper = new ConsumersHelper;
+		$this->connectionsHelper = new ConnectionsHelper($this);
+		$this->producersHelper = new ProducersHelper($this);
+		$this->consumersHelper = new ConsumersHelper($this);
 	}
 
 
@@ -59,7 +61,17 @@ final class RabbitMQExtension extends Nette\DI\CompilerExtension
 
 		$builder = $this->getContainerBuilder();
 
-		$this->producersHelper->setupProducers($builder, $config['producers']);
+		$connectionFactory = $this->connectionsHelper->setup($builder, $config['connections']);
+		$producerFactory = $this->producersHelper->setup(
+			$builder,
+			$config['producers'],
+			$connectionFactory
+		);
+		$consumersFactory = $this->consumersHelper->setup($builder, $config['producers']);
+
+		$builder->addDefinition($this->prefix('client'))
+			->setClass(Client::class)
+			->setArguments([$producerFactory, $connectionFactory, $consumersFactory]);
 	}
 
 }

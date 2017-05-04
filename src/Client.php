@@ -25,16 +25,36 @@ final class Client
 	 */
 	private $producerFactory;
 
+	/**
+	 * @var ConnectionFactory
+	 */
+	private $connectionFactory;
 
-	public function __construct()
-	{
-		
+	/**
+	 * @var ConsumerFactory
+	 */
+	private $consumerFactory;
+
+
+	public function __construct(
+		ProducerFactory $producerFactory,
+		ConnectionFactory $connectionFactory,
+		ConsumerFactory $consumerFactory
+	) {
+		$this->producerFactory = $producerFactory;
+		$this->connectionFactory = $connectionFactory;
+		$this->consumerFactory = $consumerFactory;
 	}
 
 
 	public function getProducer(string $name): Producer
 	{
-		// Code here
+		try {
+			return $this->producerFactory->create($this, $name);
+
+		} catch (Exception $e) {
+			
+		}
 	}
 
 }
