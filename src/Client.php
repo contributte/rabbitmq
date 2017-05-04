@@ -53,7 +53,7 @@ final class Client
 	public function getProducer(string $name): Producer
 	{
 		try {
-			return $this->producerFactory->create($name);
+			return $this->producerFactory->getProducer($name);
 
 		} catch (Exception $e) {
 			

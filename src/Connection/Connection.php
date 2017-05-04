@@ -21,7 +21,7 @@ final class Connection
 	private $bunnyClient;
 
 
-	public function __construct($host, $port, $user, $password, $vhost)
+	public function __construct(string $host, int $port, string $user, string $password, string $vhost)
 	{
 		$this->host = $host;
 		$this->port = $port;
@@ -38,6 +38,12 @@ final class Connection
 		]);
 
 		$this->bunnyClient->connect();
+	}
+
+
+	public function getBunnyClient(): Bunny\Client
+	{
+		return $this->bunnyClient;
 	}
 
 

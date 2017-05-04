@@ -33,14 +33,14 @@ final class ProducersHelper extends AbstractHelper
 	/**
 	 * @var array
 	 */
-	protected $queueDefaults = [
+	private $queueDefaults = [
 		'name' => '',
 		'passive' => FALSE,
 		'durable' => TRUE,
 		'exclusive' => FALSE,
 		'autoDelete' => FALSE,
 		'nowait' => FALSE,
-		'arguments' => NULL
+		'arguments' => []
 	];
 
 
@@ -56,6 +56,13 @@ final class ProducersHelper extends AbstractHelper
 				$this->getDefaults(),
 				$producerData
 			);
+
+			if (!empty($producersConfig[$producerName]['queue'])) {
+				$producersConfig[$producerName]['queue'] = $this->extension->validateConfig(
+					$this->queueDefaults,
+					$producersConfig[$producerName]['queue']
+				);
+			}
 		}
 
 		$producersDataBag = $builder->addDefinition($this->extension->prefix('producersDataBag'))

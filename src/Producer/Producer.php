@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Gamee\RabbitMQ\Producer;
 
 use Gamee\RabbitMQ\Connection\Connection;
+use Gamee\RabbitMQ\Queue\Queue;
 
 final class Producer
 {
@@ -30,8 +31,7 @@ final class Producer
 	private $exchange;
 
 	/**
-	 * @todo Queue object
-	 * @var array
+	 * @var Queue
 	 */
 	private $queue;
 
@@ -50,9 +50,9 @@ final class Producer
 	public function __construct(
 		Connection $connection,
 		$exchange,
-		$queue,
-		$contentType,
-		$deliveryMode
+		Queue $queue,
+		string $contentType,
+		int $deliveryMode
 	) {
 		$this->connection = $connection;
 		$this->exchange = $exchange;
@@ -64,7 +64,7 @@ final class Producer
 
 	public function publish(): void
 	{
-		$this->connection->queueDeclare();
+		
 	}
 
 }

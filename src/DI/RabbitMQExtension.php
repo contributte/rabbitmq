@@ -14,6 +14,7 @@ use Gamee\RabbitMQ\Client;
 use Gamee\RabbitMQ\DI\Helpers\ConnectionsHelper;
 use Gamee\RabbitMQ\DI\Helpers\ConsumersHelper;
 use Gamee\RabbitMQ\DI\Helpers\ProducersHelper;
+use Gamee\RabbitMQ\Queue\QueueFactory;
 use Nette\DI\CompilerExtension;
 
 /**
@@ -71,6 +72,9 @@ final class RabbitMQExtension extends CompilerExtension
 			$connectionFactory
 		);
 		$consumersFactory = $this->consumersHelper->setup($builder, $config['producers']);
+
+		$builder->addDefinition($this->prefix('queueFactory'))
+			->setClass(QueueFactory::class);
 
 		$builder->addDefinition($this->prefix('client'))
 			->setClass(Client::class)

@@ -60,6 +60,7 @@ final class ProducerTest extends TestCase
 	public function tearDown()
 	{
 		Assert::true(true);
+
 		$this->bunny->disconnect();
 	}
 

@@ -12,6 +12,7 @@ namespace Gamee\RabbitMQ\Producer;
 
 use Gamee\RabbitMQ\Connection\ConnectionFactory;
 use Gamee\RabbitMQ\Producer\Exception\ProducerFactoryException;
+use Gamee\RabbitMQ\Queue\QueueFactory;
 
 final class ProducerFactory
 {
@@ -26,13 +27,38 @@ final class ProducerFactory
 	 */
 	private $connectionFactory;
 
+	/**
+	 * @var QueueFactory
+	 */
+	private $queueFactory;
+
+	/**
+	 * @var Producer[]
+	 */
+	private $producers;
+
 
 	public function __construct(
 		ProducersDataBag $producersDataBag,
-		ConnectionFactory $connectionFactory
+		ConnectionFactory $connectionFactory,
+		QueueFactory $queueFactory
 	) {
 		$this->producersDataBag = $producersDataBag;
 		$this->connectionFactory = $connectionFactory;
+		$this->queueFactory = $queueFactory;
+	}
+
+
+	/**
+	 * @throws ProducerFactoryException
+	 */
+	public function getProducer(string $name): Producer
+	{
+		if (!isset($this->producers[$name])) {
+			$this->producers[$name] = $this->create($name);
+		}
+
+		return $this->producers[$name];
 	}
 
 
@@ -50,11 +76,12 @@ final class ProducerFactory
 		}
 
 		$connection = $this->connectionFactory->getConnection($producerData['connection']);
+		$queue = $this->queueFactory->getQueue($connection, $producerData['queue']);
 
 		return new Producer(
 			$connection,
 			$producerData['exchange'],
-			$producerData['queue'],
+			$queue,
 			$producerData['contentType'],
 			$producerData['deliveryMode']
 		);
