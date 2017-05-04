@@ -10,18 +10,8 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Producer;
 
-final class ProducersDataBag
+use Gamee\RabbitMQ\AbstractDataBag;
+
+final class ProducersDataBag extends AbstractDataBag
 {
-
-	/**
-	 * @var array
-	 */
-	private $producersData = [];
-
-
-	public function __construct(array $producersData)
-	{
-		$this->producersData = $producersData;
-	}
-
 }

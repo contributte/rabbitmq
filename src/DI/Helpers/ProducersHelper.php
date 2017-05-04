@@ -30,6 +30,19 @@ final class ProducersHelper extends AbstractHelper
 		'deliveryMode' => Producer::DELIVERY_MODE_PERSISTENT
 	];
 
+	/**
+	 * @var array
+	 */
+	protected $queueDefaults = [
+		'name' => '',
+		'passive' => FALSE,
+		'durable' => TRUE,
+		'exclusive' => FALSE,
+		'autoDelete' => FALSE,
+		'nowait' => FALSE,
+		'arguments' => NULL
+	];
+
 
 	public function setup(
 		ContainerBuilder $builder,

@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Producer;
 
+use Gamee\RabbitMQ\Connection\ConnectionFactory;
+use Gamee\RabbitMQ\Producer\Exception\ProducerFactoryException;
+
 final class ProducerFactory
 {
 
@@ -34,11 +37,27 @@ final class ProducerFactory
 
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws ProducerFactoryException
 	 */
 	public function create(string $name): Producer
 	{
-		throw new \InvalidArgumentException;
+		try {
+			$producerData = $this->producersDataBag->getDataBykey($name);
+
+		} catch (\InvalidArgumentException $e) {
+
+			throw new ProducerFactoryException("Producer [$name] does not exist");
+		}
+
+		$connection = $this->connectionFactory->getConnection($producerData['connection']);
+
+		return new Producer(
+			$connection,
+			$producerData['exchange'],
+			$producerData['queue'],
+			$producerData['contentType'],
+			$producerData['deliveryMode']
+		);
 	}
 
 }

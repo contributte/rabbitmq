@@ -16,6 +16,9 @@ use Gamee\RabbitMQ\DI\Helpers\ConsumersHelper;
 use Gamee\RabbitMQ\DI\Helpers\ProducersHelper;
 use Nette\DI\CompilerExtension;
 
+/**
+ * @todo Implement queue-exchange routing keys
+ */
 final class RabbitMQExtension extends CompilerExtension
 {
 

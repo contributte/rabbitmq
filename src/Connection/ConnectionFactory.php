@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Connection;
 
+use Gamee\RabbitMQ\Connection\Exception\ConnectionFactoryException;
+
 final class ConnectionFactory
 {
 
@@ -23,22 +25,56 @@ final class ConnectionFactory
 	 */
 	private $connectionFactory;
 
+	/**
+	 * @var Connection[]
+	 */
+	private $connections = [];
+
 
 	public function __construct(
-		ConnectionsDataBag $connectionsDataBag,
-		ConnectionFactory $connectionFactory
+		ConnectionsDataBag $connectionsDataBag
 	) {
 		$this->connectionsDataBag = $connectionsDataBag;
-		$this->connectionFactory = $connectionFactory;
 	}
 
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @throws ConnectionFactoryException
 	 */
-	public function create(string $name): Connection
+	public function getConnection(string $name): Connection
 	{
-		throw new \InvalidArgumentException;
+		if (!isset($this->connections[$name])) {
+			$this->connections[$name] = $this->create($name);
+		}
+
+		return $this->connections[$name];
+	}
+
+
+	/**
+	 * @throws ConnectionFactoryException
+	 */
+	private function create(string $name): Connection
+	{
+		try {
+			$connectionData = $this->connectionsDataBag->getDataBykey($name);
+
+		} catch (\InvalidArgumentException $e) {
+
+			throw new ConnectionFactoryException("Connection [$name] does not exist");
+		}
+
+		$connection = new Connection(
+			$connectionData['host'],
+			$connectionData['port'],
+			$connectionData['user'],
+			$connectionData['password'],
+			$connectionData['vhost']
+		);
+
+		$connection->connect();
+
+		return $connection;
 	}
 
 }
