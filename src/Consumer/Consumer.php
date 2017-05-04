@@ -8,11 +8,11 @@ declare(strict_types=1);
  * @package     Gamee
  */
 
-namespace Gamee\RabbitMQ\Connection;
+namespace Gamee\RabbitMQ\Consumer;
 
 use Bunny;
 
-final class Connection
+final class Consumer
 {
 
 	/**

@@ -13,6 +13,7 @@ namespace Gamee\RabbitMQ\DI\Helpers;
 use Gamee\RabbitMQ\Connection\ConnectionFactory;
 use Gamee\RabbitMQ\Connection\ConnectionsDataBag;
 use Nette\DI\ContainerBuilder;
+use Nette\DI\ServiceDefinition;
 
 final class ConnectionsHelper extends AbstractHelper
 {
@@ -29,7 +30,7 @@ final class ConnectionsHelper extends AbstractHelper
 	];
 
 
-	public function setup(ContainerBuilder $builder, array $config = [])
+	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$connectionsConfig = [];
 

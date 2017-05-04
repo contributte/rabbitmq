@@ -41,7 +41,7 @@ final class Queue
 	/**
 	 * @var bool
 	 */
-	private $nowait;
+	private $noWait;
 
 	/**
 	 * @var array
@@ -55,7 +55,7 @@ final class Queue
 		bool $durable,
 		bool $exclusive,
 		bool $autoDelete,
-		bool $nowait,
+		bool $noWait,
 		array $arguments
 	) {
 		$this->name = $name;
@@ -63,8 +63,14 @@ final class Queue
 		$this->durable = $durable;
 		$this->exclusive = $exclusive;
 		$this->autoDelete = $autoDelete;
-		$this->nowait = $nowait;
+		$this->noWait = $noWait;
 		$this->arguments = $arguments;
+	}
+
+
+	public function getName(): string
+	{
+		return $this->name;
 	}
 
 }

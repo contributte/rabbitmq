@@ -13,13 +13,13 @@ namespace Gamee\RabbitMQ\DI;
 use Gamee\RabbitMQ\Client;
 use Gamee\RabbitMQ\DI\Helpers\ConnectionsHelper;
 use Gamee\RabbitMQ\DI\Helpers\ConsumersHelper;
+use Gamee\RabbitMQ\DI\Helpers\ExchangesHelper;
 use Gamee\RabbitMQ\DI\Helpers\ProducersHelper;
+use Gamee\RabbitMQ\DI\Helpers\QueuesHelper;
 use Gamee\RabbitMQ\Queue\QueueFactory;
 use Nette\DI\CompilerExtension;
+use Nette\DI\ServiceDefinition;
 
-/**
- * @todo Implement queue-exchange routing keys
- */
 final class RabbitMQExtension extends CompilerExtension
 {
 
@@ -28,6 +28,8 @@ final class RabbitMQExtension extends CompilerExtension
 	 */
 	private $defaults = [
 		'connnections' => [],
+		'queues' => [],
+		'exchanges' => [],
 		'producers' => [],
 		'consumers' => []
 	];
@@ -38,9 +40,19 @@ final class RabbitMQExtension extends CompilerExtension
 	private $connectionsHelper;
 
 	/**
+	 * @var QueuesHelper
+	 */
+	private $queuesHelper;
+
+	/**
 	 * @var ProducersHelper
 	 */
 	private $producersHelper;
+
+	/**
+	 * @var ExchangesHelper
+	 */
+	private $exchangesHelper;
 
 	/**
 	 * @var ConsumersHelper
@@ -51,6 +63,8 @@ final class RabbitMQExtension extends CompilerExtension
 	public function __construct()
 	{
 		$this->connectionsHelper = new ConnectionsHelper($this);
+		$this->queuesHelper = new QueuesHelper($this);
+		$this->exchangesHelper = new ExchangesHelper($this);
 		$this->producersHelper = new ProducersHelper($this);
 		$this->consumersHelper = new ConsumersHelper($this);
 	}
@@ -65,20 +79,52 @@ final class RabbitMQExtension extends CompilerExtension
 
 		$builder = $this->getContainerBuilder();
 
+		/**
+		 * Connections
+		 * @var ServiceDefinition
+		 */
 		$connectionFactory = $this->connectionsHelper->setup($builder, $config['connections']);
+
+		/**
+		 * Queues
+		 * @var ServiceDefinition
+		 */
+		$queueFactory = $this->queuesHelper->setup($builder, $config['queues']);
+
+		/**
+		 * Exchanges
+		 * @var ServiceDefinition
+		 */
+		$exchangeFactory = $this->exchangesHelper->setup($builder, $config['exchanges']);
+
+		/**
+		 * Producers
+		 * @var ServiceDefinition
+		 */
 		$producerFactory = $this->producersHelper->setup(
 			$builder,
 			$config['producers'],
 			$connectionFactory
 		);
-		$consumersFactory = $this->consumersHelper->setup($builder, $config['producers']);
 
-		$builder->addDefinition($this->prefix('queueFactory'))
-			->setClass(QueueFactory::class);
+		/**
+		 * Consumers
+		 * @var ServiceDefinition
+		 */
+		$consumersFactory = $this->consumersHelper->setup($builder, $config['consumers']);
 
+		/**
+		 * Register Client class
+		 */
 		$builder->addDefinition($this->prefix('client'))
 			->setClass(Client::class)
-			->setArguments([$producerFactory, $connectionFactory, $consumersFactory]);
+			->setArguments([
+				$connectionFactory,
+				$queueFactory,
+				$exchangeFactory,
+				$producerFactory,
+				$consumersFactory
+			]);
 	}
 
 }

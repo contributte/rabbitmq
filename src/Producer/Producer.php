@@ -46,7 +46,6 @@ final class Producer
 	private $deliveryMode;
 
 
-
 	public function __construct(
 		Connection $connection,
 		$exchange,
@@ -62,9 +61,18 @@ final class Producer
 	}
 
 
-	public function publish(): void
+	public function publish(string $message): void
 	{
-		
+		/**
+		 * @todo Headers
+		 * @todo Routing key
+		 */
+		$this->connection->getChannel()->publish(
+			$message,
+			[],
+			'',
+			$this->queue->getName()
+		);
 	}
 
 }

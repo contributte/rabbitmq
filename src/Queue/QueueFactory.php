@@ -46,17 +46,17 @@ final class QueueFactory
 			$queueData['durable'],
 			$queueData['exclusive'],
 			$queueData['autoDelete'],
-			$queueData['nowait'],
+			$queueData['noWait'],
 			$queueData['arguments']
 		);
 
-		$connection->getBunnyClient()->channel()->queueDeclare(
+		$connection->getChannel()->queueDeclare(
 			$queueData['name'],
 			$queueData['passive'],
 			$queueData['durable'],
 			$queueData['exclusive'],
 			$queueData['autoDelete'],
-			$queueData['nowait'],
+			$queueData['noWait'],
 			$queueData['arguments']
 		);
 

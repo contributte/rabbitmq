@@ -11,13 +11,46 @@ declare(strict_types=1);
 namespace Gamee\RabbitMQ\DI\Helpers;
 
 use Nette\DI\ContainerBuilder;
+use Nette\DI\ServiceDefinition;
 
 final class ConsumersHelper
 {
 
-	public function setup(ContainerBuilder $builder, array $config = NULL)
+	/**
+	 * @var array
+	 */
+	protected $defaults = [
+		'connection' => 'default',
+		'callback' => NULL,
+		'idleTimeout' => 30
+
+		/**
+		 * @todo
+		 * 
+		 * 	exchange?
+		 * 	queue?
+		 */
+	];
+
+
+	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
-		// Code here
+		$consumersConfig = [];
+
+		foreach ($config as $consumerName => $consumerData) {
+			$consumersConfig[$consumerName] = $this->extension->validateConfig(
+				$this->getDefaults(),
+				$consumerData
+			);
+		}
+
+		$consumersDataBag = $builder->addDefinition($this->extension->prefix('consumersDataBag'))
+			->setClass(ConsumersDataBag::class)
+			->setArguments([$consumersConfig]);
+
+		return $builder->addDefinition($this->extension->prefix('consumerFactory'))
+			->setClass(ConsumerFactory::class)
+			->setArguments([$consumersDataBag]);
 	}
 
 }
