@@ -10,51 +10,85 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Consumer;
 
-use Bunny;
+use Bunny\Channel;
+use Bunny\Client;
+use Bunny\Message;
+use Gamee\RabbitMQ\Queue\Queue;
 
 final class Consumer
 {
 
+	const MESSAGE_ACK    = 1;
+	const MESSAGE_NACK   = 2;
+	const MESSAGE_REJECT = 3;
+
 	/**
-	 * @var Bunny\Client
+	 * @var string
 	 */
-	private $bunnyClient;
+	private $name;
+
+	/**
+	 * @var Queue
+	 */
+	private $queue;
+
+	/**
+	 * @var callble
+	 */
+	private $callback;
 
 
-	public function __construct(
-		string $host,
-		int $port,
-		string $user,
-		string $password,
-		string $vhost
-	) {
-		$this->host = $host;
-		$this->port = $port;
-		$this->user = $user;
-		$this->password = $password;
-		$this->vhost = $vhost;
-
-		$this->bunnyClient = new Bunny\Client([
-			'host' => $this->host,
-			'port' => $this->port,
-			'user' => $this->user,
-			'password' => $this->password,
-			'vhost' => $this->vhost
-		]);
-
-		$this->bunnyClient->connect();
+	public function __construct(string $name, Queue $queue, callable $callback)
+	{
+		$this->name = $name;
+		$this->queue = $queue;
+		$this->callback = $callback;
 	}
 
 
-	public function getChannel(): Bunny\Channel
+	public function getQueue(): Queue
 	{
-		return $this->bunnyClient->channel();
+		return $this->queue;
 	}
 
 
-	public function __destruct()
+	public function getCallback(): callable
 	{
-		$this->bunnyClient->disconnect();
+		return $this->callback;
+	}
+
+
+	public function consumeForSpecifiedTime(int $seconds): void
+	{
+		$bunnyClient = $this->queue->getConnection()->getBunnyClient();
+
+		$bunnyClient->channel()->consume(
+			function (Message $message, Channel $channel, Client $client): void {
+				$result = call_user_func($this->callback, $message);
+
+				switch ($result) {
+					case self::MESSAGE_ACK:
+						$channel->ack($message); // Acknowledge message
+						break;
+
+					case self::MESSAGE_NACK:
+						$channel->nack($message); // Message will be requeued
+						break;
+
+					case self::MESSAGE_REJECT:
+						$channel->reject($message); // Message will be discarded
+						break;
+					
+					default:
+						throw new \InvalidArgumentException(
+							"Unknown return value of consumer [{$this->name}] user callback"
+						);
+				}
+			},
+			$this->queue->getName()
+		);
+
+		$bunnyClient->run($seconds); // Client runs for X seconds and then stops
 	}
 
 }

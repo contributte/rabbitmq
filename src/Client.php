@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ;
 
+use Gamee\RabbitMQ\Consumer\Consumer;
 use Gamee\RabbitMQ\Consumer\ConsumerFactory;
 use Gamee\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
 use Gamee\RabbitMQ\Producer\Exception\ProducerFactoryException;

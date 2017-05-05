@@ -46,6 +46,12 @@ final class Connection
 	}
 
 
+	public function getBunnyClient(): Bunny\Client
+	{
+		return $this->bunnyClient;
+	}
+
+
 	public function getChannel(): Bunny\Channel
 	{
 		return $this->bunnyClient->channel();

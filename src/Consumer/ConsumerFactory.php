@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Consumer;
 
+use Gamee\RabbitMQ\Queue\QueueFactory;
 use Gamee\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
 
 final class ConsumerFactory
@@ -21,14 +22,22 @@ final class ConsumerFactory
 	private $consumersDataBag;
 
 	/**
+	 * @var QueueFactory
+	 */
+	private $queueFactory;
+
+	/**
 	 * @var Consumer[]
 	 */
 	private $consumers = [];
 
 
-	public function __construct(ConsumersDataBag $consumersDataBag)
-	{
+	public function __construct(
+		ConsumersDataBag $consumersDataBag,
+		QueueFactory $queueFactory
+	) {
 		$this->consumersDataBag = $consumersDataBag;
+		$this->queueFactory = $queueFactory;
 	}
 
 
@@ -58,7 +67,13 @@ final class ConsumerFactory
 			throw new ConsumerFactoryException("Consumer [$name] does not exist");
 		}
 
-		
+		$queue = $this->queueFactory->getQueue($consumerData['queue']);
+
+		if (!is_callable($consumerData['callback'])) {
+			throw new ConsumerFactoryException("Consumer [$name] has invalid callback");
+		}
+
+		return new Consumer($name, $queue, $consumerData['callback']);
 	}
 
 }
