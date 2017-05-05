@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Producer;
 
-use Gamee\RabbitMQ\Connection\Connection;
-use Gamee\RabbitMQ\Connection\ConnectionFactory;
 use Gamee\RabbitMQ\Exchange\ExchangeFactory;
 use Gamee\RabbitMQ\Producer\Exception\ProducerFactoryException;
 use Gamee\RabbitMQ\Queue\QueueFactory;
@@ -23,11 +21,6 @@ final class ProducerFactory
 	 * @var ProducersDataBag
 	 */
 	private $producersDataBag;
-
-	/**
-	 * @var ConnectionFactory
-	 */
-	private $connectionFactory;
 
 	/**
 	 * @var QueueFactory
@@ -47,12 +40,10 @@ final class ProducerFactory
 
 	public function __construct(
 		ProducersDataBag $producersDataBag,
-		ConnectionFactory $connectionFactory,
 		QueueFactory $queueFactory,
 		ExchangeFactory $exchangeFactory
 	) {
 		$this->producersDataBag = $producersDataBag;
-		$this->connectionFactory = $connectionFactory;
 		$this->queueFactory = $queueFactory;
 		$this->exchangeFactory = $exchangeFactory;
 	}
@@ -84,15 +75,11 @@ final class ProducerFactory
 			throw new ProducerFactoryException("Producer [$name] does not exist");
 		}
 
-		/**
-		 * @var Connection
-		 */
-		$connection = $this->connectionFactory->getConnection($producerData['connection']);
 		$exchange = NULL;
 		$queue = NULL;
 
 		if ($producerData['exchange']) {
-			$exchange = $this->exchangeFactory->getExchange($producerData['exchange'], $connection);
+			$exchange = $this->exchangeFactory->getExchange($producerData['exchange']);
 		}
 
 		if ($producerData['queue']) {
@@ -100,7 +87,6 @@ final class ProducerFactory
 		}
 
 		return new Producer(
-			$connection,
 			$exchange,
 			$queue,
 			$producerData['contentType'],

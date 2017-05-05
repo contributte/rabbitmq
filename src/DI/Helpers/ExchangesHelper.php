@@ -47,11 +47,8 @@ final class ExchangesHelper extends AbstractHelper
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function setup(
-		ContainerBuilder $builder,
-		array $config = [],
-		ServiceDefinition $queueFactory
-	): ServiceDefinition {
+	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
+	{
 		$exchangesConfig = [];
 
 		foreach ($config as $exchangeName => $exchangeData) {
@@ -89,7 +86,7 @@ final class ExchangesHelper extends AbstractHelper
 
 		return $builder->addDefinition($this->extension->prefix('exchangeFactory'))
 			->setClass(ExchangeFactory::class)
-			->setArguments([$exchangesDataBag, $queueFactory]);
+			->setArguments([$exchangesDataBag]);
 	}
 
 }

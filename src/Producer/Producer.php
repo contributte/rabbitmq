@@ -21,11 +21,6 @@ final class Producer
 	const DELIVERY_MODE_PERSISTENT = 2;
 
 	/**
-	 * @var Connection
-	 */
-	private $connection;
-
-	/**
 	 * @var Exchange|NULL
 	 */
 	private $exchange;
@@ -47,13 +42,11 @@ final class Producer
 
 
 	public function __construct(
-		Connection $connection,
 		Exchange $exchange = NULL,
 		Queue $queue = NULL,
 		string $contentType,
 		int $deliveryMode
 	) {
-		$this->connection = $connection;
 		$this->exchange = $exchange;
 		$this->queue = $queue;
 		$this->contentType = $contentType;
@@ -67,12 +60,23 @@ final class Producer
 		 * @todo Headers
 		 * @todo Routing key
 		 */
+		dump($this->exchange ? $this->exchange->getName() : $this->queue->getName()); die;
 		$this->connection->getChannel()->publish(
 			$message,
 			[],
 			'',
 			$this->exchange ? $this->exchange->getName() : $this->queue->getName()
 		);
+	}
+
+
+	private function getConnection(): Connection
+	{
+		if ($this->queue) {
+			return $this->queue->getConnection();
+		}
+
+		return $this->exchange->getQueueBinding()->getQueue()->getConnection();
 	}
 
 }

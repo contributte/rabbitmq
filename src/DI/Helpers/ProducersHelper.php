@@ -28,7 +28,6 @@ final class ProducersHelper extends AbstractHelper
 	 * @var array
 	 */
 	protected $defaults = [
-		'connection' => 'default',
 		'exchange' => NULL,
 		'queue' => NULL,
 		'contentType' => 'text/plain',
@@ -36,11 +35,8 @@ final class ProducersHelper extends AbstractHelper
 	];
 
 
-	public function setup(
-		ContainerBuilder $builder,
-		array $config = [],
-		ServiceDefinition $connectionFactoryDefinition
-	): ServiceDefinition {
+	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
+	{
 		$producersConfig = [];
 
 		foreach ($config as $producerName => $producerData) {
@@ -74,7 +70,7 @@ final class ProducersHelper extends AbstractHelper
 
 		return $builder->addDefinition($this->extension->prefix('producerFactory'))
 			->setClass(ProducerFactory::class)
-			->setArguments([$producersDataBag, $connectionFactoryDefinition]);
+			->setArguments([$producersDataBag]);
 	}
 
 }

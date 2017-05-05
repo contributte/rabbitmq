@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Exchange;
 
-use Gamee\RabbitMQ\Connection\Connection;
+use Gamee\RabbitMQ\Connection\ConnectionFactory;
 use Gamee\RabbitMQ\Exchange\Exception\ExchangeFactoryException;
 use Gamee\RabbitMQ\Queue\QueueFactory;
 
@@ -28,25 +28,34 @@ final class ExchangeFactory
 	private $queueFactory;
 
 	/**
+	 * @var ConnectionFactory
+	 */
+	private $connectionFactory;
+
+	/**
 	 * @var Exchange[]
 	 */
 	private $exchanges;
 
 
-	public function __construct(ExchangesDataBag $exchangesDataBag, QueueFactory $queueFactory)
-	{
+	public function __construct(
+		ExchangesDataBag $exchangesDataBag,
+		QueueFactory $queueFactory,
+		ConnectionFactory $connectionFactory
+	) {
 		$this->exchangesDataBag = $exchangesDataBag;
 		$this->queueFactory = $queueFactory;
+		$this->connectionFactory = $connectionFactory;
 	}
 
 
 	/**
 	 * @throws ExchangeFactoryException
 	 */
-	public function getExchange(string $name, Connection $connection): Exchange
+	public function getExchange(string $name): Exchange
 	{
 		if (!isset($this->exchanges[$name])) {
-			$this->exchanges[$name] = $this->create($name, $connection);
+			$this->exchanges[$name] = $this->create($name);
 		}
 
 		return $this->exchanges[$name];
@@ -57,7 +66,7 @@ final class ExchangeFactory
 	 * @throws ExchangeFactoryException
 	 * @throws QueueFactoryException
 	 */
-	private function create(string $name, Connection $connection): Exchange
+	private function create(string $name): Exchange
 	{
 		$queueBindings = [];
 
@@ -71,25 +80,49 @@ final class ExchangeFactory
 
 		if (!empty($exchangeData['queueBindings'])) {
 			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
+				$queue = $this->queueFactory->getQueue($queueName); // (QueueFactoryException)
+				$connection = $queue->getConnection();
+
+				/**
+				 * Declare the actual queue
+				 */
+				$connection->getChannel()->exchangeDeclare(
+					$name,
+					$exchangeData['type'],
+					$exchangeData['passive'],
+					$exchangeData['durable'],
+					$exchangeData['autoDelete'],
+					$exchangeData['internal'],
+					$exchangeData['noWait'],
+					$exchangeData['arguments']
+				);
+
+				/**
+				 * Create binding to the queue
+				 */
+				$connection->getChannel()->queueBind(
+					$queue->getName(),
+					$name,
+					$queueBinding['routingKey'],
+					$queueBinding['noWait'],
+					$queueBinding['arguments']
+				);
+
 				$queueBindings[] = new QueueBinding(
-					$this->queueFactory->getQueue($queueName), // (QueueFactoryException)
+					$queue,
 					$queueBinding['routingKey'],
 					$queueBinding['noWait'],
 					$queueBinding['arguments']
 				);
 			}
+		} else {
+			/**
+			 * @todo Throw an exception or not?
+			 */
+			throw new ExchangeFactoryException(
+				"Exchange [$name] could not be created, it is not bound to any queue"
+			);
 		}
-
-		$connection->getChannel()->exchangeDeclare(
-			$name,
-			$exchangeData['type'],
-			$exchangeData['passive'],
-			$exchangeData['durable'],
-			$exchangeData['autoDelete'],
-			$exchangeData['internal'],
-			$exchangeData['noWait'],
-			$exchangeData['arguments']
-		);
 
 		return new Exchange(
 			$name,

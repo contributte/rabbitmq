@@ -95,21 +95,13 @@ final class RabbitMQExtension extends CompilerExtension
 		 * Exchanges
 		 * @var ServiceDefinition
 		 */
-		$exchangeFactory = $this->exchangesHelper->setup(
-			$builder,
-			$config['exchanges'],
-			$queueFactory
-		);
+		$exchangeFactory = $this->exchangesHelper->setup($builder, $config['exchanges']);
 
 		/**
 		 * Producers
 		 * @var ServiceDefinition
 		 */
-		$producerFactory = $this->producersHelper->setup(
-			$builder,
-			$config['producers'],
-			$connectionFactory
-		);
+		$producerFactory = $this->producersHelper->setup($builder, $config['producers']);
 
 		/**
 		 * Consumers
