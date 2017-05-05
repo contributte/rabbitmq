@@ -10,7 +10,9 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Console\Command;
 
+use Gamee\RabbitMQ\Consumer\ConsumerFactory;
 use Gamee\RabbitMQ\Consumer\ConsumersDataBag;
+use Gamee\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,12 +28,18 @@ final class ConsumerCommand extends Command
 	 */
 	private $consumersDataBag;
 
+	/**
+	 * @var ConsumerFactory
+	 */
+	private $consumerFactory;
 
-	public function __construct(ConsumersDataBag $consumersDataBag)
+
+	public function __construct(ConsumersDataBag $consumersDataBag, ConsumerFactory $consumerFactory)
 	{
-		$this->consumersDataBag = $consumersDataBag;
-
 		parent::__construct();
+
+		$this->consumersDataBag = $consumersDataBag;
+		$this->consumerFactory = $consumerFactory;
 	}
 
 
@@ -41,19 +49,37 @@ final class ConsumerCommand extends Command
 		$this->setDescription('Run a RabbitMQ consumer');
 
 		$this->addArgument('consumerName', InputArgument::REQUIRED, 'The name of the consumer');
+		$this->addArgument('secondsToLive', InputArgument::REQUIRED, 'Max seconds for consumer to run');
 	}
 
 
 	protected function execute(InputInterface $input, OutputInterface $output): void
 	{
-		$consumerName = $input->getArgument('consumerName');
+		$consumerName = (string) $input->getArgument('consumerName');
+		$secondsToLive = (int) $input->getArgument('secondsToLive');
+
+		$this->validateInput($consumerName, $secondsToLive, $output); // May exit;
+
+
+	}
+
+
+	private function validateInput(string $consumerName, int $secondsToLive): void
+	{
+		if (!$secondsToLive) {
+			throw new \InvalidArgumentException(
+				'Parameter [secondsToLive] has to be greater then 0'
+			);
+		}
 
 		/**
 		 * Validate consumer name
 		 */
-		if (!isset($this->consumersDataBag->getDatakeys()[$consumerName])) {
-			$this->writeError(
-				$output,
+		try {
+			$this->consumerFactory->getConsumer($consumerName);
+
+		} catch (ConsumerFactoryException $e) {
+			throw new \InvalidArgumentException(
 				sprintf(
 					"Consumer [$consumerName] does not exist. \n\n Available consumers: %s",
 					implode('', array_map(function($s) {
@@ -62,12 +88,6 @@ final class ConsumerCommand extends Command
 				)
 			);
 		}
-	}
-
-
-	private function writeError(OutputInterface $output, string $message): void
-	{
-		$output->writeln("<error>\n\n {$message}\n</error>\n");
 	}
 
 }

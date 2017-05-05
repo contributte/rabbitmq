@@ -58,7 +58,7 @@ final class ConsumerFactory
 			throw new ConsumerFactoryException("Consumer [$name] does not exist");
 		}
 
-		throw new \RuntimeException('Consumers are not implemented yet');
+		
 	}
 
 }

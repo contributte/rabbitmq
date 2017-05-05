@@ -39,10 +39,18 @@ final class ConsumersHelper extends AbstractHelper
 		$consumersConfig = [];
 
 		foreach ($config as $consumerName => $consumerData) {
-			$consumersConfig[$consumerName] = $this->extension->validateConfig(
+			$consumerConfig = $this->extension->validateConfig(
 				$this->getDefaults(),
 				$consumerData
 			);
+
+			if (empty($consumerConfig)) {
+				throw new \InvalidArgumentException(
+					'Each consumer has to have a <queue> parameter set'
+				);
+			}
+
+			$consumersConfig[$consumerName] = $consumerConfig;
 		}
 
 		$consumersDataBag = $builder->addDefinition($this->extension->prefix('consumersDataBag'))
