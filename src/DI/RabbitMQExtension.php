@@ -113,10 +113,7 @@ final class RabbitMQExtension extends CompilerExtension
 		 * Register Client class
 		 */
 		$builder->addDefinition($this->prefix('client'))
-			->setClass(Client::class)
-			->setArguments([
-				$producerFactory
-			]);
+			->setClass(Client::class);
 	}
 
 }
