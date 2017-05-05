@@ -54,29 +54,42 @@ final class Producer
 	}
 
 
+	/**
+	 * @todo Headers
+	 */
 	public function publish(string $message): void
 	{
-		/**
-		 * @todo Headers
-		 * @todo Routing key
-		 */
-		dump($this->exchange ? $this->exchange->getName() : $this->queue->getName()); die;
-		$this->connection->getChannel()->publish(
+		if ($this->queue) {
+			$this->publishToQueue($message);
+		}
+
+		if ($this->exchange) {
+			$this->publishToExchange($message);
+		}
+	}
+
+
+	private function publishToQueue(string $message, array $headers = []): void
+	{
+		$this->queue->getConnection()->getChannel()->publish(
 			$message,
-			[],
-			'',
-			$this->exchange ? $this->exchange->getName() : $this->queue->getName()
+			$headers,
+			'', // Exchange name
+			$this->queue->getName() // Routing key, in this case the queue's name
 		);
 	}
 
 
-	private function getConnection(): Connection
+	private function publishToExchange(string $message): void
 	{
-		if ($this->queue) {
-			return $this->queue->getConnection();
+		foreach ($this->exchange->getQueueBindings() as $queueBinding) {
+			$queueBinding->getQueue()->getConnection()->getChannel()->publish(
+				$message,
+				[],
+				$this->exchange->getName(),
+				$queueBinding->getRoutingKey()
+			);
 		}
-
-		return $this->exchange->getQueueBinding()->getQueue()->getConnection();
 	}
 
 }

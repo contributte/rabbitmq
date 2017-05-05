@@ -90,7 +90,7 @@ final class Exchange
 	}
 
 
-	public function getQueueBinding(): array
+	public function getQueueBindings(): array
 	{
 		return $this->queueBindings;
 	}

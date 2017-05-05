@@ -54,4 +54,10 @@ final class QueueBinding
 		return $this->queue;
 	}
 
+
+	public function getRoutingKey(): string
+	{
+		return $this->routingKey;
+	}
+
 }
