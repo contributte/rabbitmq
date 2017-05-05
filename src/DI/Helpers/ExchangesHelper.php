@@ -30,6 +30,16 @@ final class ExchangesHelper extends AbstractHelper
 		'autoDelete' => FALSE,
 		'internal' => FALSE,
 		'noWait' => FALSE,
+		'arguments' => [],
+		'queueBindings' => [] // See self::$queueBindingDefaults
+	];
+
+	/**
+	 * @var array
+	 */
+	private $queueBindingDefaults = [
+		'routingKey' => '',
+		'noWait' => FALSE,
 		'arguments' => []
 	];
 
@@ -37,12 +47,15 @@ final class ExchangesHelper extends AbstractHelper
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
-	{
+	public function setup(
+		ContainerBuilder $builder,
+		array $config = [],
+		ServiceDefinition $queueFactory
+	): ServiceDefinition {
 		$exchangesConfig = [];
 
 		foreach ($config as $exchangeName => $exchangeData) {
-			$exchangesConfig[$exchangeName] = $this->extension->validateConfig(
+			$exchangeConfig = $this->extension->validateConfig(
 				$this->getDefaults(),
 				$exchangeData
 			);
@@ -50,11 +63,24 @@ final class ExchangesHelper extends AbstractHelper
 			/**
 			 * Validate exchange type
 			 */
-			if (!in_array($exchangesConfig[$exchangeName]['type'], self::EXCHANGE_TYPES)) {
+			if (!in_array($exchangeConfig['type'], self::EXCHANGE_TYPES)) {
 				throw new \InvalidArgumentException(
-					"Unknown exchange type [{$exchangesConfig[$exchangeName]['type']}]"
+					"Unknown exchange type [{$exchangeConfig['type']}]"
 				);
 			}
+
+			if (!empty($exchangeConfig['queueBindings'])) {
+				foreach ($exchangeConfig['queueBindings'] as $queueName => $queueBindingData) {
+					$queueBindingData['routingKey'] = (string) $queueBindingData['routingKey'];
+
+					$exchangeConfig['queueBindings'][$queueName] = $this->extension->validateConfig(
+						$this->queueBindingDefaults,
+						$queueBindingData
+					);
+				}
+			}
+
+			$exchangesConfig[$exchangeName] = $exchangeConfig;
 		}
 
 		$exchangesDataBag = $builder->addDefinition($this->extension->prefix('exchangesDataBag'))
@@ -63,7 +89,7 @@ final class ExchangesHelper extends AbstractHelper
 
 		return $builder->addDefinition($this->extension->prefix('exchangeFactory'))
 			->setClass(ExchangeFactory::class)
-			->setArguments([$exchangesDataBag]);
+			->setArguments([$exchangesDataBag, $queueFactory]);
 	}
 
 }

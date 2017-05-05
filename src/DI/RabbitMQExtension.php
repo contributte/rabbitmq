@@ -95,7 +95,11 @@ final class RabbitMQExtension extends CompilerExtension
 		 * Exchanges
 		 * @var ServiceDefinition
 		 */
-		$exchangeFactory = $this->exchangesHelper->setup($builder, $config['exchanges']);
+		$exchangeFactory = $this->exchangesHelper->setup(
+			$builder,
+			$config['exchanges'],
+			$queueFactory
+		);
 
 		/**
 		 * Producers

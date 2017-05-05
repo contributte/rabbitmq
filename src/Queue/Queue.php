@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Queue;
 
+use Gamee\RabbitMQ\Connection\Connection;
+
 final class Queue
 {
 
@@ -17,6 +19,11 @@ final class Queue
 	 * @var string
 	 */
 	private $name;
+
+	/**
+	 * @var Connection
+	 */
+	private $connection;
 
 	/**
 	 * @var bool
@@ -51,6 +58,7 @@ final class Queue
 
 	public function __construct(
 		string $name,
+		Connection $connection,
 		bool $passive,
 		bool $durable,
 		bool $exclusive,
@@ -59,6 +67,7 @@ final class Queue
 		array $arguments
 	) {
 		$this->name = $name;
+		$this->connection = $connection;
 		$this->passive = $passive;
 		$this->durable = $durable;
 		$this->exclusive = $exclusive;
@@ -71,6 +80,12 @@ final class Queue
 	public function getName(): string
 	{
 		return $this->name;
+	}
+
+
+	public function getConnection(): Connection
+	{
+		return $this->connection;
 	}
 
 }

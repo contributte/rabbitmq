@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Gamee\RabbitMQ\Queue;
 
 use Gamee\RabbitMQ\Connection\Connection;
+use Gamee\RabbitMQ\Connection\ConnectionFactory;
+use Gamee\RabbitMQ\Connection\Exception\ConnectionFactoryException;
 use Gamee\RabbitMQ\Queue\Exception\QueueFactoryException;
 
 final class QueueFactory
@@ -22,24 +24,30 @@ final class QueueFactory
 	private $queuesDataBag;
 
 	/**
+	 * @var ConnectionFactory
+	 */
+	private $connectionFactory;
+
+	/**
 	 * @var Queue[]
 	 */
 	private $queues;
 
 
-	public function __construct(QueuesDataBag $queuesDataBag)
+	public function __construct(QueuesDataBag $queuesDataBag, ConnectionFactory $connectionFactory)
 	{
 		$this->queuesDataBag = $queuesDataBag;
+		$this->connectionFactory = $connectionFactory;
 	}
 
 
 	/**
 	 * @throws QueueFactoryException
 	 */
-	public function getQueue(string $name, Connection $connection): Queue
+	public function getQueue(string $name): Queue
 	{
 		if (!isset($this->queues[$name])) {
-			$this->queues[$name] = $this->create($name, $connection);
+			$this->queues[$name] = $this->create($name);
 		}
 
 		return $this->queues[$name];
@@ -48,8 +56,9 @@ final class QueueFactory
 
 	/**
 	 * @throws QueueFactoryException
+	 * @throws ConnectionFactoryException
 	 */
-	private function create(string $name, Connection $connection): Queue
+	private function create(string $name): Queue
 	{
 		try {
 			$queueData = $this->queuesDataBag->getDataBykey($name);
@@ -58,6 +67,9 @@ final class QueueFactory
 
 			throw new QueueFactoryException("Queue [$name] does not exist");
 		}
+
+		// (ConnectionFactoryException)
+		$connection = $this->connectionFactory->getConnection($queueData['connection']);
 
 		$connection->getChannel()->queueDeclare(
 			$name,
@@ -71,6 +83,7 @@ final class QueueFactory
 
 		return new Queue(
 			$name,
+			$connection,
 			$queueData['passive'],
 			$queueData['durable'],
 			$queueData['exclusive'],

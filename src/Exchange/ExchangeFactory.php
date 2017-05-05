@@ -12,6 +12,7 @@ namespace Gamee\RabbitMQ\Exchange;
 
 use Gamee\RabbitMQ\Connection\Connection;
 use Gamee\RabbitMQ\Exchange\Exception\ExchangeFactoryException;
+use Gamee\RabbitMQ\Queue\QueueFactory;
 
 final class ExchangeFactory
 {
@@ -22,14 +23,20 @@ final class ExchangeFactory
 	private $exchangesDataBag;
 
 	/**
+	 * @var QueueFactory
+	 */
+	private $queueFactory;
+
+	/**
 	 * @var Exchange[]
 	 */
 	private $exchanges;
 
 
-	public function __construct(ExchangesDataBag $exchangesDataBag)
+	public function __construct(ExchangesDataBag $exchangesDataBag, QueueFactory $queueFactory)
 	{
 		$this->exchangesDataBag = $exchangesDataBag;
+		$this->queueFactory = $queueFactory;
 	}
 
 
@@ -48,15 +55,29 @@ final class ExchangeFactory
 
 	/**
 	 * @throws ExchangeFactoryException
+	 * @throws QueueFactoryException
 	 */
 	private function create(string $name, Connection $connection): Exchange
 	{
+		$queueBindings = [];
+
 		try {
 			$exchangeData = $this->exchangesDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
 
 			throw new ExchangeFactoryException("Exchange [$name] does not exist");
+		}
+
+		if (!empty($exchangeData['queueBindings'])) {
+			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
+				$queueBindings[] = new QueueBinding(
+					$this->queueFactory->getQueue($queueName), // (QueueFactoryException)
+					$queueBinding['routingKey'],
+					$queueBinding['noWait'],
+					$queueBinding['arguments']
+				);
+			}
 		}
 
 		$connection->getChannel()->exchangeDeclare(
@@ -78,7 +99,8 @@ final class ExchangeFactory
 			$exchangeData['autoDelete'],
 			$exchangeData['internal'],
 			$exchangeData['noWait'],
-			$exchangeData['arguments']
+			$exchangeData['arguments'],
+			$queueBindings
 		);;
 	}
 
