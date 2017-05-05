@@ -22,15 +22,14 @@ final class ConsumersHelper extends AbstractHelper
 	 * @var array
 	 */
 	protected $defaults = [
-		'connection' => 'default',
+		'queue' => NULL,
 		'callback' => NULL,
 		'idleTimeout' => 30
 
 		/**
 		 * @todo
 		 * 
-		 * 	exchange?
-		 * 	queue?
+		 * 	qos: {prefetchSize: 0, prefetchCount: 5} ?
 		 */
 	];
 

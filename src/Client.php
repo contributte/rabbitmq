@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ;
 
+use Gamee\RabbitMQ\Consumer\ConsumerFactory;
+use Gamee\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
+use Gamee\RabbitMQ\Producer\Exception\ProducerFactoryException;
 use Gamee\RabbitMQ\Producer\Producer;
 use Gamee\RabbitMQ\Producer\ProducerFactory;
 
@@ -21,21 +24,34 @@ final class Client
 	 */
 	private $producerFactory;
 
+	/**
+	 * @var ConsumerFactory
+	 */
+	private $consumerFactory;
 
-	public function __construct(ProducerFactory $producerFactory)
+
+	public function __construct(ProducerFactory $producerFactory, ConsumerFactory $consumerFactory)
 	{
 		$this->producerFactory = $producerFactory;
+		$this->consumerFactory = $consumerFactory;
 	}
 
 
+	/**
+	 * @throws ProducerFactoryException
+	 */
 	public function getProducer(string $name): Producer
 	{
-		try {
-			return $this->producerFactory->getProducer($name);
+		return $this->producerFactory->getProducer($name);
+	}
 
-		} catch (Exception $e) {
-			
-		}
+
+	/**
+	 * @throws ConsumerFactoryException
+	 */
+	public function getConsumer(string $name): Consumer
+	{
+		return $this->consumerFactory->getConsumer($name);
 	}
 
 }

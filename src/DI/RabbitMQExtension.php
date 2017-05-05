@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Gamee\RabbitMQ\DI;
 
 use Gamee\RabbitMQ\Client;
+use Gamee\RabbitMQ\Console\Command\ConsumerCommand;
 use Gamee\RabbitMQ\DI\Helpers\ConnectionsHelper;
 use Gamee\RabbitMQ\DI\Helpers\ConsumersHelper;
 use Gamee\RabbitMQ\DI\Helpers\ExchangesHelper;
@@ -76,7 +77,6 @@ final class RabbitMQExtension extends CompilerExtension
 	public function beforeCompile(): void
 	{
 		$config = $this->validateConfig($this->defaults, $this->getConfig());
-
 		$builder = $this->getContainerBuilder();
 
 		/**
@@ -114,6 +114,17 @@ final class RabbitMQExtension extends CompilerExtension
 		 */
 		$builder->addDefinition($this->prefix('client'))
 			->setClass(Client::class);
+
+		$this->setupConsoleCommand();
+	}
+
+
+	public function setupConsoleCommand(): void
+	{
+		$builder = $this->getContainerBuilder();
+
+		$builder->addDefinition($this->prefix('console.consumerCommand'))
+			->setClass(ConsumerCommand::class);
 	}
 
 }
