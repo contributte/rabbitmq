@@ -20,6 +20,7 @@ use Gamee\RabbitMQ\DI\Helpers\QueuesHelper;
 use Gamee\RabbitMQ\Queue\QueueFactory;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ServiceDefinition;
+use Kdyby;
 
 final class RabbitMQExtension extends CompilerExtension
 {
@@ -124,7 +125,8 @@ final class RabbitMQExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 
 		$builder->addDefinition($this->prefix('console.consumerCommand'))
-			->setClass(ConsumerCommand::class);
+			->setClass(ConsumerCommand::class)
+			->addTag(Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
 	}
 
 }
