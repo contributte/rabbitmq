@@ -18,11 +18,13 @@ use Nette\DI\ServiceDefinition;
 final class ExchangesHelper extends AbstractHelper
 {
 
+	const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout'];
+
 	/**
 	 * @var array
 	 */
 	protected $defaults = [
-		'type' => 'direct',
+		'type' => 'direct', // direct/topic/headers/fanout
 		'passive' => FALSE,
 		'durable' => TRUE,
 		'autoDelete' => FALSE,
@@ -32,6 +34,9 @@ final class ExchangesHelper extends AbstractHelper
 	];
 
 
+	/**
+	 * @throws \InvalidArgumentException
+	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$exchangesConfig = [];
@@ -41,6 +46,15 @@ final class ExchangesHelper extends AbstractHelper
 				$this->getDefaults(),
 				$exchangeData
 			);
+
+			/**
+			 * Validate exchange type
+			 */
+			if (!in_array($exchangesConfig[$exchangeName]['type'], self::EXCHANGE_TYPES)) {
+				throw new \InvalidArgumentException(
+					"Unknown exchange type [{$exchangesConfig[$exchangeName]['type']}]"
+				);
+			}
 		}
 
 		$exchangesDataBag = $builder->addDefinition($this->extension->prefix('exchangesDataBag'))

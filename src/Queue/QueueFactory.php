@@ -17,41 +17,50 @@ final class QueueFactory
 {
 
 	/**
+	 * @var QueuesDataBag
+	 */
+	private $queuesDataBag;
+
+	/**
 	 * @var Queue[]
 	 */
 	private $queues;
 
 
-	/**
-	 * @throws QueueFactoryException
-	 */
-	public function getQueue(Connection $connection, array $queueData): Queue
+	public function __construct(QueuesDataBag $queuesDataBag)
 	{
-		if (!isset($this->queues[$queueData['name']])) {
-			$this->queues[$queueData['name']] = $this->create($connection, $queueData);
-		}
-
-		return $this->queues[$queueData['name']];
+		$this->queuesDataBag = $queuesDataBag;
 	}
 
 
 	/**
 	 * @throws QueueFactoryException
 	 */
-	public function create(Connection $connection, array $queueData): Queue
+	public function getQueue(string $name, Connection $connection): Queue
 	{
-		$queue = new Queue(
-			$queueData['name'],
-			$queueData['passive'],
-			$queueData['durable'],
-			$queueData['exclusive'],
-			$queueData['autoDelete'],
-			$queueData['noWait'],
-			$queueData['arguments']
-		);
+		if (!isset($this->queues[$name])) {
+			$this->queues[$name] = $this->create($name, $connection);
+		}
+
+		return $this->queues[$name];
+	}
+
+
+	/**
+	 * @throws QueueFactoryException
+	 */
+	private function create(string $name, Connection $connection): Queue
+	{
+		try {
+			$queueData = $this->queuesDataBag->getDataBykey($name);
+
+		} catch (\InvalidArgumentException $e) {
+
+			throw new QueueFactoryException("Queue [$name] does not exist");
+		}
 
 		$connection->getChannel()->queueDeclare(
-			$queueData['name'],
+			$name,
 			$queueData['passive'],
 			$queueData['durable'],
 			$queueData['exclusive'],
@@ -60,7 +69,15 @@ final class QueueFactory
 			$queueData['arguments']
 		);
 
-		return $queue;
+		return new Queue(
+			$name,
+			$queueData['passive'],
+			$queueData['durable'],
+			$queueData['exclusive'],
+			$queueData['autoDelete'],
+			$queueData['noWait'],
+			$queueData['arguments']
+		);
 	}
 
 }

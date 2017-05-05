@@ -19,28 +19,20 @@ use Nette\DI\ServiceDefinition;
 final class ProducersHelper extends AbstractHelper
 {
 
-	/**
-	 * @var array
-	 */
-	protected $defaults = [
-		'connection' => 'default',
-		'exchange' => [],
-		'queue' => [],
-		'contentType' => 'text/plain',
-		'deliveryMode' => Producer::DELIVERY_MODE_PERSISTENT
+	const DELIVERY_MODES = [
+		Producer::DELIVERY_MODE_PERSISTENT,
+		Producer::DELIVERY_MODE_PERSISTENT
 	];
 
 	/**
 	 * @var array
 	 */
-	private $queueDefaults = [
-		'name' => '',
-		'passive' => FALSE,
-		'durable' => TRUE,
-		'exclusive' => FALSE,
-		'autoDelete' => FALSE,
-		'nowait' => FALSE,
-		'arguments' => []
+	protected $defaults = [
+		'connection' => 'default',
+		'exchange' => NULL,
+		'queue' => NULL,
+		'contentType' => 'text/plain',
+		'deliveryMode' => Producer::DELIVERY_MODE_PERSISTENT
 	];
 
 
@@ -52,17 +44,28 @@ final class ProducersHelper extends AbstractHelper
 		$producersConfig = [];
 
 		foreach ($config as $producerName => $producerData) {
-			$producersConfig[$producerName] = $this->extension->validateConfig(
+			$producerConfig = $this->extension->validateConfig(
 				$this->getDefaults(),
 				$producerData
 			);
 
-			if (!empty($producersConfig[$producerName]['queue'])) {
-				$producersConfig[$producerName]['queue'] = $this->extension->validateConfig(
-					$this->queueDefaults,
-					$producersConfig[$producerName]['queue']
+			if (!in_array($producerConfig['deliveryMode'], self::DELIVERY_MODES)) {
+				throw new \InvalidArgumentException(
+					"Unknown exchange type [{$producerConfig['type']}]"
 				);
 			}
+
+			/**
+			 * 1, Producer has to be subscribed to either a queue or an exchange
+			 * 2, A producer can be subscribed to both a queue and an exchange
+			 */
+			if (empty($producerConfig['queue']) && empty($producerConfig['exchange'])) {
+				throw new \InvalidArgumentException(
+					"Producer has to be subscribed to either a queue or an exchange"
+				);
+			}
+
+			$producersConfig[$producerName] = $producerConfig;
 		}
 
 		$producersDataBag = $builder->addDefinition($this->extension->prefix('producersDataBag'))

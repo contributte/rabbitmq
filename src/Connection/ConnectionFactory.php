@@ -31,9 +31,8 @@ final class ConnectionFactory
 	private $connections = [];
 
 
-	public function __construct(
-		ConnectionsDataBag $connectionsDataBag
-	) {
+	public function __construct(ConnectionsDataBag $connectionsDataBag)
+	{
 		$this->connectionsDataBag = $connectionsDataBag;
 	}
 

@@ -10,7 +10,9 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Producer;
 
+use Gamee\RabbitMQ\Connection\Connection;
 use Gamee\RabbitMQ\Connection\ConnectionFactory;
+use Gamee\RabbitMQ\Exchange\ExchangeFactory;
 use Gamee\RabbitMQ\Producer\Exception\ProducerFactoryException;
 use Gamee\RabbitMQ\Queue\QueueFactory;
 
@@ -33,6 +35,11 @@ final class ProducerFactory
 	private $queueFactory;
 
 	/**
+	 * @var ExchangeFactory
+	 */
+	private $exchangeFactory;
+
+	/**
 	 * @var Producer[]
 	 */
 	private $producers;
@@ -41,11 +48,13 @@ final class ProducerFactory
 	public function __construct(
 		ProducersDataBag $producersDataBag,
 		ConnectionFactory $connectionFactory,
-		QueueFactory $queueFactory
+		QueueFactory $queueFactory,
+		ExchangeFactory $exchangeFactory
 	) {
 		$this->producersDataBag = $producersDataBag;
 		$this->connectionFactory = $connectionFactory;
 		$this->queueFactory = $queueFactory;
+		$this->exchangeFactory = $exchangeFactory;
 	}
 
 
@@ -65,7 +74,7 @@ final class ProducerFactory
 	/**
 	 * @throws ProducerFactoryException
 	 */
-	public function create(string $name): Producer
+	private function create(string $name): Producer
 	{
 		try {
 			$producerData = $this->producersDataBag->getDataBykey($name);
@@ -75,12 +84,24 @@ final class ProducerFactory
 			throw new ProducerFactoryException("Producer [$name] does not exist");
 		}
 
+		/**
+		 * @var Connection
+		 */
 		$connection = $this->connectionFactory->getConnection($producerData['connection']);
-		$queue = $this->queueFactory->getQueue($connection, $producerData['queue']);
+		$exchange = NULL;
+		$queue = NULL;
+
+		if ($producerData['exchange']) {
+			$exchange = $this->exchangeFactory->getExchange($producerData['exchange'], $connection);
+		}
+
+		if ($producerData['queue']) {
+			$queue = $this->queueFactory->getQueue($producerData['queue']);
+		}
 
 		return new Producer(
 			$connection,
-			$producerData['exchange'],
+			$exchange,
 			$queue,
 			$producerData['contentType'],
 			$producerData['deliveryMode']

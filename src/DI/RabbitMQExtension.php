@@ -27,7 +27,7 @@ final class RabbitMQExtension extends CompilerExtension
 	 * @var array
 	 */
 	private $defaults = [
-		'connnections' => [],
+		'connections' => [],
 		'queues' => [],
 		'exchanges' => [],
 		'producers' => [],
@@ -71,11 +71,11 @@ final class RabbitMQExtension extends CompilerExtension
 
 
 	/**
-	 * @return void
+	 * @throws \InvalidArgumentException
 	 */
 	public function beforeCompile(): void
 	{
-		$config = $this->getConfig();
+		$config = $this->validateConfig($this->defaults, $this->getConfig());
 
 		$builder = $this->getContainerBuilder();
 
@@ -119,11 +119,7 @@ final class RabbitMQExtension extends CompilerExtension
 		$builder->addDefinition($this->prefix('client'))
 			->setClass(Client::class)
 			->setArguments([
-				$connectionFactory,
-				$queueFactory,
-				$exchangeFactory,
-				$producerFactory,
-				$consumersFactory
+				$producerFactory
 			]);
 	}
 

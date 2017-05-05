@@ -10,10 +10,12 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\DI\Helpers;
 
+use Gamee\RabbitMQ\Consumer\ConsumerFactory;
+use Gamee\RabbitMQ\Consumer\ConsumersDataBag;
 use Nette\DI\ContainerBuilder;
 use Nette\DI\ServiceDefinition;
 
-final class ConsumersHelper
+final class ConsumersHelper extends AbstractHelper
 {
 
 	/**

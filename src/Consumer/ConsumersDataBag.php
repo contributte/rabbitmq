@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @package     Gamee
  */
 
-namespace Gamee\RabbitMQ\Queue;
+namespace Gamee\RabbitMQ\Consumer;
 
 use Gamee\RabbitMQ\AbstractDataBag;
 
-final class QueuesDataBag extends AbstractDataBag
+final class ConsumersDataBag extends AbstractDataBag
 {
 }

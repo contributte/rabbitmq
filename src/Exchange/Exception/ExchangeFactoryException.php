@@ -8,10 +8,8 @@ declare(strict_types=1);
  * @package     Gamee
  */
 
-namespace Gamee\RabbitMQ\Connection;
+namespace Gamee\RabbitMQ\Exchange\Exception;
 
-use Gamee\RabbitMQ\AbstractDataBag;
-
-final class ConnectionsDataBag extends AbstractDataBag
+class ExchangeFactoryException extends \InvalidArgumentException
 {
 }

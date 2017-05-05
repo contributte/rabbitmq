@@ -18,23 +18,17 @@ final class ConsumerFactory
 	/**
 	 * @var ConsumersDataBag
 	 */
-	private $ConsumersDataBag;
-
-	/**
-	 * @var ConsumerFactory
-	 */
-	private $ConsumerFactory;
+	private $consumersDataBag;
 
 	/**
 	 * @var Consumer[]
 	 */
-	private $Consumers = [];
+	private $consumers = [];
 
 
-	public function __construct(
-		ConsumersDataBag $ConsumersDataBag
-	) {
-		$this->ConsumersDataBag = $ConsumersDataBag;
+	public function __construct(ConsumersDataBag $consumersDataBag)
+	{
+		$this->consumersDataBag = $consumersDataBag;
 	}
 
 
@@ -43,11 +37,11 @@ final class ConsumerFactory
 	 */
 	public function getConsumer(string $name): Consumer
 	{
-		if (!isset($this->Consumers[$name])) {
-			$this->Consumers[$name] = $this->create($name);
+		if (!isset($this->consumers[$name])) {
+			$this->consumers[$name] = $this->create($name);
 		}
 
-		return $this->Consumers[$name];
+		return $this->consumers[$name];
 	}
 
 
@@ -57,20 +51,14 @@ final class ConsumerFactory
 	private function create(string $name): Consumer
 	{
 		try {
-			$ConsumerData = $this->ConsumersDataBag->getDataBykey($name);
+			$consumerData = $this->consumersDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
 
 			throw new ConsumerFactoryException("Consumer [$name] does not exist");
 		}
 
-		return new Consumer(
-			$ConsumerData['host'],
-			$ConsumerData['port'],
-			$ConsumerData['user'],
-			$ConsumerData['password'],
-			$ConsumerData['vhost']
-		);
+		throw new \RuntimeException('Consumers are not implemented yet');
 	}
 
 }
