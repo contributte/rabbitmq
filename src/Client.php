@@ -17,6 +17,10 @@ use Gamee\RabbitMQ\Producer\Exception\ProducerFactoryException;
 use Gamee\RabbitMQ\Producer\Producer;
 use Gamee\RabbitMQ\Producer\ProducerFactory;
 
+/**
+ * This package uses composer library bunny/bunny. For more information,
+ * @see https://github.com/jakubkulhan/bunny
+ */
 final class Client
 {
 
