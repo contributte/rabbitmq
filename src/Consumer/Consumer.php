@@ -18,10 +18,6 @@ use Gamee\RabbitMQ\Queue\Queue;
 final class Consumer
 {
 
-	const MESSAGE_ACK    = 1;
-	const MESSAGE_NACK   = 2;
-	const MESSAGE_REJECT = 3;
-
 	/**
 	 * @var string
 	 */
@@ -67,15 +63,15 @@ final class Consumer
 				$result = call_user_func($this->callback, $message);
 
 				switch ($result) {
-					case self::MESSAGE_ACK:
+					case IConsumer::MESSAGE_ACK:
 						$channel->ack($message); // Acknowledge message
 						break;
 
-					case self::MESSAGE_NACK:
+					case IConsumer::MESSAGE_NACK:
 						$channel->nack($message); // Message will be requeued
 						break;
 
-					case self::MESSAGE_REJECT:
+					case IConsumer::MESSAGE_REJECT:
 						$channel->reject($message); // Message will be discarded
 						break;
 					
