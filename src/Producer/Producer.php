@@ -54,17 +54,14 @@ final class Producer
 	}
 
 
-	/**
-	 * @todo Headers
-	 */
-	public function publish(string $message): void
+	public function publish(string $message, array $headers = []): void
 	{
 		if ($this->queue) {
-			$this->publishToQueue($message);
+			$this->publishToQueue($message, $headers);
 		}
 
 		if ($this->exchange) {
-			$this->publishToExchange($message);
+			$this->publishToExchange($message, $headers);
 		}
 	}
 
@@ -80,12 +77,12 @@ final class Producer
 	}
 
 
-	private function publishToExchange(string $message): void
+	private function publishToExchange(string $message, array $headers = []): void
 	{
 		foreach ($this->exchange->getQueueBindings() as $queueBinding) {
 			$queueBinding->getQueue()->getConnection()->getChannel()->publish(
 				$message,
-				[],
+				$headers,
 				$this->exchange->getName(),
 				$queueBinding->getRoutingKey()
 			);
