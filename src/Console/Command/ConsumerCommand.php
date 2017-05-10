@@ -60,7 +60,8 @@ final class ConsumerCommand extends Command
 
 		$this->validateInput($consumerName, $secondsToLive, $output); // May exit;
 
-
+		$consumer = $this->consumerFactory->getConsumer($consumerName);
+		$consumer->consumeForSpecifiedTime($secondsToLive);
 	}
 
 
