@@ -108,7 +108,7 @@ final class RabbitMQExtension extends CompilerExtension
 		 * Consumers
 		 * @var ServiceDefinition
 		 */
-		$consumersFactory = $this->consumersHelper->setup($builder, $config['consumers']);
+		$consumerFactory = $this->consumersHelper->setup($builder, $config['consumers']);
 
 		/**
 		 * Register Client class
