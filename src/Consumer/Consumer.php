@@ -87,4 +87,36 @@ final class Consumer
 		$bunnyClient->run($seconds); // Client runs for X seconds and then stops
 	}
 
+
+	public function consumeSpecifiedAmountOfMessages(int $amountOfMessages): void
+	{
+		$bunnyClient = $this->queue->getConnection()->getBunnyClient();
+		$channel = $bunnyClient->channel();
+
+		for ($i = 0; $i < $amountOfMessages; $i++) { 
+			$message = $channel->get($this->queue->getName());
+
+			$result = call_user_func($this->callback, $message);
+
+			switch ($result) {
+				case IConsumer::MESSAGE_ACK:
+					$channel->ack($message); // Acknowledge message
+					break;
+
+				case IConsumer::MESSAGE_NACK:
+					$channel->nack($message); // Message will be requeued
+					break;
+
+				case IConsumer::MESSAGE_REJECT:
+					$channel->reject($message); // Message will be discarded
+					break;
+				
+				default:
+					throw new \InvalidArgumentException(
+						"Unknown return value of consumer [{$this->name}] user callback"
+					);
+			}
+		}
+	}
+
 }

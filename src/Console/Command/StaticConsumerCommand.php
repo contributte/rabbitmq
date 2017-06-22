@@ -14,19 +14,19 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class ConsumerCommand extends AbstractConsumerCommand
+final class StaticConsumerCommand extends AbstractConsumerCommand
 {
 
-	const COMMAND_NAME = 'rabbitmq:consumer';
+	const COMMAND_NAME = 'rabbitmq:staticConsumer';
 
 
 	protected function configure(): void
 	{
 		$this->setName(self::COMMAND_NAME);
-		$this->setDescription('Run a RabbitMQ consumer');
+		$this->setDescription('Run a RabbitMQ consumer but consume just particular amount of messages');
 
 		$this->addArgument('consumerName', InputArgument::REQUIRED, 'Name of the consumer');
-		$this->addArgument('secondsToLive', InputArgument::REQUIRED, 'Max seconds for consumer to run');
+		$this->addArgument('amountOfMessages', InputArgument::REQUIRED, 'Amount of messages to consume');
 	}
 
 
@@ -36,24 +36,24 @@ final class ConsumerCommand extends AbstractConsumerCommand
 	protected function execute(InputInterface $input, OutputInterface $output): void
 	{
 		$consumerName = (string) $input->getArgument('consumerName');
-		$secondsToLive = (int) $input->getArgument('secondsToLive');
+		$amountOfMessages = (int) $input->getArgument('amountOfMessages');
 
 		$this->validateConsumerName($consumerName);
-		$this->validateSecondsToRun($secondsToLive);
+		$this->validateAmountOfMessages($amountOfMessages);
 
 		$consumer = $this->consumerFactory->getConsumer($consumerName);
-		$consumer->consumeForSpecifiedTime($secondsToLive);
+		$consumer->consumeSpecifiedAmountOfMessages($amountOfMessages);
 	}
 
 
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	private function validateSecondsToRun(int $secondsToLive): void
+	private function validateAmountOfMessages(int $amountOfMessages): void
 	{
-		if (!$secondsToLive) {
+		if (!$amountOfMessages) {
 			throw new \InvalidArgumentException(
-				'Parameter [secondsToLive] has to be greater then 0'
+				'Parameter [amountOfMessages] has to be greater then 0'
 			);
 		}
 	}

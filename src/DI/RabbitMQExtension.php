@@ -12,15 +12,16 @@ namespace Gamee\RabbitMQ\DI;
 
 use Gamee\RabbitMQ\Client;
 use Gamee\RabbitMQ\Console\Command\ConsumerCommand;
+use Gamee\RabbitMQ\Console\Command\StaticConsumerCommand;
 use Gamee\RabbitMQ\DI\Helpers\ConnectionsHelper;
 use Gamee\RabbitMQ\DI\Helpers\ConsumersHelper;
 use Gamee\RabbitMQ\DI\Helpers\ExchangesHelper;
 use Gamee\RabbitMQ\DI\Helpers\ProducersHelper;
 use Gamee\RabbitMQ\DI\Helpers\QueuesHelper;
 use Gamee\RabbitMQ\Queue\QueueFactory;
+use Kdyby;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ServiceDefinition;
-use Kdyby;
 
 final class RabbitMQExtension extends CompilerExtension
 {
@@ -126,6 +127,10 @@ final class RabbitMQExtension extends CompilerExtension
 
 		$builder->addDefinition($this->prefix('console.consumerCommand'))
 			->setClass(ConsumerCommand::class)
+			->addTag(Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
+
+		$builder->addDefinition($this->prefix('console.staticConsumerCommand'))
+			->setClass(StaticConsumerCommand::class)
 			->addTag(Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
 	}
 
