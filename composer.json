@@ -1,10 +1,17 @@
 {
-	"name": "gamee-backend/gamee-rabbitmq",
+	"name": "gamee/nette-rabbitmq",
 	"type": "library",
-	"homepage": "https://gitlab.cleevio.cz/gamee-backend/gamee-redis",
+	"license": "MIT",
+	"homepage": "https://github.com/gameeapp/nette-rabbitmq",
+	"keywords": ["rabbitmq","rabbit","bunnyphp","bunny","nette","extension","php"],
 	"support": {
-		"issues": "https://gitlab.cleevio.cz/gamee-backend/gamee-redis/issues"
+		"issues": "https://github.com/gameeapp/nette-rabbitmq/issues"
 	},
+	"authors": [
+		{
+			"name": "Pavel Janda"
+		}
+	],
 	"autoload": {
 		"psr-4": {
 			"Gamee\\RabbitMQ\\": "src/"
@@ -20,7 +27,6 @@
 		"kdyby/console": "~2.6.1"
 	},
 	"require-dev": {
-		"tracy/tracy": "^2.4",
-		"nette/tester": "^1.7"
+		"tracy/tracy": "^2.4"
 	}
 }
