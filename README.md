@@ -83,12 +83,12 @@ final class TestQueue
 	/**
 	 * @var Producer
 	 */
-	private $testReindexProducer;
+	private $testProducer;
 
 
-	public function __construct(Producer $usersReindexProducer)
+	public function __construct(Producer $testProducer)
 	{
-		$this->usersReindexProducer = $usersReindexProducer;
+		$this->testProducer = $testProducer;
 	}
 
 
@@ -97,7 +97,7 @@ final class TestQueue
 		$json = json_encode(['message' => $message]);
 		$headers = [];
 
-		$this->usersReindexProducer->publish($json, $headers);
+		$this->testProducer->publish($json, $headers);
 	}
 
 }
