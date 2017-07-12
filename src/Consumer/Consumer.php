@@ -72,7 +72,7 @@ final class Consumer
 						break;
 
 					case IConsumer::MESSAGE_REJECT:
-						$channel->reject($message); // Message will be discarded
+						$channel->reject($message, FALSE); // Message will be discarded
 						break;
 					
 					default:
@@ -108,7 +108,7 @@ final class Consumer
 					break;
 
 				case IConsumer::MESSAGE_REJECT:
-					$channel->reject($message); // Message will be discarded
+					$channel->reject($message, FALSE); // Message will be discarded
 					break;
 				
 				default:
