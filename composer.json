@@ -24,6 +24,6 @@
 	},
 	"require": {
 		"bunny/bunny": "^0.2.4",
-		"kdyby/console": "~2.6.0|~2.7.0"
+		"symfony/console": "~3.3"
 	}
 }
