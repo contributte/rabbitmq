@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Queue;
 
-use Gamee\RabbitMQ\Connection\Connection;
 use Gamee\RabbitMQ\Connection\ConnectionFactory;
 use Gamee\RabbitMQ\Connection\Exception\ConnectionFactoryException;
 use Gamee\RabbitMQ\Queue\Exception\QueueFactoryException;

@@ -134,7 +134,7 @@ final class ExchangeFactory
 			$exchangeData['noWait'],
 			$exchangeData['arguments'],
 			$queueBindings
-		);;
+		);
 	}
 
 }

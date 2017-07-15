@@ -39,7 +39,7 @@ final class Connection
 			'port' => $this->port,
 			'user' => $this->user,
 			'password' => $this->password,
-			'vhost' => $this->vhost
+			'vhost' => $this->vhost,
 		]);
 
 		$this->bunnyClient->connect();

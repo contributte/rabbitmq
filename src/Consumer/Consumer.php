@@ -72,9 +72,9 @@ final class Consumer
 						break;
 
 					case IConsumer::MESSAGE_REJECT:
-						$channel->reject($message, FALSE); // Message will be discarded
+						$channel->reject($message, false); // Message will be discarded
 						break;
-					
+
 					default:
 						throw new \InvalidArgumentException(
 							"Unknown return value of consumer [{$this->name}] user callback"
@@ -93,7 +93,7 @@ final class Consumer
 		$bunnyClient = $this->queue->getConnection()->getBunnyClient();
 		$channel = $bunnyClient->channel();
 
-		for ($i = 0; $i < $amountOfMessages; $i++) { 
+		for ($i = 0; $i < $amountOfMessages; $i++) {
 			$message = $channel->get($this->queue->getName());
 
 			$result = call_user_func($this->callback, $message);
@@ -108,9 +108,9 @@ final class Consumer
 					break;
 
 				case IConsumer::MESSAGE_REJECT:
-					$channel->reject($message, FALSE); // Message will be discarded
+					$channel->reject($message, false); // Message will be discarded
 					break;
-				
+
 				default:
 					throw new \InvalidArgumentException(
 						"Unknown return value of consumer [{$this->name}] user callback"

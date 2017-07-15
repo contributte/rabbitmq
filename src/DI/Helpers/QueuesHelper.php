@@ -23,12 +23,12 @@ final class QueuesHelper extends AbstractHelper
 	 */
 	protected $defaults = [
 		'connection' => 'default',
-		'passive' => FALSE,
-		'durable' => TRUE,
-		'exclusive' => FALSE,
-		'autoDelete' => FALSE,
-		'noWait' => FALSE,
-		'arguments' => []
+		'passive' => false,
+		'durable' => true,
+		'exclusive' => false,
+		'autoDelete' => false,
+		'noWait' => false,
+		'arguments' => [],
 	];
 
 

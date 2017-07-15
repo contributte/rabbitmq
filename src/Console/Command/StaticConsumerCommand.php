@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class StaticConsumerCommand extends AbstractConsumerCommand
 {
 
-	const COMMAND_NAME = 'rabbitmq:staticConsumer';
+	public const COMMAND_NAME = 'rabbitmq:staticConsumer';
 
 
 	protected function configure(): void

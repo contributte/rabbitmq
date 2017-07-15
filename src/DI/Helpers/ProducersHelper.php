@@ -10,28 +10,28 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\DI\Helpers;
 
-use Gamee\RabbitMQ\Producer\ProducersDataBag;
 use Gamee\RabbitMQ\Producer\Producer;
 use Gamee\RabbitMQ\Producer\ProducerFactory;
+use Gamee\RabbitMQ\Producer\ProducersDataBag;
 use Nette\DI\ContainerBuilder;
 use Nette\DI\ServiceDefinition;
 
 final class ProducersHelper extends AbstractHelper
 {
 
-	const DELIVERY_MODES = [
+	public const DELIVERY_MODES = [
 		Producer::DELIVERY_MODE_PERSISTENT,
-		Producer::DELIVERY_MODE_PERSISTENT
+		Producer::DELIVERY_MODE_PERSISTENT,
 	];
 
 	/**
 	 * @var array
 	 */
 	protected $defaults = [
-		'exchange' => NULL,
-		'queue' => NULL,
+		'exchange' => null,
+		'queue' => null,
 		'contentType' => 'text/plain',
-		'deliveryMode' => Producer::DELIVERY_MODE_PERSISTENT
+		'deliveryMode' => Producer::DELIVERY_MODE_PERSISTENT,
 	];
 
 
@@ -45,7 +45,7 @@ final class ProducersHelper extends AbstractHelper
 				$producerData
 			);
 
-			if (!in_array($producerConfig['deliveryMode'], self::DELIVERY_MODES)) {
+			if (!in_array($producerConfig['deliveryMode'], self::DELIVERY_MODES, true)) {
 				throw new \InvalidArgumentException(
 					"Unknown exchange type [{$producerConfig['type']}]"
 				);
@@ -57,7 +57,7 @@ final class ProducersHelper extends AbstractHelper
 			 */
 			if (empty($producerConfig['queue']) && empty($producerConfig['exchange'])) {
 				throw new \InvalidArgumentException(
-					"Producer has to be subscribed to either a queue or an exchange"
+					'Producer has to be subscribed to either a queue or an exchange'
 				);
 			}
 

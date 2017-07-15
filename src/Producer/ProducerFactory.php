@@ -75,8 +75,8 @@ final class ProducerFactory
 			throw new ProducerFactoryException("Producer [$name] does not exist");
 		}
 
-		$exchange = NULL;
-		$queue = NULL;
+		$exchange = null;
+		$queue = null;
 
 		if ($producerData['exchange']) {
 			$exchange = $this->exchangeFactory->getExchange($producerData['exchange']);

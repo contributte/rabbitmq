@@ -18,20 +18,20 @@ use Nette\DI\ServiceDefinition;
 final class ExchangesHelper extends AbstractHelper
 {
 
-	const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout'];
+	public const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout'];
 
 	/**
 	 * @var array
 	 */
 	protected $defaults = [
 		'type' => 'direct', // direct/topic/headers/fanout
-		'passive' => FALSE,
-		'durable' => TRUE,
-		'autoDelete' => FALSE,
-		'internal' => FALSE,
-		'noWait' => FALSE,
+		'passive' => false,
+		'durable' => true,
+		'autoDelete' => false,
+		'internal' => false,
+		'noWait' => false,
 		'arguments' => [],
-		'queueBindings' => [] // See self::$queueBindingDefaults
+		'queueBindings' => [], // See self::$queueBindingDefaults
 	];
 
 	/**
@@ -39,8 +39,8 @@ final class ExchangesHelper extends AbstractHelper
 	 */
 	private $queueBindingDefaults = [
 		'routingKey' => '',
-		'noWait' => FALSE,
-		'arguments' => []
+		'noWait' => false,
+		'arguments' => [],
 	];
 
 
@@ -60,7 +60,7 @@ final class ExchangesHelper extends AbstractHelper
 			/**
 			 * Validate exchange type
 			 */
-			if (!in_array($exchangeConfig['type'], self::EXCHANGE_TYPES)) {
+			if (!in_array($exchangeConfig['type'], self::EXCHANGE_TYPES, true)) {
 				throw new \InvalidArgumentException(
 					"Unknown exchange type [{$exchangeConfig['type']}]"
 				);

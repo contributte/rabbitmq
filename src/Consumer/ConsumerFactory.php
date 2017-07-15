@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Consumer;
 
-use Gamee\RabbitMQ\Queue\QueueFactory;
 use Gamee\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
+use Gamee\RabbitMQ\Queue\QueueFactory;
 
 final class ConsumerFactory
 {

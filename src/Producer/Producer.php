@@ -10,15 +10,14 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Producer;
 
-use Gamee\RabbitMQ\Connection\Connection;
 use Gamee\RabbitMQ\Exchange\Exchange;
 use Gamee\RabbitMQ\Queue\Queue;
 
 final class Producer
 {
 
-	const DELIVERY_MODE_NON_PERSISTENT = 1;
-	const DELIVERY_MODE_PERSISTENT = 2;
+	public const DELIVERY_MODE_NON_PERSISTENT = 1;
+	public const DELIVERY_MODE_PERSISTENT = 2;
 
 	/**
 	 * @var Exchange|NULL
@@ -42,8 +41,8 @@ final class Producer
 
 
 	public function __construct(
-		Exchange $exchange = NULL,
-		Queue $queue = NULL,
+		Exchange $exchange = null,
+		Queue $queue = null,
 		string $contentType,
 		int $deliveryMode
 	) {

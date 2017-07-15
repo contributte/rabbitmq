@@ -18,7 +18,6 @@ use Gamee\RabbitMQ\DI\Helpers\ConsumersHelper;
 use Gamee\RabbitMQ\DI\Helpers\ExchangesHelper;
 use Gamee\RabbitMQ\DI\Helpers\ProducersHelper;
 use Gamee\RabbitMQ\DI\Helpers\QueuesHelper;
-use Gamee\RabbitMQ\Queue\QueueFactory;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ServiceDefinition;
 
@@ -33,7 +32,7 @@ final class RabbitMQExtension extends CompilerExtension
 		'queues' => [],
 		'exchanges' => [],
 		'producers' => [],
-		'consumers' => []
+		'consumers' => [],
 	];
 
 	/**
