@@ -29,7 +29,7 @@ final class Consumer
 	private $queue;
 
 	/**
-	 * @var callble
+	 * @var callable
 	 */
 	private $callback;
 
@@ -60,26 +60,7 @@ final class Consumer
 
 		$bunnyClient->channel()->consume(
 			function (Message $message, Channel $channel, Client $client): void {
-				$result = call_user_func($this->callback, $message);
-
-				switch ($result) {
-					case IConsumer::MESSAGE_ACK:
-						$channel->ack($message); // Acknowledge message
-						break;
-
-					case IConsumer::MESSAGE_NACK:
-						$channel->nack($message); // Message will be requeued
-						break;
-
-					case IConsumer::MESSAGE_REJECT:
-						$channel->reject($message, false); // Message will be discarded
-						break;
-
-					default:
-						throw new \InvalidArgumentException(
-							"Unknown return value of consumer [{$this->name}] user callback"
-						);
-				}
+				$this->handleMessage($message, $channel, $client);
 			},
 			$this->queue->getName()
 		);
@@ -91,32 +72,44 @@ final class Consumer
 	public function consumeSpecifiedAmountOfMessages(int $amountOfMessages): void
 	{
 		$bunnyClient = $this->queue->getConnection()->getBunnyClient();
-		$channel = $bunnyClient->channel();
 
-		for ($i = 0; $i < $amountOfMessages; $i++) {
-			$message = $channel->get($this->queue->getName());
+		$consumedMessages = 0;
+		$bunnyClient->channel()->consume(
+			function (Message $message, Channel $channel, Client $client) use (&$consumedMessages, $amountOfMessages): void {
+				$this->handleMessage($message, $channel, $client);
 
-			$result = call_user_func($this->callback, $message);
+				if (++$consumedMessages >= $amountOfMessages) {
+					$client->stop();
+				}
+			},
+			$this->queue->getName()
+		);
 
-			switch ($result) {
-				case IConsumer::MESSAGE_ACK:
-					$channel->ack($message); // Acknowledge message
-					break;
-
-				case IConsumer::MESSAGE_NACK:
-					$channel->nack($message); // Message will be requeued
-					break;
-
-				case IConsumer::MESSAGE_REJECT:
-					$channel->reject($message, false); // Message will be discarded
-					break;
-
-				default:
-					throw new \InvalidArgumentException(
-						"Unknown return value of consumer [{$this->name}] user callback"
-					);
-			}
-		}
+		$bunnyClient->run();
 	}
 
+
+	private function handleMessage(Message $message, Channel $channel, Client $client): void
+	{
+		$result = call_user_func($this->callback, $message);
+
+		switch ($result) {
+			case IConsumer::MESSAGE_ACK:
+				$channel->ack($message); // Acknowledge message
+				break;
+
+			case IConsumer::MESSAGE_NACK:
+				$channel->nack($message); // Message will be requeued
+				break;
+
+			case IConsumer::MESSAGE_REJECT:
+				$channel->reject($message, false); // Message will be discarded
+				break;
+
+			default:
+				throw new \InvalidArgumentException(
+					"Unknown return value of consumer [{$this->name}] user callback"
+				);
+		}
+	}
 }
