@@ -52,6 +52,7 @@ rabbitmq:
 			exchange: testExchange
 			# queue: testQueue
 			contentType: application/json
+			deliveryMode: 2 # Producer::DELIVERY_MODE_PERSISTENT
 
 	consumers:
 		testConsumer:
