@@ -70,8 +70,8 @@ final class Producer
 	private function getBasicHeaders(): array
 	{
 		return [
-			'content_type' => $this->contentType,
-			'delivery_mode' => $this->deliveryMode
+			'content-type' => $this->contentType,
+			'delivery-mode' => $this->deliveryMode
 		];
 	}
 
