@@ -41,19 +41,14 @@ final class Connection
 			'password' => $this->password,
 			'vhost' => $this->vhost,
 		]);
-
-		$this->bunnyClient->connect();
-	}
-
-
-	public function getBunnyClient(): Bunny\Client
-	{
-		return $this->bunnyClient;
 	}
 
 
 	public function getChannel(): Bunny\Channel
 	{
+		if (!$this->bunnyClient->isConnected()) {
+			$this->bunnyClient->connect();
+		}
 		return $this->bunnyClient->channel();
 	}
 

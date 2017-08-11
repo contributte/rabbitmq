@@ -56,9 +56,10 @@ final class Consumer
 
 	public function consumeForSpecifiedTime(int $seconds): void
 	{
-		$bunnyClient = $this->queue->getConnection()->getBunnyClient();
+		$channel = $this->queue->getConnection()->getChannel();
+		$bunnyClient = $channel->getClient();
 
-		$bunnyClient->channel()->consume(
+		$channel->consume(
 			function (Message $message, Channel $channel, Client $client): void {
 				$result = call_user_func($this->callback, $message);
 
@@ -90,8 +91,7 @@ final class Consumer
 
 	public function consumeSpecifiedAmountOfMessages(int $amountOfMessages): void
 	{
-		$bunnyClient = $this->queue->getConnection()->getBunnyClient();
-		$channel = $bunnyClient->channel();
+		$channel = $this->queue->getConnection()->getChannel();
 
 		for ($i = 0; $i < $amountOfMessages; $i++) {
 			$message = $channel->get($this->queue->getName());
