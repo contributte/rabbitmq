@@ -74,7 +74,7 @@ final class RabbitMQExtension extends CompilerExtension
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	public function beforeCompile(): void
+	public function loadConfiguration(): void
 	{
 		$config = $this->validateConfig($this->defaults, $this->getConfig());
 		$builder = $this->getContainerBuilder();
