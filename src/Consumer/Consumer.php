@@ -29,9 +29,14 @@ final class Consumer
 	private $queue;
 
 	/**
-	 * @var callble
+	 * @var callable
 	 */
 	private $callback;
+
+	/**
+	 * @var int
+	 */
+	private $messages = 0;
 
 
 	public function __construct(string $name, Queue $queue, callable $callback)
@@ -53,13 +58,12 @@ final class Consumer
 		return $this->callback;
 	}
 
-
-	public function consumeForSpecifiedTime(int $seconds): void
+	public function consume(?int $maxSeconds = null, ?int $maxMessages = null): void
 	{
 		$bunnyClient = $this->queue->getConnection()->getBunnyClient();
 
 		$bunnyClient->channel()->consume(
-			function (Message $message, Channel $channel, Client $client): void {
+			function (Message $message, Channel $channel, Client $client) use ($maxMessages): void {
 				$result = call_user_func($this->callback, $message);
 
 				switch ($result) {
@@ -80,43 +84,14 @@ final class Consumer
 							"Unknown return value of consumer [{$this->name}] user callback"
 						);
 				}
+
+				if ($maxMessages !== null && ++$this->messages >= $maxMessages) {
+					$client->stop();
+				}
 			},
 			$this->queue->getName()
 		);
 
-		$bunnyClient->run($seconds); // Client runs for X seconds and then stops
+		$bunnyClient->run($maxSeconds);
 	}
-
-
-	public function consumeSpecifiedAmountOfMessages(int $amountOfMessages): void
-	{
-		$bunnyClient = $this->queue->getConnection()->getBunnyClient();
-		$channel = $bunnyClient->channel();
-
-		for ($i = 0; $i < $amountOfMessages; $i++) {
-			$message = $channel->get($this->queue->getName());
-
-			$result = call_user_func($this->callback, $message);
-
-			switch ($result) {
-				case IConsumer::MESSAGE_ACK:
-					$channel->ack($message); // Acknowledge message
-					break;
-
-				case IConsumer::MESSAGE_NACK:
-					$channel->nack($message); // Message will be requeued
-					break;
-
-				case IConsumer::MESSAGE_REJECT:
-					$channel->reject($message, false); // Message will be discarded
-					break;
-
-				default:
-					throw new \InvalidArgumentException(
-						"Unknown return value of consumer [{$this->name}] user callback"
-					);
-			}
-		}
-	}
-
 }

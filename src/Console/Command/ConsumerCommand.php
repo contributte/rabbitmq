@@ -42,7 +42,7 @@ final class ConsumerCommand extends AbstractConsumerCommand
 		$this->validateSecondsToRun($secondsToLive);
 
 		$consumer = $this->consumerFactory->getConsumer($consumerName);
-		$consumer->consumeForSpecifiedTime($secondsToLive);
+		$consumer->consume($secondsToLive);
 	}
 
 
