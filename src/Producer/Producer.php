@@ -55,6 +55,8 @@ final class Producer
 
 	public function publish(string $message, array $headers = []): void
 	{
+		$headers = array_merge($this->getBasicHeaders(), $headers);
+
 		if ($this->queue) {
 			$this->publishToQueue($message, $headers);
 		}
@@ -62,6 +64,15 @@ final class Producer
 		if ($this->exchange) {
 			$this->publishToExchange($message, $headers);
 		}
+	}
+
+
+	private function getBasicHeaders(): array
+	{
+		return [
+			'content-type' => $this->contentType,
+			'delivery-mode' => $this->deliveryMode
+		];
 	}
 
 
