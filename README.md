@@ -62,6 +62,8 @@ rabbitmq:
 
 ### Publishing messages
 
+Note: Queue will be created automatically after publishing first message. 
+
 services.neon:
 
 ```
