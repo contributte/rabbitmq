@@ -54,11 +54,11 @@ final class ConsumersHelper extends AbstractHelper
 		}
 
 		$consumersDataBag = $builder->addDefinition($this->extension->prefix('consumersDataBag'))
-			->setClass(ConsumersDataBag::class)
+			->setType(ConsumersDataBag::class)
 			->setArguments([$consumersConfig]);
 
 		return $builder->addDefinition($this->extension->prefix('consumerFactory'))
-			->setClass(ConsumerFactory::class)
+			->setType(ConsumerFactory::class)
 			->setArguments([$consumersDataBag]);
 	}
 

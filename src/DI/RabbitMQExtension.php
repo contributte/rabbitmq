@@ -113,7 +113,7 @@ final class RabbitMQExtension extends CompilerExtension
 		 * Register Client class
 		 */
 		$builder->addDefinition($this->prefix('client'))
-			->setClass(Client::class);
+			->setType(Client::class);
 
 		$this->setupConsoleCommand();
 	}
@@ -124,10 +124,10 @@ final class RabbitMQExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 
 		$consumerCommand = $builder->addDefinition($this->prefix('console.consumerCommand'))
-			->setClass(ConsumerCommand::class);
+			->setType(ConsumerCommand::class);
 
 		$staticConsumerCommand = $builder->addDefinition($this->prefix('console.staticConsumerCommand'))
-			->setClass(StaticConsumerCommand::class);
+			->setType(StaticConsumerCommand::class);
 
 		if (class_exists('Kdyby\Console\DI\ConsoleExtension')) {
 			$consumerCommand->addTag(\Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);

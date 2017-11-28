@@ -42,11 +42,11 @@ final class ConnectionsHelper extends AbstractHelper
 		}
 
 		$connectionsDataBag = $builder->addDefinition($this->extension->prefix('connectionsDataBag'))
-			->setClass(ConnectionsDataBag::class)
+			->setType(ConnectionsDataBag::class)
 			->setArguments([$connectionsConfig]);
 
 		return $builder->addDefinition($this->extension->prefix('connectionFactory'))
-			->setClass(ConnectionFactory::class)
+			->setType(ConnectionFactory::class)
 			->setArguments([$connectionsDataBag]);
 	}
 
