@@ -65,11 +65,11 @@ final class ProducersHelper extends AbstractHelper
 		}
 
 		$producersDataBag = $builder->addDefinition($this->extension->prefix('producersDataBag'))
-			->setType(ProducersDataBag::class)
+			->setFactory(ProducersDataBag::class)
 			->setArguments([$producersConfig]);
 
 		return $builder->addDefinition($this->extension->prefix('producerFactory'))
-			->setType(ProducerFactory::class)
+			->setFactory(ProducerFactory::class)
 			->setArguments([$producersDataBag]);
 	}
 

@@ -81,11 +81,11 @@ final class ExchangesHelper extends AbstractHelper
 		}
 
 		$exchangesDataBag = $builder->addDefinition($this->extension->prefix('exchangesDataBag'))
-			->setType(ExchangesDataBag::class)
+			->setFactory(ExchangesDataBag::class)
 			->setArguments([$exchangesConfig]);
 
 		return $builder->addDefinition($this->extension->prefix('exchangeFactory'))
-			->setType(ExchangeFactory::class)
+			->setFactory(ExchangeFactory::class)
 			->setArguments([$exchangesDataBag]);
 	}
 
