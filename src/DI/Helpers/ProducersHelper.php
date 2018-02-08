@@ -20,7 +20,7 @@ final class ProducersHelper extends AbstractHelper
 {
 
 	public const DELIVERY_MODES = [
-		Producer::DELIVERY_MODE_PERSISTENT,
+		Producer::DELIVERY_MODE_NON_PERSISTENT,
 		Producer::DELIVERY_MODE_PERSISTENT,
 	];
 
@@ -44,22 +44,6 @@ final class ProducersHelper extends AbstractHelper
 				$this->getDefaults(),
 				$producerData
 			);
-
-			if (!in_array($producerConfig['deliveryMode'], self::DELIVERY_MODES, true)) {
-				throw new \InvalidArgumentException(
-					"Unknown exchange type [{$producerConfig['type']}]"
-				);
-			}
-
-			/**
-			 * 1, Producer has to be subscribed to either a queue or an exchange
-			 * 2, A producer can be subscribed to both a queue and an exchange
-			 */
-			if (empty($producerConfig['queue']) && empty($producerConfig['exchange'])) {
-				throw new \InvalidArgumentException(
-					'Producer has to be subscribed to either a queue or an exchange'
-				);
-			}
 
 			$producersConfig[$producerName] = $producerConfig;
 		}

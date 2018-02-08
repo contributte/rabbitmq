@@ -16,7 +16,7 @@ abstract class AbstractDataBag
 	/**
 	 * @var array
 	 */
-	private $data = [];
+	protected $data = [];
 
 
 	public function __construct(array $data)
