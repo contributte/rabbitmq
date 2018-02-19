@@ -14,4 +14,17 @@ use Gamee\RabbitMQ\AbstractDataBag;
 
 final class QueuesDataBag extends AbstractDataBag
 {
+
+	public function __construct(array $data)
+	{
+		foreach ($data as $producerName => $producer) {
+			$this->addQueueByData($producerName, $producer);
+		}
+	}
+
+
+	public function addQueueByData(string $queueName, array $data): void
+	{
+		$this->data[$queueName] = $data;
+	}
 }
