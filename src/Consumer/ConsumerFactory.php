@@ -73,7 +73,23 @@ final class ConsumerFactory
 			throw new ConsumerFactoryException("Consumer [$name] has invalid callback");
 		}
 
-		return new Consumer($name, $queue, $consumerData['callback']);
-	}
+		$prefetchSize = null;
+		$prefetchCount = null;
 
+		if ($consumerData['qos']['prefetchSize'] !== null) {
+			$prefetchSize = $consumerData['qos']['prefetchSize'];
+		}
+
+		if ($consumerData['qos']['prefetchCount'] !== null) {
+			$prefetchCount = $consumerData['qos']['prefetchCount'];
+		}
+
+		return new Consumer(
+			$name,
+			$queue,
+			$consumerData['callback'],
+			$prefetchSize,
+			$prefetchCount
+		);
+	}
 }

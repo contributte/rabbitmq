@@ -58,6 +58,9 @@ rabbitmq:
 		testConsumer:
 			queue: testQueue
 			callback: [@TestConsumer, consume]
+			qos:
+				prefetchSize: 0
+				prefetchCount: 5
 ```
 
 ### Publishing messages

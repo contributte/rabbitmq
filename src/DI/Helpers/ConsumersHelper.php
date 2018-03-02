@@ -25,12 +25,10 @@ final class ConsumersHelper extends AbstractHelper
 		'queue' => null,
 		'callback' => null,
 		'idleTimeout' => 30,
-
-	/**
-	 * @todo
-	 * 
-	 * 	qos: {prefetchSize: 0, prefetchCount: 5} ?
-	 */
+		'qos' => [
+			'prefetchSize' => null, // 0
+			'prefetchCount' =>  null, // 50
+		],
 	];
 
 
