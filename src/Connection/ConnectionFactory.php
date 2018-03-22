@@ -68,7 +68,9 @@ final class ConnectionFactory
 			(int) $connectionData['port'],
 			$connectionData['user'],
 			$connectionData['password'],
-			$connectionData['vhost']
+			$connectionData['vhost'],
+			$connectionData['heartbeat'],
+			$connectionData['timeout']
 		);
 	}
 

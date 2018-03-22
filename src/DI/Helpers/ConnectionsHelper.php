@@ -27,6 +27,8 @@ final class ConnectionsHelper extends AbstractHelper
 		'user' => 'guest',
 		'password' => 'guest',
 		'vhost' => '/',
+		'timeout' => 1,
+		'heartbeat' => 60.0,
 	];
 
 

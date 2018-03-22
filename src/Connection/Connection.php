@@ -26,20 +26,18 @@ final class Connection
 		int $port,
 		string $user,
 		string $password,
-		string $vhost
+		string $vhost,
+		float $heartbeat,
+		float $timeout
 	) {
-		$this->host = $host;
-		$this->port = $port;
-		$this->user = $user;
-		$this->password = $password;
-		$this->vhost = $vhost;
-
 		$this->bunnyClient = new Bunny\Client([
-			'host' => $this->host,
-			'port' => $this->port,
-			'user' => $this->user,
-			'password' => $this->password,
-			'vhost' => $this->vhost,
+			'host' => $host,
+			'port' => $port,
+			'user' => $user,
+			'password' => $password,
+			'vhost' => $vhost,
+			'heartbeat' => $heartbeat,
+			'timeout' => $timeout,
 		]);
 
 		$this->bunnyClient->connect();
