@@ -69,8 +69,8 @@ final class ConnectionFactory
 			$connectionData['user'],
 			$connectionData['password'],
 			$connectionData['vhost'],
-			$connectionData['heartbeat'],
-			$connectionData['timeout']
+			(float) $connectionData['heartbeat'],
+			(float) $connectionData['timeout']
 		);
 	}
 
