@@ -10,15 +10,23 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Connection;
 
-use Bunny;
+use Bunny\Channel;
+use Bunny\Client;
+use Bunny\Exception\ClientException;
+use Gamee\RabbitMQ\Connection\Exception\ConnectionException;
 
 final class Connection
 {
 
 	/**
-	 * @var Bunny\Client
+	 * @var Client
 	 */
 	private $bunnyClient;
+
+	/**
+	 * @var array
+	 */
+	private $connectionParams;
 
 
 	public function __construct(
@@ -30,7 +38,7 @@ final class Connection
 		float $heartbeat,
 		float $timeout
 	) {
-		$this->bunnyClient = new Bunny\Client([
+		$this->connectionParams = [
 			'host' => $host,
 			'port' => $port,
 			'user' => $user,
@@ -38,21 +46,39 @@ final class Connection
 			'vhost' => $vhost,
 			'heartbeat' => $heartbeat,
 			'timeout' => $timeout,
-		]);
+		];
+
+		$this->bunnyClient = $this->createNewConnection();
 
 		$this->bunnyClient->connect();
 	}
 
 
-	public function getBunnyClient(): Bunny\Client
+	public function getBunnyClient(): Client
 	{
 		return $this->bunnyClient;
 	}
 
 
-	public function getChannel(): Bunny\Channel
+	/**
+	 * @throws ConnectionException
+	 */
+	public function getChannel(): Channel
 	{
-		return $this->bunnyClient->channel();
+		try {
+			return $this->bunnyClient->channel();
+		} catch (ClientException $e) {
+			if ($e->getMessage() !== 'Broken pipe or closed connection.') {
+				throw new ConnectionException($e->getMessage(), $e->getCode(), $e);
+			}
+
+			/**
+			 * Try to reconnect
+			 */
+			$this->bunnyClient = $this->createNewConnection();
+
+			return $this->bunnyClient->channel();
+		}
 	}
 
 
@@ -61,4 +87,9 @@ final class Connection
 		$this->bunnyClient->disconnect();
 	}
 
+
+	private function createNewConnection(): Client
+	{
+		return new Client($this->connectionParams);
+	}
 }
