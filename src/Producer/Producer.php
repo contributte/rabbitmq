@@ -53,7 +53,7 @@ final class Producer
 	}
 
 
-	public function publish(string $message, array $headers = []): void
+	public function publish(string $message, array $headers = [], ?string $routingKey = null): void
 	{
 		$headers = array_merge($this->getBasicHeaders(), $headers);
 
@@ -62,7 +62,7 @@ final class Producer
 		}
 
 		if ($this->exchange) {
-			$this->publishToExchange($message, $headers);
+			$this->publishToExchange($message, $headers, $routingKey ?? '');
 		}
 	}
 
@@ -87,16 +87,14 @@ final class Producer
 	}
 
 
-	private function publishToExchange(string $message, array $headers = []): void
+	private function publishToExchange(string $message, array $headers = [], string $routingKey): void
 	{
-		foreach ($this->exchange->getQueueBindings() as $queueBinding) {
-			$queueBinding->getQueue()->getConnection()->getChannel()->publish(
-				$message,
-				$headers,
-				$this->exchange->getName(),
-				$queueBinding->getRoutingKey()
-			);
-		}
+		$this->exchange->getConnection()->getChannel()->publish(
+			$message,
+			$headers,
+			$this->exchange->getName(),
+			$routingKey
+		);
 	}
 
 }
