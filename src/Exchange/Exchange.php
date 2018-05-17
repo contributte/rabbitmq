@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Exchange;
 
-use Gamee\RabbitMQ\Exchange\QueueBinding;
+use Gamee\RabbitMQ\Connection\Connection;
 
 final class Exchange
 {
@@ -60,6 +60,11 @@ final class Exchange
 	 */
 	private $queueBindings;
 
+	/**
+	 * @var Connection
+	 */
+	private $connection;
+
 
 	public function __construct(
 		string $name,
@@ -70,7 +75,8 @@ final class Exchange
 		bool $internal,
 		bool $noWait,
 		array $arguments,
-		array $queueBindings
+		array $queueBindings,
+		Connection $connection
 	) {
 		$this->name = $name;
 		$this->type = $type;
@@ -81,6 +87,7 @@ final class Exchange
 		$this->noWait = $noWait;
 		$this->arguments = $arguments;
 		$this->queueBindings = $queueBindings;
+		$this->connection = $connection;
 	}
 
 
@@ -95,4 +102,9 @@ final class Exchange
 		return $this->queueBindings;
 	}
 
+
+	public function getConnection(): Connection
+	{
+		return $this->connection;
+	}
 }
