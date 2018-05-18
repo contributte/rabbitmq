@@ -28,6 +28,11 @@ final class Connection
 	 */
 	private $connectionParams;
 
+	/**
+	 * @var Channel|null
+	 */
+	private $channel;
+
 
 	public function __construct(
 		string $host,
@@ -65,20 +70,24 @@ final class Connection
 	 */
 	public function getChannel(): Channel
 	{
-		try {
-			return $this->bunnyClient->channel();
-		} catch (ClientException $e) {
-			if ($e->getMessage() !== 'Broken pipe or closed connection.') {
-				throw new ConnectionException($e->getMessage(), $e->getCode(), $e);
+		if (!$this->channel instanceof Channel) {
+			try {
+				$this->channel = $this->bunnyClient->channel();
+			} catch (ClientException $e) {
+				if ($e->getMessage() !== 'Broken pipe or closed connection.') {
+					throw new ConnectionException($e->getMessage(), $e->getCode(), $e);
+				}
+
+				/**
+				 * Try to reconnect
+				 */
+				$this->bunnyClient = $this->createNewConnection();
+
+				$this->channel = $this->bunnyClient->channel();
 			}
-
-			/**
-			 * Try to reconnect
-			 */
-			$this->bunnyClient = $this->createNewConnection();
-
-			return $this->bunnyClient->channel();
 		}
+
+		return $this->channel;
 	}
 
 
