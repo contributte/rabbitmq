@@ -22,13 +22,6 @@ final class ProducerTest extends TestCase
 	{
 		Assert::true(true);
 	}
-
-
-	public function tearDown()
-	{
-		$this->bunny->disconnect();
-	}
-
 }
 
 $testCase = new ProducerTest;
