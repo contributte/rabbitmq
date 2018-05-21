@@ -18,7 +18,7 @@ require __DIR__ . '/../bootstrap.php';
 final class ProducerTest extends TestCase
 {
 
-	public function testQueue()
+	public function testQueue(): void
 	{
 		$testQueueName = 'testQueue';
 
@@ -46,7 +46,7 @@ final class ProducerTest extends TestCase
 	}
 
 
-	public function testDirectExchange()
+	public function testDirectExchange(): void
 	{
 		$exchangeName = 'testDirectExchange';
 		$producer = $this->createExchangeProducer($exchangeName);
@@ -179,7 +179,7 @@ final class ProducerTest extends TestCase
 	}
 
 
-	public function testFanoutExchange()
+	public function testFanoutExchange(): void
 	{
 		$exchangeName = 'testFanoutExchange';
 		$producer = $this->createExchangeProducer($exchangeName);
