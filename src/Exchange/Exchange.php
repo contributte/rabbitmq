@@ -11,8 +11,9 @@ declare(strict_types=1);
 namespace Gamee\RabbitMQ\Exchange;
 
 use Gamee\RabbitMQ\Connection\Connection;
+use Gamee\RabbitMQ\Connection\IConnection;
 
-class Exchange
+final class Exchange implements IExchange
 {
 
 	/**
@@ -61,7 +62,7 @@ class Exchange
 	private $queueBindings;
 
 	/**
-	 * @var Connection
+	 * @var IConnection
 	 */
 	private $connection;
 
@@ -76,7 +77,7 @@ class Exchange
 		bool $noWait,
 		array $arguments,
 		array $queueBindings,
-		Connection $connection
+		IConnection $connection
 	) {
 		$this->name = $name;
 		$this->type = $type;
@@ -103,7 +104,7 @@ class Exchange
 	}
 
 
-	public function getConnection(): Connection
+	public function getConnection(): IConnection
 	{
 		return $this->connection;
 	}

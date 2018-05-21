@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Tests\Cases;
 
-use Gamee\RabbitMQ\Connection\Connection;
-use Gamee\RabbitMQ\Exchange\Exchange;
+use Gamee\RabbitMQ\Connection\IConnection;
+use Gamee\RabbitMQ\Exchange\IExchange;
 use Gamee\RabbitMQ\Producer\Producer;
-use Gamee\RabbitMQ\Queue\Queue;
+use Gamee\RabbitMQ\Queue\IQueue;
 use Gamee\RabbitMQ\Tests\Mocks\ChannelMock;
 use Gamee\RabbitMQ\Tests\Mocks\Helper\RabbitMQMessageHelper;
 use Tester\Assert;
@@ -294,11 +294,11 @@ final class ProducerTest extends TestCase
 	{
 		$channelMock = new ChannelMock();
 
-		$connectionMock = \Mockery::mock(Connection::class)
+		$connectionMock = \Mockery::mock(IConnection::class)
 			->shouldReceive('getChannel')->andReturn($channelMock)->getMock()
 		;
 
-		$queueMock = \Mockery::mock(Queue::class)
+		$queueMock = \Mockery::mock(IQueue::class)
 			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
 			->shouldReceive('getName')->andReturn($testQueueName)->getMock()
 		;
@@ -318,11 +318,11 @@ final class ProducerTest extends TestCase
 	{
 		$channelMock = new ChannelMock();
 
-		$connectionMock = \Mockery::mock(Connection::class)
+		$connectionMock = \Mockery::mock(IConnection::class)
 			->shouldReceive('getChannel')->andReturn($channelMock)->getMock()
 		;
 
-		$exchangeMock = \Mockery::mock(Exchange::class)
+		$exchangeMock = \Mockery::mock(IExchange::class)
 			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
 			->shouldReceive('getName')->andReturn($testExchange)->getMock()
 		;

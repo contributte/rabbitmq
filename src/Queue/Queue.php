@@ -11,8 +11,9 @@ declare(strict_types=1);
 namespace Gamee\RabbitMQ\Queue;
 
 use Gamee\RabbitMQ\Connection\Connection;
+use Gamee\RabbitMQ\Connection\IConnection;
 
-class Queue
+final class Queue implements IQueue
 {
 
 	/**
@@ -21,7 +22,7 @@ class Queue
 	private $name;
 
 	/**
-	 * @var Connection
+	 * @var IConnection
 	 */
 	private $connection;
 
@@ -58,7 +59,7 @@ class Queue
 
 	public function __construct(
 		string $name,
-		Connection $connection,
+		IConnection $connection,
 		bool $passive,
 		bool $durable,
 		bool $exclusive,
@@ -83,7 +84,7 @@ class Queue
 	}
 
 
-	public function getConnection(): Connection
+	public function getConnection(): IConnection
 	{
 		return $this->connection;
 	}

@@ -34,7 +34,7 @@ final class ExchangeFactory
 	private $connectionFactory;
 
 	/**
-	 * @var Exchange[]
+	 * @var IExchange[]
 	 */
 	private $exchanges;
 
@@ -53,7 +53,7 @@ final class ExchangeFactory
 	/**
 	 * @throws ExchangeFactoryException
 	 */
-	public function getExchange(string $name): Exchange
+	public function getExchange(string $name): IExchange
 	{
 		if (!isset($this->exchanges[$name])) {
 			$this->exchanges[$name] = $this->create($name);
@@ -67,7 +67,7 @@ final class ExchangeFactory
 	 * @throws ExchangeFactoryException
 	 * @throws QueueFactoryException
 	 */
-	private function create(string $name): Exchange
+	private function create(string $name): IExchange
 	{
 		$queueBindings = [];
 
