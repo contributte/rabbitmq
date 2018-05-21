@@ -26,5 +26,8 @@
 		"php": ">=7.1",
 		"bunny/bunny": "^0.2.4 || ^0.3 || ^0.4",
 		"symfony/console": "~3.3 || ^4.0"
+	},
+	"require-dev": {
+		"nette/tester": "^2.0"
 	}
 }
