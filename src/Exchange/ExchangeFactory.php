@@ -78,24 +78,22 @@ final class ExchangeFactory
 			throw new ExchangeFactoryException("Exchange [$name] does not exist");
 		}
 
+		$connection = $this->connectionFactory->getConnection($exchangeData['connection']);
+
+		$connection->getChannel()->exchangeDeclare(
+			$name,
+			$exchangeData['type'],
+			$exchangeData['passive'],
+			$exchangeData['durable'],
+			$exchangeData['autoDelete'],
+			$exchangeData['internal'],
+			$exchangeData['noWait'],
+			$exchangeData['arguments']
+		);
+
 		if (!empty($exchangeData['queueBindings'])) {
 			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
 				$queue = $this->queueFactory->getQueue($queueName); // (QueueFactoryException)
-				$connection = $queue->getConnection();
-
-				/**
-				 * Declare the actual queue
-				 */
-				$connection->getChannel()->exchangeDeclare(
-					$name,
-					$exchangeData['type'],
-					$exchangeData['passive'],
-					$exchangeData['durable'],
-					$exchangeData['autoDelete'],
-					$exchangeData['internal'],
-					$exchangeData['noWait'],
-					$exchangeData['arguments']
-				);
 
 				/**
 				 * Create binding to the queue
@@ -115,13 +113,6 @@ final class ExchangeFactory
 					$queueBinding['arguments']
 				);
 			}
-		} else {
-			/**
-			 * @todo Throw an exception or not?
-			 */
-			throw new ExchangeFactoryException(
-				"Exchange [$name] could not be created, it is not bound to any queue"
-			);
 		}
 
 		return new Exchange(
@@ -133,7 +124,8 @@ final class ExchangeFactory
 			$exchangeData['internal'],
 			$exchangeData['noWait'],
 			$exchangeData['arguments'],
-			$queueBindings
+			$queueBindings,
+			$connection
 		);
 	}
 

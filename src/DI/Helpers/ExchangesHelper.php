@@ -24,6 +24,7 @@ final class ExchangesHelper extends AbstractHelper
 	 * @var array
 	 */
 	protected $defaults = [
+		'connection' => 'default',
 		'type' => 'direct', // direct/topic/headers/fanout
 		'passive' => false,
 		'durable' => true,
