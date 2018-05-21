@@ -28,7 +28,7 @@ final class QueueFactory
 	private $connectionFactory;
 
 	/**
-	 * @var Queue[]
+	 * @var IQueue[]
 	 */
 	private $queues;
 
@@ -43,7 +43,7 @@ final class QueueFactory
 	/**
 	 * @throws QueueFactoryException
 	 */
-	public function getQueue(string $name): Queue
+	public function getQueue(string $name): IQueue
 	{
 		if (!isset($this->queues[$name])) {
 			$this->queues[$name] = $this->create($name);
@@ -57,7 +57,7 @@ final class QueueFactory
 	 * @throws QueueFactoryException
 	 * @throws ConnectionFactoryException
 	 */
-	private function create(string $name): Queue
+	private function create(string $name): IQueue
 	{
 		try {
 			$queueData = $this->queuesDataBag->getDataBykey($name);

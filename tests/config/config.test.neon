@@ -1,0 +1,25 @@
+rabbitmq:
+	exchanges:
+		testDirectExchange:
+			type: direct
+			queueBindings:
+				testQueue:
+					routingKey: test-queue-direct-exchange
+				testQueueRK1:
+					routingKey: test-queue-direct-routing-key1
+				testQueueRK2:
+					routingKey: test-queue-direct-routing-key1
+
+		testFanoutExchange:
+			type: fanout
+			queueBindings:
+				testQueue:
+					routingKey: test-queue-direct-exchange
+				testQueueRK1:
+					routingKey: test-queue-direct-routing-key1
+				testQueueRK2:
+					routingKey: test-queue-direct-routing-key1
+
+	queues:
+		testQueue:
+			connection: testConnection

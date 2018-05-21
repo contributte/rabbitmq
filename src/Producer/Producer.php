@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Gamee\RabbitMQ\Producer;
 
 use Gamee\RabbitMQ\Exchange\Exchange;
+use Gamee\RabbitMQ\Exchange\IExchange;
+use Gamee\RabbitMQ\Queue\IQueue;
 use Gamee\RabbitMQ\Queue\Queue;
 
 final class Producer
@@ -20,12 +22,12 @@ final class Producer
 	public const DELIVERY_MODE_PERSISTENT = 2;
 
 	/**
-	 * @var Exchange|NULL
+	 * @var IExchange|NULL
 	 */
 	private $exchange;
 
 	/**
-	 * @var Queue|NULL
+	 * @var IQueue|NULL
 	 */
 	private $queue;
 
@@ -41,8 +43,8 @@ final class Producer
 
 
 	public function __construct(
-		Exchange $exchange = null,
-		Queue $queue = null,
+		IExchange $exchange = null,
+		IQueue $queue = null,
 		string $contentType,
 		int $deliveryMode
 	) {
@@ -53,7 +55,7 @@ final class Producer
 	}
 
 
-	public function publish(string $message, array $headers = []): void
+	public function publish(string $message, array $headers = [], ?string $routingKey = null): void
 	{
 		$headers = array_merge($this->getBasicHeaders(), $headers);
 
@@ -62,7 +64,7 @@ final class Producer
 		}
 
 		if ($this->exchange) {
-			$this->publishToExchange($message, $headers);
+			$this->publishToExchange($message, $headers, $routingKey ?? '');
 		}
 	}
 
@@ -87,16 +89,14 @@ final class Producer
 	}
 
 
-	private function publishToExchange(string $message, array $headers = []): void
+	private function publishToExchange(string $message, array $headers = [], string $routingKey): void
 	{
-		foreach ($this->exchange->getQueueBindings() as $queueBinding) {
-			$queueBinding->getQueue()->getConnection()->getChannel()->publish(
-				$message,
-				$headers,
-				$this->exchange->getName(),
-				$queueBinding->getRoutingKey()
-			);
-		}
+		$this->exchange->getConnection()->getChannel()->publish(
+			$message,
+			$headers,
+			$this->exchange->getName(),
+			$routingKey
+		);
 	}
 
 }

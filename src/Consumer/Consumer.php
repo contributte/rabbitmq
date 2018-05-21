@@ -13,6 +13,7 @@ namespace Gamee\RabbitMQ\Consumer;
 use Bunny\Channel;
 use Bunny\Client;
 use Bunny\Message;
+use Gamee\RabbitMQ\Queue\IQueue;
 use Gamee\RabbitMQ\Queue\Queue;
 
 final class Consumer
@@ -24,7 +25,7 @@ final class Consumer
 	private $name;
 
 	/**
-	 * @var Queue
+	 * @var IQueue
 	 */
 	private $queue;
 
@@ -51,7 +52,7 @@ final class Consumer
 
 	public function __construct(
 		string $name,
-		Queue $queue,
+		IQueue $queue,
 		callable $callback,
 		?int $prefetchSize,
 		?int $prefetchCount
@@ -64,7 +65,7 @@ final class Consumer
 	}
 
 
-	public function getQueue(): Queue
+	public function getQueue(): IQueue
 	{
 		return $this->queue;
 	}

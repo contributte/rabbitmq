@@ -10,13 +10,14 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Exchange;
 
+use Gamee\RabbitMQ\Queue\IQueue;
 use Gamee\RabbitMQ\Queue\Queue;
 
 final class QueueBinding
 {
 
 	/**
-	 * @var Queue
+	 * @var IQueue
 	 */
 	private $queue;
 
@@ -37,7 +38,7 @@ final class QueueBinding
 
 
 	public function __construct(
-		Queue $queue,
+		IQueue $queue,
 		string $routingKey,
 		bool $noWait,
 		array $arguments
@@ -49,7 +50,7 @@ final class QueueBinding
 	}
 
 
-	public function getQueue(): Queue
+	public function getQueue(): IQueue
 	{
 		return $this->queue;
 	}

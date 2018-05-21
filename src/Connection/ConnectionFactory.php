@@ -26,7 +26,7 @@ final class ConnectionFactory
 	private $connectionFactory;
 
 	/**
-	 * @var Connection[]
+	 * @var IConnection[]
 	 */
 	private $connections = [];
 
@@ -40,7 +40,7 @@ final class ConnectionFactory
 	/**
 	 * @throws ConnectionFactoryException
 	 */
-	public function getConnection(string $name): Connection
+	public function getConnection(string $name): IConnection
 	{
 		if (!isset($this->connections[$name])) {
 			$this->connections[$name] = $this->create($name);
@@ -53,7 +53,7 @@ final class ConnectionFactory
 	/**
 	 * @throws ConnectionFactoryException
 	 */
-	private function create(string $name): Connection
+	private function create(string $name): IConnection
 	{
 		try {
 			$connectionData = $this->connectionsDataBag->getDataBykey($name);
