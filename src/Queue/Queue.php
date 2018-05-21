@@ -12,7 +12,7 @@ namespace Gamee\RabbitMQ\Queue;
 
 use Gamee\RabbitMQ\Connection\Connection;
 
-final class Queue
+class Queue
 {
 
 	/**

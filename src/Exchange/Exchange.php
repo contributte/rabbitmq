@@ -12,7 +12,7 @@ namespace Gamee\RabbitMQ\Exchange;
 
 use Gamee\RabbitMQ\Connection\Connection;
 
-final class Exchange
+class Exchange
 {
 
 	/**

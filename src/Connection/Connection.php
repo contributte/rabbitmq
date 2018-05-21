@@ -15,7 +15,7 @@ use Bunny\Client;
 use Bunny\Exception\ClientException;
 use Gamee\RabbitMQ\Connection\Exception\ConnectionException;
 
-final class Connection
+class Connection
 {
 
 	/**

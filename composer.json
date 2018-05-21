@@ -28,6 +28,8 @@
 		"symfony/console": "~3.3 || ^4.0"
 	},
 	"require-dev": {
-		"nette/tester": "^2.0"
+		"nette/tester": "^2.0",
+		"nette/neon": "^2.4",
+		"mockery/mockery": "^1.1"
 	}
 }

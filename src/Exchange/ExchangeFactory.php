@@ -12,6 +12,7 @@ namespace Gamee\RabbitMQ\Exchange;
 
 use Gamee\RabbitMQ\Connection\ConnectionFactory;
 use Gamee\RabbitMQ\Exchange\Exception\ExchangeFactoryException;
+use Gamee\RabbitMQ\Queue\Exception\QueueFactoryException;
 use Gamee\RabbitMQ\Queue\QueueFactory;
 
 final class ExchangeFactory
