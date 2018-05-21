@@ -43,9 +43,11 @@ rabbitmq:
 
 	exchanges:
 		testExchange:
+			connection: default
 			type: fanout
 			queueBindings:
 				testQueue:
+					routingKey: testRoutingKey
 
 	producers:
 		testProducer:
