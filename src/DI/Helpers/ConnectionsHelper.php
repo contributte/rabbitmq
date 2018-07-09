@@ -29,6 +29,9 @@ final class ConnectionsHelper extends AbstractHelper
 		'vhost' => '/',
 		'timeout' => 1,
 		'heartbeat' => 60.0,
+		'persistent' => false,
+		'path' => '/',
+		'tcpNoDelay' => false,
 	];
 
 

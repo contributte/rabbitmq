@@ -70,7 +70,10 @@ final class ConnectionFactory
 			$connectionData['password'],
 			$connectionData['vhost'],
 			(float) $connectionData['heartbeat'],
-			(float) $connectionData['timeout']
+			(float) $connectionData['timeout'],
+			(bool) $connectionData['persistent'],
+			$connectionData['path'],
+			(bool) $connectionData['tcpNoDelay']
 		);
 	}
 
