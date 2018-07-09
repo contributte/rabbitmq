@@ -41,7 +41,10 @@ final class Connection implements IConnection
 		string $password,
 		string $vhost,
 		float $heartbeat,
-		float $timeout
+		float $timeout,
+		bool $persistent,
+		string $path,
+		bool $tcpNoDelay
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -51,6 +54,9 @@ final class Connection implements IConnection
 			'vhost' => $vhost,
 			'heartbeat' => $heartbeat,
 			'timeout' => $timeout,
+			'persistent' => $persistent,
+			'path' => $path,
+			'tcp_nodelay' => $tcpNoDelay,
 		];
 
 		$this->bunnyClient = $this->createNewConnection();
