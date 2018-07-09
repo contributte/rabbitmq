@@ -70,15 +70,17 @@ final class QueueFactory
 		// (ConnectionFactoryException)
 		$connection = $this->connectionFactory->getConnection($queueData['connection']);
 
-		$connection->getChannel()->queueDeclare(
-			$name,
-			$queueData['passive'],
-			$queueData['durable'],
-			$queueData['exclusive'],
-			$queueData['autoDelete'],
-			$queueData['noWait'],
-			$queueData['arguments']
-		);
+		if ($queueData['autoCreate']) {
+			$connection->getChannel()->queueDeclare(
+				$name,
+				$queueData['passive'],
+				$queueData['durable'],
+				$queueData['exclusive'],
+				$queueData['autoDelete'],
+				$queueData['noWait'],
+				$queueData['arguments']
+			);
+		}
 
 		return new Queue(
 			$name,
