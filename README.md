@@ -40,6 +40,7 @@ rabbitmq:
 	queues:
 		testQueue:
 			connection: default
+			autoCreate: true
 
 	exchanges:
 		testExchange:
@@ -48,6 +49,7 @@ rabbitmq:
 			queueBindings:
 				testQueue:
 					routingKey: testRoutingKey
+			autoCreate: true
 
 	producers:
 		testProducer:
