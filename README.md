@@ -1,6 +1,7 @@
 [![Latest Stable Version](https://poser.pugx.org/gamee/nette-rabbitmq/v/stable)](https://packagist.org/packages/gamee/nette-rabbitmq)
 [![License](https://poser.pugx.org/gamee/nette-rabbitmq/license)](https://packagist.org/packages/gamee/nette-rabbitmq)
 [![Total Downloads](https://poser.pugx.org/gamee/nette-rabbitmq/downloads)](https://packagist.org/packages/gamee/nette-rabbitmq)
+[![Build Status](https://travis-ci.org/gameeapp/nette-rabbitmq.svg?branch=master)](https://travis-ci.org/gameeapp/nette-rabbitmq)
 
 # Nette RabbitMQ
 
