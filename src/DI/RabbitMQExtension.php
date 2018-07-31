@@ -12,6 +12,7 @@ namespace Gamee\RabbitMQ\DI;
 
 use Gamee\RabbitMQ\Client;
 use Gamee\RabbitMQ\Console\Command\ConsumerCommand;
+use Gamee\RabbitMQ\Console\Command\DeclareQueuesAndExchangesCommand;
 use Gamee\RabbitMQ\Console\Command\StaticConsumerCommand;
 use Gamee\RabbitMQ\DI\Helpers\ConnectionsHelper;
 use Gamee\RabbitMQ\DI\Helpers\ConsumersHelper;
@@ -129,9 +130,13 @@ final class RabbitMQExtension extends CompilerExtension
 		$staticConsumerCommand = $builder->addDefinition($this->prefix('console.staticConsumerCommand'))
 			->setFactory(StaticConsumerCommand::class);
 
+		$queuesExchangesCommand = $builder->addDefinition($this->prefix('console.declareQueuesExchangesCommand'))
+			->setFactory(DeclareQueuesAndExchangesCommand::class);
+
 		if (class_exists('Kdyby\Console\DI\ConsoleExtension')) {
 			$consumerCommand->addTag(\Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
 			$staticConsumerCommand->addTag(\Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
+			$queuesExchangesCommand->addTag(\Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
 		}
 	}
 

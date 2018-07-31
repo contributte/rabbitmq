@@ -38,15 +38,23 @@ final class ExchangeFactory
 	 */
 	private $exchanges;
 
+	/**
+	 * @var ExchangeDeclarator
+	 */
+	private $exchangeDeclarator;
+
 
 	public function __construct(
 		ExchangesDataBag $exchangesDataBag,
 		QueueFactory $queueFactory,
+		ExchangeDeclarator $exchangeDeclarator,
 		ConnectionFactory $connectionFactory
-	) {
+	)
+	{
 		$this->exchangesDataBag = $exchangesDataBag;
 		$this->queueFactory = $queueFactory;
 		$this->connectionFactory = $connectionFactory;
+		$this->exchangeDeclarator = $exchangeDeclarator;
 	}
 
 
@@ -82,34 +90,12 @@ final class ExchangeFactory
 		$connection = $this->connectionFactory->getConnection($exchangeData['connection']);
 
 		if ($exchangeData['autoCreate']) {
-			$connection->getChannel()->exchangeDeclare(
-				$name,
-				$exchangeData['type'],
-				$exchangeData['passive'],
-				$exchangeData['durable'],
-				$exchangeData['autoDelete'],
-				$exchangeData['internal'],
-				$exchangeData['noWait'],
-				$exchangeData['arguments']
-			);
+			$this->exchangeDeclarator->declareExchange($name);
 		}
 
 		if (!empty($exchangeData['queueBindings'])) {
 			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
 				$queue = $this->queueFactory->getQueue($queueName); // (QueueFactoryException)
-
-				if ($exchangeData['autoCreate']) {
-					/**
-					 * Create binding to the queue
-					 */
-					$connection->getChannel()->queueBind(
-						$queue->getName(),
-						$name,
-						$queueBinding['routingKey'],
-						$queueBinding['noWait'],
-						$queueBinding['arguments']
-					);
-				}
 
 				$queueBindings[] = new QueueBinding(
 					$queue,

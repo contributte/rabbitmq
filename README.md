@@ -41,7 +41,8 @@ rabbitmq:
 	queues:
 		testQueue:
 			connection: default
-			autoCreate: true
+			# force queue declare on first queue operation during request
+			# autoCreate: true 
 
 	exchanges:
 		testExchange:
@@ -50,7 +51,8 @@ rabbitmq:
 			queueBindings:
 				testQueue:
 					routingKey: testRoutingKey
-			autoCreate: true
+			# force exchange declare on first exchange operation during request
+			# autoCreate: true
 
 	producers:
 		testProducer:
@@ -68,9 +70,24 @@ rabbitmq:
 				prefetchCount: 5
 ```
 
-### Publishing messages
+### Declaring Queues and Exchanges
 
-Note: Queue will be created automatically after publishing first message. 
+Since v3.0, all queues and exchanges are by default declared on demand using the console command: 
+
+```
+php index.php rabbitmq:declareQueuesAndExchanges
+```
+
+It's intended to be a part of the deploy process to make sure all the queues and exchanges are prepared for use.
+
+If you need to override this behavior (for example only declare queues that are used during a request and nothing else), 
+just add the `autoCreate: true` parameter to queue or exchange of your choice.
+
+You may also want to declare the queues and exchanges via rabbitmq management interface or a script but if you fail to 
+do so, don't run the declare console command and don't specify `autoCreate: true`, exceptions will be thrown 
+when accessing undeclared queues/exchanges.
+
+### Publishing messages
 
 services.neon:
 
