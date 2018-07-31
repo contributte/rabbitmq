@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\DI\Helpers;
 
+use Gamee\RabbitMQ\Exchange\ExchangeDeclarator;
 use Gamee\RabbitMQ\Exchange\ExchangeFactory;
 use Gamee\RabbitMQ\Exchange\ExchangesDataBag;
 use Nette\DI\ContainerBuilder;
@@ -85,6 +86,9 @@ final class ExchangesHelper extends AbstractHelper
 		$exchangesDataBag = $builder->addDefinition($this->extension->prefix('exchangesDataBag'))
 			->setFactory(ExchangesDataBag::class)
 			->setArguments([$exchangesConfig]);
+
+		$builder->addDefinition($this->extension->prefix('exchangesDeclarator'))
+			->setFactory(ExchangeDeclarator::class);
 
 		return $builder->addDefinition($this->extension->prefix('exchangeFactory'))
 			->setFactory(ExchangeFactory::class)

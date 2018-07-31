@@ -32,21 +32,31 @@ final class QueueFactory
 	 */
 	private $queues;
 
+	/**
+	 * @var QueueDeclarator
+	 */
+	private $queueDeclarator;
 
-	public function __construct(QueuesDataBag $queuesDataBag, ConnectionFactory $connectionFactory)
+
+	public function __construct(
+		QueuesDataBag $queuesDataBag,
+		ConnectionFactory $connectionFactory,
+		QueueDeclarator $queueDeclarator
+	)
 	{
 		$this->queuesDataBag = $queuesDataBag;
 		$this->connectionFactory = $connectionFactory;
+		$this->queueDeclarator = $queueDeclarator;
 	}
 
 
 	/**
 	 * @throws QueueFactoryException
 	 */
-	public function getQueue(string $name, bool $forceDeclare = false): IQueue
+	public function getQueue(string $name): IQueue
 	{
-		if ($forceDeclare || !isset($this->queues[$name])) {
-			$this->queues[$name] = $this->create($name, $forceDeclare);
+		if (!isset($this->queues[$name])) {
+			$this->queues[$name] = $this->create($name);
 		}
 
 		return $this->queues[$name];
@@ -57,7 +67,7 @@ final class QueueFactory
 	 * @throws QueueFactoryException
 	 * @throws ConnectionFactoryException
 	 */
-	private function create(string $name, bool $forceDeclare): IQueue
+	private function create(string $name): IQueue
 	{
 		try {
 			$queueData = $this->queuesDataBag->getDataBykey($name);
@@ -69,16 +79,8 @@ final class QueueFactory
 		// (ConnectionFactoryException)
 		$connection = $this->connectionFactory->getConnection($queueData['connection']);
 
-		if ($forceDeclare || $queueData['autoCreate']) {
-			$connection->getChannel()->queueDeclare(
-				$name,
-				$queueData['passive'],
-				$queueData['durable'],
-				$queueData['exclusive'],
-				$queueData['autoDelete'],
-				$queueData['noWait'],
-				$queueData['arguments']
-			);
+		if ($queueData['autoCreate']) {
+			$this->queueDeclarator->declareQueue($name);
 		}
 
 		return new Queue(

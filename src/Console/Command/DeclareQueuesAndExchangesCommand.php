@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Console\Command;
 
-use Gamee\RabbitMQ\Exchange\ExchangeFactory;
+use Gamee\RabbitMQ\Exchange\ExchangeDeclarator;
 use Gamee\RabbitMQ\Exchange\ExchangesDataBag;
-use Gamee\RabbitMQ\Queue\QueueFactory;
+use Gamee\RabbitMQ\Queue\QueueDeclarator;
 use Gamee\RabbitMQ\Queue\QueuesDataBag;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,28 +28,28 @@ final class DeclareQueuesAndExchangesCommand extends Command
 	private $exchangesDataBag;
 
 	/**
-	 * @var QueueFactory
+	 * @var QueueDeclarator
 	 */
-	private $queueFactory;
+	private $queueDeclarator;
 
 	/**
-	 * @var ExchangeFactory
+	 * @var ExchangeDeclarator
 	 */
-	private $exchangeFactory;
+	private $exchangeDeclarator;
 
 
 	public function __construct(
 		QueuesDataBag $queuesDataBag,
-		QueueFactory $queueFactory,
+		QueueDeclarator $queueDeclarator,
 		ExchangesDataBag $exchangesDataBag,
-		ExchangeFactory $exchangeFactory
+		ExchangeDeclarator $exchangeDeclarator
 	)
 	{
 		parent::__construct(self::COMMAND_NAME);
 		$this->queuesDataBag = $queuesDataBag;
 		$this->exchangesDataBag = $exchangesDataBag;
-		$this->queueFactory = $queueFactory;
-		$this->exchangeFactory = $exchangeFactory;
+		$this->queueDeclarator = $queueDeclarator;
+		$this->exchangeDeclarator = $exchangeDeclarator;
 	}
 
 
@@ -61,12 +61,12 @@ final class DeclareQueuesAndExchangesCommand extends Command
 	}
 
 
-	protected function execute(InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output): void
 	{
 		$output->writeln('<info>Declaring queues:</info>');
 		foreach ($this->queuesDataBag->getDataKeys() as $queueName) {
 			$output->writeln($queueName);
-			$this->queueFactory->getQueue($queueName, true);
+			$this->queueDeclarator->declareQueue($queueName);
 		}
 
 		$output->writeln('');
@@ -74,7 +74,7 @@ final class DeclareQueuesAndExchangesCommand extends Command
 		$output->writeln('<info>Declaring exchanges:</info>');
 		foreach ($this->exchangesDataBag->getDataKeys() as $exchangeName) {
 			$output->writeln($exchangeName);
-			$this->exchangeFactory->getExchange($exchangeName, true);
+			$this->exchangeDeclarator->declareExchange($exchangeName);
 		}
 
 		$output->writeln('');

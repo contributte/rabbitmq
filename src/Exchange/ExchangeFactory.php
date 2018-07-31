@@ -38,26 +38,33 @@ final class ExchangeFactory
 	 */
 	private $exchanges;
 
+	/**
+	 * @var ExchangeDeclarator
+	 */
+	private $exchangeDeclarator;
+
 
 	public function __construct(
 		ExchangesDataBag $exchangesDataBag,
 		QueueFactory $queueFactory,
+		ExchangeDeclarator $exchangeDeclarator,
 		ConnectionFactory $connectionFactory
 	)
 	{
 		$this->exchangesDataBag = $exchangesDataBag;
 		$this->queueFactory = $queueFactory;
 		$this->connectionFactory = $connectionFactory;
+		$this->exchangeDeclarator = $exchangeDeclarator;
 	}
 
 
 	/**
 	 * @throws ExchangeFactoryException
 	 */
-	public function getExchange(string $name, bool $forceDeclare = false): IExchange
+	public function getExchange(string $name): IExchange
 	{
-		if ($forceDeclare || !isset($this->exchanges[$name])) {
-			$this->exchanges[$name] = $this->create($name, $forceDeclare);
+		if (!isset($this->exchanges[$name])) {
+			$this->exchanges[$name] = $this->create($name);
 		}
 
 		return $this->exchanges[$name];
@@ -68,7 +75,7 @@ final class ExchangeFactory
 	 * @throws ExchangeFactoryException
 	 * @throws QueueFactoryException
 	 */
-	private function create(string $name, bool $forceDeclare): IExchange
+	private function create(string $name): IExchange
 	{
 		$queueBindings = [];
 
@@ -82,35 +89,13 @@ final class ExchangeFactory
 
 		$connection = $this->connectionFactory->getConnection($exchangeData['connection']);
 
-		if ($forceDeclare || $exchangeData['autoCreate']) {
-			$connection->getChannel()->exchangeDeclare(
-				$name,
-				$exchangeData['type'],
-				$exchangeData['passive'],
-				$exchangeData['durable'],
-				$exchangeData['autoDelete'],
-				$exchangeData['internal'],
-				$exchangeData['noWait'],
-				$exchangeData['arguments']
-			);
+		if ($exchangeData['autoCreate']) {
+			$this->exchangeDeclarator->declareExchange($name);
 		}
 
 		if (!empty($exchangeData['queueBindings'])) {
 			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
 				$queue = $this->queueFactory->getQueue($queueName); // (QueueFactoryException)
-
-				if ($forceDeclare || $exchangeData['autoCreate']) {
-					/**
-					 * Create binding to the queue
-					 */
-					$connection->getChannel()->queueBind(
-						$queue->getName(),
-						$name,
-						$queueBinding['routingKey'],
-						$queueBinding['noWait'],
-						$queueBinding['arguments']
-					);
-				}
 
 				$queueBindings[] = new QueueBinding(
 					$queue,

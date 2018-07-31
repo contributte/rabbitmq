@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\DI\Helpers;
 
+use Gamee\RabbitMQ\Queue\QueueDeclarator;
 use Gamee\RabbitMQ\Queue\QueueFactory;
 use Gamee\RabbitMQ\Queue\QueuesDataBag;
 use Nette\DI\ContainerBuilder;
@@ -47,6 +48,9 @@ final class QueuesHelper extends AbstractHelper
 		$queuesDataBag = $builder->addDefinition($this->extension->prefix('queuesDataBag'))
 			->setFactory(QueuesDataBag::class)
 			->setArguments([$queuesConfig]);
+
+		$builder->addDefinition($this->extension->prefix('queueDeclarator'))
+			->setFactory(QueueDeclarator::class);
 
 		return $builder->addDefinition($this->extension->prefix('queueFactory'))
 			->setFactory(QueueFactory::class)
