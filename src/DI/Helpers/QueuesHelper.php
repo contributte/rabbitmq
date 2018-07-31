@@ -29,7 +29,7 @@ final class QueuesHelper extends AbstractHelper
 		'autoDelete' => false,
 		'noWait' => false,
 		'arguments' => [],
-		'autoCreate' => true,
+		'autoCreate' => false,
 	];
 
 

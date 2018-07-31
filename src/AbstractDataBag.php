@@ -35,7 +35,7 @@ abstract class AbstractDataBag
 	}
 
 
-	public function getDatakeys(): array
+	public function getDataKeys(): array
 	{
 		return array_keys($this->data);
 	}

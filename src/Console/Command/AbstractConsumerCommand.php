@@ -52,7 +52,7 @@ abstract class AbstractConsumerCommand extends Command
 					"Consumer [$consumerName] does not exist. \n\n Available consumers: %s",
 					implode('', array_map(function($s) {
 						return "\n\t- [{$s}]";
-					}, $this->consumersDataBag->getDatakeys()))
+					}, $this->consumersDataBag->getDataKeys()))
 				)
 			);
 		}

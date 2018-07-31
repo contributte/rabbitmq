@@ -43,7 +43,8 @@ final class ExchangeFactory
 		ExchangesDataBag $exchangesDataBag,
 		QueueFactory $queueFactory,
 		ConnectionFactory $connectionFactory
-	) {
+	)
+	{
 		$this->exchangesDataBag = $exchangesDataBag;
 		$this->queueFactory = $queueFactory;
 		$this->connectionFactory = $connectionFactory;
@@ -53,10 +54,10 @@ final class ExchangeFactory
 	/**
 	 * @throws ExchangeFactoryException
 	 */
-	public function getExchange(string $name): IExchange
+	public function getExchange(string $name, bool $forceDeclare = false): IExchange
 	{
-		if (!isset($this->exchanges[$name])) {
-			$this->exchanges[$name] = $this->create($name);
+		if ($forceDeclare || !isset($this->exchanges[$name])) {
+			$this->exchanges[$name] = $this->create($name, $forceDeclare);
 		}
 
 		return $this->exchanges[$name];
@@ -67,7 +68,7 @@ final class ExchangeFactory
 	 * @throws ExchangeFactoryException
 	 * @throws QueueFactoryException
 	 */
-	private function create(string $name): IExchange
+	private function create(string $name, bool $forceDeclare): IExchange
 	{
 		$queueBindings = [];
 
@@ -81,7 +82,7 @@ final class ExchangeFactory
 
 		$connection = $this->connectionFactory->getConnection($exchangeData['connection']);
 
-		if ($exchangeData['autoCreate']) {
+		if ($forceDeclare || $exchangeData['autoCreate']) {
 			$connection->getChannel()->exchangeDeclare(
 				$name,
 				$exchangeData['type'],
@@ -98,7 +99,7 @@ final class ExchangeFactory
 			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
 				$queue = $this->queueFactory->getQueue($queueName); // (QueueFactoryException)
 
-				if ($exchangeData['autoCreate']) {
+				if ($forceDeclare || $exchangeData['autoCreate']) {
 					/**
 					 * Create binding to the queue
 					 */

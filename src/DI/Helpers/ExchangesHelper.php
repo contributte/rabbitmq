@@ -33,7 +33,7 @@ final class ExchangesHelper extends AbstractHelper
 		'noWait' => false,
 		'arguments' => [],
 		'queueBindings' => [], // See self::$queueBindingDefaults
-		'autoCreate' => true,
+		'autoCreate' => false,
 	];
 
 	/**

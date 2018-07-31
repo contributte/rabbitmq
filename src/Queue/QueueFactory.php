@@ -43,10 +43,10 @@ final class QueueFactory
 	/**
 	 * @throws QueueFactoryException
 	 */
-	public function getQueue(string $name): IQueue
+	public function getQueue(string $name, bool $forceDeclare = false): IQueue
 	{
-		if (!isset($this->queues[$name])) {
-			$this->queues[$name] = $this->create($name);
+		if ($forceDeclare || !isset($this->queues[$name])) {
+			$this->queues[$name] = $this->create($name, $forceDeclare);
 		}
 
 		return $this->queues[$name];
@@ -57,20 +57,19 @@ final class QueueFactory
 	 * @throws QueueFactoryException
 	 * @throws ConnectionFactoryException
 	 */
-	private function create(string $name): IQueue
+	private function create(string $name, bool $forceDeclare): IQueue
 	{
 		try {
 			$queueData = $this->queuesDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
-
 			throw new QueueFactoryException("Queue [$name] does not exist");
 		}
 
 		// (ConnectionFactoryException)
 		$connection = $this->connectionFactory->getConnection($queueData['connection']);
 
-		if ($queueData['autoCreate']) {
+		if ($forceDeclare || $queueData['autoCreate']) {
 			$connection->getChannel()->queueDeclare(
 				$name,
 				$queueData['passive'],
