@@ -14,4 +14,10 @@ use Gamee\RabbitMQ\AbstractDataBag;
 
 final class ExchangesDataBag extends AbstractDataBag
 {
+
+	public function addExchangeConfig(string $exchangeName, array $config): void
+	{
+		$this->data[$exchangeName] = $config;
+	}
+
 }
