@@ -21,7 +21,9 @@ abstract class AbstractDataBag
 
 	public function __construct(array $data)
 	{
-		$this->data = $data;
+		foreach ($data as $queueOrExchangeName => $config) {
+			$this->data[$queueOrExchangeName] = $config;
+		}
 	}
 
 
