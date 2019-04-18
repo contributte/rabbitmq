@@ -103,6 +103,11 @@ final class Consumer
 						$channel->reject($message, false); // Message will be discarded
 						break;
 
+					case IConsumer::MESSAGE_REJECT_AND_TERMINATE:
+						$channel->reject($message, false); // Message will be discarded
+						$client->stop();
+						break;
+
 					default:
 						throw new \InvalidArgumentException(
 							"Unknown return value of consumer [{$this->name}] user callback"
