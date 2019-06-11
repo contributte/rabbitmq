@@ -17,12 +17,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class StaticConsumerCommand extends AbstractConsumerCommand
 {
 
-	public const COMMAND_NAME = 'rabbitmq:staticConsumer';
+	/** @var string */
+	protected static $defaultName = 'rabbitmq:staticConsumer';
 
 
 	protected function configure(): void
 	{
-		$this->setName(self::COMMAND_NAME);
+		$this->setName(static::$defaultName);
 		$this->setDescription('Run a RabbitMQ consumer but consume just particular amount of messages');
 
 		$this->addArgument('consumerName', InputArgument::REQUIRED, 'Name of the consumer');

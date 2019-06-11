@@ -17,12 +17,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class ConsumerCommand extends AbstractConsumerCommand
 {
 
-	public const COMMAND_NAME = 'rabbitmq:consumer';
+	/** @var string */
+	protected static $defaultName = 'rabbitmq:consumer';
 
 
 	protected function configure(): void
 	{
-		$this->setName(self::COMMAND_NAME);
+		$this->setName(static::$defaultName);
 		$this->setDescription('Run a RabbitMQ consumer');
 
 		$this->addArgument('consumerName', InputArgument::REQUIRED, 'Name of the consumer');

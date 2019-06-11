@@ -15,7 +15,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class DeclareQueuesAndExchangesCommand extends Command
 {
 
-	private const COMMAND_NAME = 'rabbitmq:declareQueuesAndExchanges';
+	/** @var string */
+	protected static $defaultName = 'rabbitmq:declareQueuesAndExchanges';
 
 	/**
 	 * @var QueuesDataBag
@@ -45,7 +46,7 @@ final class DeclareQueuesAndExchangesCommand extends Command
 		ExchangeDeclarator $exchangeDeclarator
 	)
 	{
-		parent::__construct(self::COMMAND_NAME);
+		parent::__construct(static::$defaultName);
 		$this->queuesDataBag = $queuesDataBag;
 		$this->exchangesDataBag = $exchangesDataBag;
 		$this->queueDeclarator = $queueDeclarator;
