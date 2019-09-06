@@ -71,7 +71,6 @@ final class ProducerFactory
 			$producerData = $this->producersDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
-
 			throw new ProducerFactoryException("Producer [$name] does not exist");
 		}
 

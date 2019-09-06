@@ -78,7 +78,13 @@ final class Connection implements IConnection
 	{
 		if (!$this->channel instanceof Channel) {
 			try {
-				$this->channel = $this->bunnyClient->channel();
+				$channel = $this->bunnyClient->channel();
+
+				if (!$channel instanceof Channel) {
+					throw new \UnexpectedValueException;
+				}
+
+				$this->channel = $channel;
 			} catch (ClientException $e) {
 				if ($e->getMessage() !== 'Broken pipe or closed connection.') {
 					throw new ConnectionException($e->getMessage(), $e->getCode(), $e);
@@ -89,7 +95,13 @@ final class Connection implements IConnection
 				 */
 				$this->bunnyClient = $this->createNewConnection();
 
-				$this->channel = $this->bunnyClient->channel();
+				$channel = $this->bunnyClient->channel();
+
+				if (!$channel instanceof Channel) {
+					throw new \UnexpectedValueException;
+				}
+
+				$this->channel = $channel;
 			}
 		}
 

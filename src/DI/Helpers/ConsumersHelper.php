@@ -42,7 +42,7 @@ final class ConsumersHelper extends AbstractHelper
 				$consumerData
 			);
 
-			if (empty($consumerConfig)) {
+			if ($consumerConfig === []) {
 				throw new \InvalidArgumentException(
 					'Each consumer has to have a <queue> parameter set'
 				);
@@ -59,5 +59,4 @@ final class ConsumersHelper extends AbstractHelper
 			->setFactory(ConsumerFactory::class)
 			->setArguments([$consumersDataBag]);
 	}
-
 }

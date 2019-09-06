@@ -85,13 +85,13 @@ final class QueueFactory
 
 		return new Queue(
 			$name,
-			$connection,
+			$connection/*,
 			$queueData['passive'],
 			$queueData['durable'],
 			$queueData['exclusive'],
 			$queueData['autoDelete'],
 			$queueData['noWait'],
-			$queueData['arguments']
+			$queueData['arguments']*/
 		);
 	}
 

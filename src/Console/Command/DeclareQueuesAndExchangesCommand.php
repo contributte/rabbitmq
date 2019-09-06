@@ -15,7 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class DeclareQueuesAndExchangesCommand extends Command
 {
 
-	/** @var string */
+	/**
+	 * @var string
+	 */
 	protected static $defaultName = 'rabbitmq:declareQueuesAndExchanges';
 
 	/**
@@ -46,7 +48,7 @@ final class DeclareQueuesAndExchangesCommand extends Command
 		ExchangeDeclarator $exchangeDeclarator
 	)
 	{
-		parent::__construct(static::$defaultName);
+		parent::__construct(self::$defaultName);
 		$this->queuesDataBag = $queuesDataBag;
 		$this->exchangesDataBag = $exchangesDataBag;
 		$this->queueDeclarator = $queueDeclarator;
@@ -62,7 +64,7 @@ final class DeclareQueuesAndExchangesCommand extends Command
 	}
 
 
-	protected function execute(InputInterface $input, OutputInterface $output): void
+	protected function execute(InputInterface $input, OutputInterface $output): ?int
 	{
 		$output->writeln('<info>Declaring queues:</info>');
 		foreach ($this->queuesDataBag->getDataKeys() as $queueName) {
@@ -80,6 +82,7 @@ final class DeclareQueuesAndExchangesCommand extends Command
 
 		$output->writeln('');
 		$output->writeln('<info>Declarations done!</info>');
-	}
 
+		return 0;
+	}
 }

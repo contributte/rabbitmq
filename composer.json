@@ -23,13 +23,20 @@
 		}
 	},
 	"require": {
-		"php": ">=7.1",
+		"php": ">=7.3",
 		"bunny/bunny": "^0.2.4 || ^0.3 || ^0.4",
-		"symfony/console": "~3.3 || ^4.0"
+		"symfony/console": "~3.3 || ^4.0",
+		"nette/di": "^3.0"
 	},
 	"require-dev": {
-		"nette/tester": "^2.0",
-		"nette/neon": "^2.4",
-		"mockery/mockery": "^1.1"
+		"nette/tester": "^2.3",
+		"nette/neon": "^3.0",
+		"mockery/mockery": "^1.1",
+		"gamee/php-code-checker-rules": "^1.2"
+	},
+	"scripts": {
+		"phpstan": "vendor/phpstan/phpstan/bin/phpstan analyse src -c vendor/gamee/php-code-checker-rules/phpstan.neon --level 7",
+		"phpcs": "vendor/bin/phpcs --standard=vendor/gamee/php-code-checker-rules/ruleset.xml --extensions=php,phpt --tab-width=4 --ignore=temp -sp src",
+		"phpcsfix": "vendor/bin/phpcbf --standard=vendor/gamee/php-code-checker-rules/ruleset.xml --extensions=php,phpt --tab-width=4 --ignore=temp -sp src"
 	}
 }

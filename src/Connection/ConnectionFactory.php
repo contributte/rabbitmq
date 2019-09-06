@@ -21,11 +21,6 @@ final class ConnectionFactory
 	private $connectionsDataBag;
 
 	/**
-	 * @var ConnectionFactory
-	 */
-	private $connectionFactory;
-
-	/**
 	 * @var IConnection[]
 	 */
 	private $connections = [];
@@ -59,7 +54,6 @@ final class ConnectionFactory
 			$connectionData = $this->connectionsDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
-
 			throw new ConnectionFactoryException("Connection [$name] does not exist");
 		}
 

@@ -21,6 +21,8 @@ final class ProducersDataBag extends AbstractDataBag
 	 */
 	public function __construct(array $data)
 	{
+		parent::__construct($data);
+
 		foreach ($data as $producerName => $producer) {
 			$this->addProducerByData($producerName, $producer);
 		}
@@ -47,7 +49,7 @@ final class ProducersDataBag extends AbstractDataBag
 		 * 1, Producer has to be subscribed to either a queue or an exchange
 		 * 2, A producer can be subscribed to both a queue and an exchange
 		 */
-		if (empty($data['queue']) && empty($data['exchange'])) {
+		if ($data['queue'] === [] && $data['exchange'] === []) {
 			throw new \InvalidArgumentException(
 				'Producer has to be subscribed to either a queue or an exchange'
 			);

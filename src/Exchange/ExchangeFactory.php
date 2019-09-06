@@ -83,7 +83,6 @@ final class ExchangeFactory
 			$exchangeData = $this->exchangesDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
-
 			throw new ExchangeFactoryException("Exchange [$name] does not exist");
 		}
 
@@ -93,31 +92,30 @@ final class ExchangeFactory
 			$this->exchangeDeclarator->declareExchange($name);
 		}
 
-		if (!empty($exchangeData['queueBindings'])) {
+		if ($exchangeData['queueBindings'] !== []) {
 			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
 				$queue = $this->queueFactory->getQueue($queueName); // (QueueFactoryException)
 
 				$queueBindings[] = new QueueBinding(
 					$queue,
-					$queueBinding['routingKey'],
+					$queueBinding['routingKey']/*,
 					$queueBinding['noWait'],
-					$queueBinding['arguments']
+					$queueBinding['arguments']*/
 				);
 			}
 		}
 
 		return new Exchange(
 			$name,
-			$exchangeData['type'],
+			/*$exchangeData['type'],
 			$exchangeData['passive'],
 			$exchangeData['durable'],
 			$exchangeData['autoDelete'],
 			$exchangeData['internal'],
 			$exchangeData['noWait'],
-			$exchangeData['arguments'],
+			$exchangeData['arguments'],*/
 			$queueBindings,
 			$connection
 		);
 	}
-
 }

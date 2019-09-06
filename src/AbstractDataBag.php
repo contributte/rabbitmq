@@ -41,5 +41,4 @@ abstract class AbstractDataBag
 	{
 		return array_keys($this->data);
 	}
-
 }

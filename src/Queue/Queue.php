@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Queue;
 
-use Gamee\RabbitMQ\Connection\Connection;
 use Gamee\RabbitMQ\Connection\IConnection;
 
 final class Queue implements IQueue
@@ -29,52 +28,52 @@ final class Queue implements IQueue
 	/**
 	 * @var bool
 	 */
-	private $passive;
+	/*private $passive;*/
 
 	/**
 	 * @var bool
 	 */
-	private $durable;
+	/*private $durable;*/
 
 	/**
 	 * @var bool
 	 */
-	private $exclusive;
+	/*private $exclusive;*/
 
 	/**
 	 * @var bool
 	 */
-	private $autoDelete;
+	/*private $autoDelete;*/
 
 	/**
 	 * @var bool
 	 */
-	private $noWait;
+	/*private $noWait;*/
 
 	/**
 	 * @var array
 	 */
-	private $arguments;
+	/*private $arguments;*/
 
 
 	public function __construct(
 		string $name,
-		IConnection $connection,
+		IConnection $connection/*,
 		bool $passive,
 		bool $durable,
 		bool $exclusive,
 		bool $autoDelete,
 		bool $noWait,
-		array $arguments
+		array $arguments*/
 	) {
 		$this->name = $name;
 		$this->connection = $connection;
-		$this->passive = $passive;
+		/*$this->passive = $passive;
 		$this->durable = $durable;
 		$this->exclusive = $exclusive;
 		$this->autoDelete = $autoDelete;
 		$this->noWait = $noWait;
-		$this->arguments = $arguments;
+		$this->arguments = $arguments;*/
 	}
 
 
@@ -88,5 +87,4 @@ final class Queue implements IQueue
 	{
 		return $this->connection;
 	}
-
 }

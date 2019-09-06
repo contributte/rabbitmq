@@ -60,7 +60,7 @@ final class ExchangeDeclarator
 			$exchangeData['arguments']
 		);
 
-		if (!empty($exchangeData['queueBindings'])) {
+		if ($exchangeData['queueBindings'] !== []) {
 			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
 				$queue = $this->queueFactory->getQueue($queueName);
 
@@ -74,5 +74,4 @@ final class ExchangeDeclarator
 			}
 		}
 	}
-
 }

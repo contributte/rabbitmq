@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Exchange;
 
-use Gamee\RabbitMQ\Connection\Connection;
 use Gamee\RabbitMQ\Connection\IConnection;
 
 final class Exchange implements IExchange
@@ -24,37 +23,37 @@ final class Exchange implements IExchange
 	/**
 	 * @var string
 	 */
-	private $type;
+	/*private $type;*/
 
 	/**
 	 * @var bool
 	 */
-	private $passive;
+	/*private $passive;*/
 
 	/**
 	 * @var bool
 	 */
-	private $durable;
+	/*private $durable;*/
 
 	/**
 	 * @var bool
 	 */
-	private $autoDelete;
+	/*private $autoDelete;*/
 
 	/**
 	 * @var bool
 	 */
-	private $internal;
+	/*private $internal;*/
 
 	/**
 	 * @var bool
 	 */
-	private $noWait;
+	/*private $noWait;*/
 
 	/**
 	 * @var array
 	 */
-	private $arguments;
+	/*private $arguments;*/
 
 	/**
 	 * @var QueueBinding[]
@@ -69,24 +68,24 @@ final class Exchange implements IExchange
 
 	public function __construct(
 		string $name,
-		string $type,
+		/*string $type,
 		bool $passive,
 		bool $durable,
 		bool $autoDelete,
 		bool $internal,
 		bool $noWait,
-		array $arguments,
+		array $arguments,*/
 		array $queueBindings,
 		IConnection $connection
 	) {
 		$this->name = $name;
-		$this->type = $type;
+		/*$this->type = $type;
 		$this->passive = $passive;
 		$this->durable = $durable;
 		$this->autoDelete = $autoDelete;
 		$this->internal = $internal;
 		$this->noWait = $noWait;
-		$this->arguments = $arguments;
+		$this->arguments = $arguments;*/
 		$this->queueBindings = $queueBindings;
 		$this->connection = $connection;
 	}

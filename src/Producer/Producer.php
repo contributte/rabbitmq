@@ -10,10 +10,8 @@ declare(strict_types=1);
 
 namespace Gamee\RabbitMQ\Producer;
 
-use Gamee\RabbitMQ\Exchange\Exchange;
 use Gamee\RabbitMQ\Exchange\IExchange;
 use Gamee\RabbitMQ\Queue\IQueue;
-use Gamee\RabbitMQ\Queue\Queue;
 
 final class Producer
 {
@@ -22,12 +20,12 @@ final class Producer
 	public const DELIVERY_MODE_PERSISTENT = 2;
 
 	/**
-	 * @var IExchange|NULL
+	 * @var IExchange|null
 	 */
 	private $exchange;
 
 	/**
-	 * @var IQueue|NULL
+	 * @var IQueue|null
 	 */
 	private $queue;
 
@@ -37,14 +35,14 @@ final class Producer
 	private $contentType;
 
 	/**
-	 * @var string
+	 * @var int
 	 */
 	private $deliveryMode;
 
 
 	public function __construct(
-		IExchange $exchange = null,
-		IQueue $queue = null,
+		?IExchange $exchange,
+		?IQueue $queue,
 		string $contentType,
 		int $deliveryMode
 	) {
@@ -59,11 +57,11 @@ final class Producer
 	{
 		$headers = array_merge($this->getBasicHeaders(), $headers);
 
-		if ($this->queue) {
+		if ($this->queue !== null) {
 			$this->publishToQueue($message, $headers);
 		}
 
-		if ($this->exchange) {
+		if ($this->exchange !== null) {
 			$this->publishToExchange($message, $headers, $routingKey ?? '');
 		}
 	}
@@ -73,13 +71,17 @@ final class Producer
 	{
 		return [
 			'content-type' => $this->contentType,
-			'delivery-mode' => $this->deliveryMode
+			'delivery-mode' => $this->deliveryMode,
 		];
 	}
 
 
 	private function publishToQueue(string $message, array $headers = []): void
 	{
+		if ($this->queue === null) {
+			throw new \UnexpectedValueException('Queue is not defined');
+		}
+
 		$this->queue->getConnection()->getChannel()->publish(
 			$message,
 			$headers,
@@ -89,8 +91,12 @@ final class Producer
 	}
 
 
-	private function publishToExchange(string $message, array $headers = [], string $routingKey): void
+	private function publishToExchange(string $message, array $headers, string $routingKey): void
 	{
+		if ($this->exchange === null) {
+			throw new \UnexpectedValueException('Exchange is not defined');
+		}
+
 		$this->exchange->getConnection()->getChannel()->publish(
 			$message,
 			$headers,
@@ -98,5 +104,4 @@ final class Producer
 			$routingKey
 		);
 	}
-
 }

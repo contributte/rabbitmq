@@ -17,13 +17,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class StaticConsumerCommand extends AbstractConsumerCommand
 {
 
-	/** @var string */
+	/**
+	 * @var string
+	 */
 	protected static $defaultName = 'rabbitmq:staticConsumer';
 
 
 	protected function configure(): void
 	{
-		$this->setName(static::$defaultName);
+		$this->setName(self::$defaultName);
 		$this->setDescription('Run a RabbitMQ consumer but consume just particular amount of messages');
 
 		$this->addArgument('consumerName', InputArgument::REQUIRED, 'Name of the consumer');
@@ -34,16 +36,28 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): void
+	protected function execute(InputInterface $input, OutputInterface $output): ?int
 	{
-		$consumerName = (string) $input->getArgument('consumerName');
-		$amountOfMessages = (int) $input->getArgument('amountOfMessages');
+		$consumerName = $input->getArgument('consumerName');
+		$amountOfMessages = $input->getArgument('amountOfMessages');
+
+		if (!is_string($consumerName)) {
+			throw new \UnexpectedValueException;
+		}
+
+		if (!is_numeric($amountOfMessages)) {
+			throw new \UnexpectedValueException;
+		}
+
+		$amountOfMessages = (int) $amountOfMessages;
 
 		$this->validateConsumerName($consumerName);
 		$this->validateAmountOfMessages($amountOfMessages);
 
 		$consumer = $this->consumerFactory->getConsumer($consumerName);
 		$consumer->consume(null, $amountOfMessages);
+
+		return 0;
 	}
 
 
@@ -52,11 +66,10 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 	 */
 	private function validateAmountOfMessages(int $amountOfMessages): void
 	{
-		if (!$amountOfMessages) {
+		if ($amountOfMessages <= 0) {
 			throw new \InvalidArgumentException(
 				'Parameter [amountOfMessages] has to be greater then 0'
 			);
 		}
 	}
-
 }

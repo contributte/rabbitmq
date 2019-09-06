@@ -14,7 +14,6 @@ use Bunny\Channel;
 use Bunny\Client;
 use Bunny\Message;
 use Gamee\RabbitMQ\Queue\IQueue;
-use Gamee\RabbitMQ\Queue\Queue;
 
 final class Consumer
 {
@@ -82,8 +81,12 @@ final class Consumer
 
 		$channel = $bunnyClient->channel();
 
+		if (!$channel instanceof Channel) {
+			throw new \UnexpectedValueException;
+		}
+
 		if ($this->prefetchSize !== null || $this->prefetchCount !== null) {
-			$channel->qos($this->prefetchSize, $this->prefetchCount);
+			$channel->qos($this->prefetchSize ?? 0, $this->prefetchCount ?? 0);
 		}
 
 		$channel->consume(
@@ -94,20 +97,16 @@ final class Consumer
 					case IConsumer::MESSAGE_ACK:
 						$channel->ack($message); // Acknowledge message
 						break;
-
 					case IConsumer::MESSAGE_NACK:
 						$channel->nack($message); // Message will be requeued
 						break;
-
 					case IConsumer::MESSAGE_REJECT:
 						$channel->reject($message, false); // Message will be discarded
 						break;
-
 					case IConsumer::MESSAGE_REJECT_AND_TERMINATE:
 						$channel->reject($message, false); // Message will be discarded
 						$client->stop();
 						break;
-
 					default:
 						throw new \InvalidArgumentException(
 							"Unknown return value of consumer [{$this->name}] user callback"

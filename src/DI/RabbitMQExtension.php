@@ -20,7 +20,6 @@ use Gamee\RabbitMQ\DI\Helpers\ExchangesHelper;
 use Gamee\RabbitMQ\DI\Helpers\ProducersHelper;
 use Gamee\RabbitMQ\DI\Helpers\QueuesHelper;
 use Nette\DI\CompilerExtension;
-use Nette\DI\ServiceDefinition;
 
 final class RabbitMQExtension extends CompilerExtension
 {
@@ -77,38 +76,33 @@ final class RabbitMQExtension extends CompilerExtension
 	 */
 	public function loadConfiguration(): void
 	{
-		$config = $this->validateConfig($this->defaults, $this->getConfig());
+		$config = $this->validateConfig($this->defaults);
 		$builder = $this->getContainerBuilder();
 
 		/**
 		 * Connections
-		 * @var ServiceDefinition
 		 */
-		$connectionFactory = $this->connectionsHelper->setup($builder, $config['connections']);
+		$this->connectionsHelper->setup($builder, $config['connections']);
 
 		/**
 		 * Queues
-		 * @var ServiceDefinition
 		 */
-		$queueFactory = $this->queuesHelper->setup($builder, $config['queues']);
+		$this->queuesHelper->setup($builder, $config['queues']);
 
 		/**
 		 * Exchanges
-		 * @var ServiceDefinition
 		 */
-		$exchangeFactory = $this->exchangesHelper->setup($builder, $config['exchanges']);
+		$this->exchangesHelper->setup($builder, $config['exchanges']);
 
 		/**
 		 * Producers
-		 * @var ServiceDefinition
 		 */
-		$producerFactory = $this->producersHelper->setup($builder, $config['producers']);
+		$this->producersHelper->setup($builder, $config['producers']);
 
 		/**
 		 * Consumers
-		 * @var ServiceDefinition
 		 */
-		$consumerFactory = $this->consumersHelper->setup($builder, $config['consumers']);
+		$this->consumersHelper->setup($builder, $config['consumers']);
 
 		/**
 		 * Register Client class
@@ -124,20 +118,13 @@ final class RabbitMQExtension extends CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
-		$consumerCommand = $builder->addDefinition($this->prefix('console.consumerCommand'))
+		$builder->addDefinition($this->prefix('console.consumerCommand'))
 			->setFactory(ConsumerCommand::class);
 
-		$staticConsumerCommand = $builder->addDefinition($this->prefix('console.staticConsumerCommand'))
+		$builder->addDefinition($this->prefix('console.staticConsumerCommand'))
 			->setFactory(StaticConsumerCommand::class);
 
-		$queuesExchangesCommand = $builder->addDefinition($this->prefix('console.declareQueuesExchangesCommand'))
+		$builder->addDefinition($this->prefix('console.declareQueuesExchangesCommand'))
 			->setFactory(DeclareQueuesAndExchangesCommand::class);
-
-		if (class_exists('Kdyby\Console\DI\ConsoleExtension')) {
-			$consumerCommand->addTag(\Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
-			$staticConsumerCommand->addTag(\Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
-			$queuesExchangesCommand->addTag(\Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
-		}
 	}
-
 }

@@ -63,7 +63,6 @@ final class ConsumerFactory
 			$consumerData = $this->consumersDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
-
 			throw new ConsumerFactoryException("Consumer [$name] does not exist");
 		}
 

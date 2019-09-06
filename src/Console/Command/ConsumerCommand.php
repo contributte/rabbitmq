@@ -17,13 +17,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class ConsumerCommand extends AbstractConsumerCommand
 {
 
-	/** @var string */
+	/**
+	 * @var string
+	 */
 	protected static $defaultName = 'rabbitmq:consumer';
 
 
 	protected function configure(): void
 	{
-		$this->setName(static::$defaultName);
+		$this->setName(self::$defaultName);
 		$this->setDescription('Run a RabbitMQ consumer');
 
 		$this->addArgument('consumerName', InputArgument::REQUIRED, 'Name of the consumer');
@@ -34,16 +36,28 @@ final class ConsumerCommand extends AbstractConsumerCommand
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): void
+	protected function execute(InputInterface $input, OutputInterface $output): ?int
 	{
-		$consumerName = (string) $input->getArgument('consumerName');
-		$secondsToLive = (int) $input->getArgument('secondsToLive');
+		$consumerName = $input->getArgument('consumerName');
+		$secondsToLive = $input->getArgument('secondsToLive');
+
+		if (!is_string($consumerName)) {
+			throw new \UnexpectedValueException;
+		}
+
+		if (!is_numeric($secondsToLive)) {
+			throw new \UnexpectedValueException;
+		}
+
+		$secondsToLive = (int) $secondsToLive;
 
 		$this->validateConsumerName($consumerName);
 		$this->validateSecondsToRun($secondsToLive);
 
 		$consumer = $this->consumerFactory->getConsumer($consumerName);
 		$consumer->consume($secondsToLive);
+
+		return 0;
 	}
 
 
@@ -52,7 +66,7 @@ final class ConsumerCommand extends AbstractConsumerCommand
 	 */
 	private function validateSecondsToRun(int $secondsToLive): void
 	{
-		if (!$secondsToLive) {
+		if ($secondsToLive <= 0) {
 			throw new \InvalidArgumentException(
 				'Parameter [secondsToLive] has to be greater then 0'
 			);

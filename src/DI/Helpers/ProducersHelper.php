@@ -56,5 +56,4 @@ final class ProducersHelper extends AbstractHelper
 			->setFactory(ProducerFactory::class)
 			->setArguments([$producersDataBag]);
 	}
-
 }

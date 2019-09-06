@@ -69,7 +69,7 @@ final class ExchangesHelper extends AbstractHelper
 				);
 			}
 
-			if (!empty($exchangeConfig['queueBindings'])) {
+			if ($exchangeConfig['queueBindings'] !== []) {
 				foreach ($exchangeConfig['queueBindings'] as $queueName => $queueBindingData) {
 					$queueBindingData['routingKey'] = (string) $queueBindingData['routingKey'];
 
@@ -94,5 +94,4 @@ final class ExchangesHelper extends AbstractHelper
 			->setFactory(ExchangeFactory::class)
 			->setArguments([$exchangesDataBag]);
 	}
-
 }
