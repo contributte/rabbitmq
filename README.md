@@ -166,11 +166,18 @@ final class TestConsumer implements IConsumer
 
 ### Running a consumer trough CLI
 
-There are two consumer commands prepared. `rabbitmq:consumer` wiil consume messages for specified amount of time (in seconds). Following command wiil be consuming messages for one hour:
+There are two consumer commands prepared. `rabbitmq:consumer` wiil consume messages for specified amount of time (in seconds), to run indefinitely skip this parameter. Following command will be consuming messages for one hour:
 
 ```
 php index.php rabbitmq:consumer testConsumer 3600
 ```
+
+Following command will be consuming messages indefinitely:
+
+```
+php index.php rabbitmq:consumer testConsumer
+```
+
 
 `rabbitmq:staticConsumer` will consume particular amount of messages. Following example will consume just 20 messages:
 
