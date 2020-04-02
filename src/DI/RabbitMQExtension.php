@@ -104,12 +104,15 @@ final class RabbitMQExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 
 		$builder->addDefinition($this->prefix('console.consumerCommand'))
-			->setFactory(ConsumerCommand::class);
+			->setFactory(ConsumerCommand::class)
+			->setTags(['console.command' => 'rabbitmq:consumer']);
 
 		$builder->addDefinition($this->prefix('console.staticConsumerCommand'))
-			->setFactory(StaticConsumerCommand::class);
+			->setFactory(StaticConsumerCommand::class)
+			->setTags(['console.command' => 'rabbitmq:staticConsumer']);
 
 		$builder->addDefinition($this->prefix('console.declareQueuesExchangesCommand'))
-			->setFactory(DeclareQueuesAndExchangesCommand::class);
+			->setFactory(DeclareQueuesAndExchangesCommand::class)
+			->setTags(['console.command' => 'rabbitmq:declareQueuesAndExchanges']);
 	}
 }
