@@ -23,7 +23,7 @@ final class ConsumerCommand extends AbstractConsumerCommand
 		$this->setDescription('Run a RabbitMQ consumer');
 
 		$this->addArgument('consumerName', InputArgument::REQUIRED, 'Name of the consumer');
-		$this->addArgument('secondsToLive', InputArgument::REQUIRED, 'Max seconds for consumer to run');
+		$this->addArgument('secondsToLive', InputArgument::OPTIONAL, 'Max seconds for consumer to run, skip parameter to run indefinitely');
 	}
 
 
@@ -43,10 +43,16 @@ final class ConsumerCommand extends AbstractConsumerCommand
 			throw new \UnexpectedValueException;
 		}
 
-		$secondsToLive = (int) $secondsToLive;
-
 		$this->validateConsumerName($consumerName);
-		$this->validateSecondsToRun($secondsToLive);
+
+		if ($secondsToLive !== null) {
+			if (!is_numeric($secondsToLive)) {
+				throw new \UnexpectedValueException;
+			}
+
+			$secondsToLive = (int) $secondsToLive;
+			$this->validateSecondsToRun($secondsToLive);
+		}
 
 		$consumer = $this->consumerFactory->getConsumer($consumerName);
 		$consumer->consume($secondsToLive);
