@@ -21,7 +21,7 @@ final class ConsumersHelper extends AbstractHelper
 	/**
 	 * @var array
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'queue' => null,
 		'callback' => null,
 		'idleTimeout' => 30,

@@ -11,20 +11,11 @@ use Gamee\RabbitMQ\Queue\QueueFactory;
 final class ExchangeDeclarator
 {
 
-	/**
-	 * @var ConnectionFactory
-	 */
-	private $connectionFactory;
+	private ConnectionFactory $connectionFactory;
 
-	/**
-	 * @var ExchangesDataBag
-	 */
-	private $exchangesDataBag;
+	private ExchangesDataBag $exchangesDataBag;
 
-	/**
-	 * @var QueueFactory
-	 */
-	private $queueFactory;
+	private QueueFactory $queueFactory;
 
 
 	public function __construct(

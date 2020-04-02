@@ -18,15 +18,9 @@ use Symfony\Component\Console\Command\Command;
 abstract class AbstractConsumerCommand extends Command
 {
 
-	/**
-	 * @var ConsumersDataBag
-	 */
-	protected $consumersDataBag;
+	protected ConsumersDataBag $consumersDataBag;
 
-	/**
-	 * @var ConsumerFactory
-	 */
-	protected $consumerFactory;
+	protected ConsumerFactory $consumerFactory;
 
 
 	public function __construct(ConsumersDataBag $consumersDataBag, ConsumerFactory $consumerFactory)
@@ -50,7 +44,7 @@ abstract class AbstractConsumerCommand extends Command
 			throw new \InvalidArgumentException(
 				sprintf(
 					"Consumer [$consumerName] does not exist. \n\n Available consumers: %s",
-					implode('', array_map(function($s) {
+					implode('', array_map(function($s): string {
 						return "\n\t- [{$s}]";
 					}, $this->consumersDataBag->getDataKeys()))
 				)

@@ -18,12 +18,9 @@ abstract class AbstractHelper
 	/**
 	 * @var array
 	 */
-	protected $defaults = [];
+	protected array $defaults = [];
 
-	/**
-	 * @var RabbitMQExtension
-	 */
-	protected $extension;
+	protected RabbitMQExtension $extension;
 
 
 	public function __construct(RabbitMQExtension $extension)

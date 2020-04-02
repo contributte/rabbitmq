@@ -24,23 +24,25 @@ final class ExchangesHelper extends AbstractHelper
 	/**
 	 * @var array
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'connection' => 'default',
-		'type' => 'direct', // direct/topic/headers/fanout
+		// direct/topic/headers/fanout
+		'type' => 'direct',
 		'passive' => false,
 		'durable' => true,
 		'autoDelete' => false,
 		'internal' => false,
 		'noWait' => false,
 		'arguments' => [],
-		'queueBindings' => [], // See self::$queueBindingDefaults
+		// See self::$queueBindingDefaults
+		'queueBindings' => [],
 		'autoCreate' => false,
 	];
 
 	/**
 	 * @var array
 	 */
-	private $queueBindingDefaults = [
+	private array $queueBindingDefaults = [
 		'routingKey' => '',
 		'noWait' => false,
 		'arguments' => [],

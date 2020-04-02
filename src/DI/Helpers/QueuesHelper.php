@@ -22,7 +22,7 @@ final class QueuesHelper extends AbstractHelper
 	/**
 	 * @var array
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'connection' => 'default',
 		'passive' => false,
 		'durable' => true,

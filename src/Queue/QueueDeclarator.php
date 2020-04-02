@@ -10,15 +10,9 @@ use Gamee\RabbitMQ\Queue\Exception\QueueFactoryException;
 final class QueueDeclarator
 {
 
-	/**
-	 * @var QueuesDataBag
-	 */
-	private $queuesDataBag;
+	private QueuesDataBag $queuesDataBag;
 
-	/**
-	 * @var ConnectionFactory
-	 */
-	private $connectionFactory;
+	private ConnectionFactory $connectionFactory;
 
 
 	public function __construct(ConnectionFactory $connectionFactory, QueuesDataBag $queuesDataBag)

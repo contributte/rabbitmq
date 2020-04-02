@@ -18,35 +18,20 @@ use Gamee\RabbitMQ\Queue\IQueue;
 final class Consumer
 {
 
-	/**
-	 * @var string
-	 */
-	private $name;
+	private string $name;
 
-	/**
-	 * @var IQueue
-	 */
-	private $queue;
+	private IQueue $queue;
 
 	/**
 	 * @var callable
 	 */
 	private $callback;
 
-	/**
-	 * @var int
-	 */
-	private $messages = 0;
+	private int $messages = 0;
 
-	/**
-	 * @var int|null
-	 */
-	private $prefetchSize;
+	private ?int $prefetchSize = null;
 
-	/**
-	 * @var int|null
-	 */
-	private $prefetchCount;
+	private ?int $prefetchCount = null;
 
 
 	public function __construct(
@@ -95,18 +80,30 @@ final class Consumer
 
 				switch ($result) {
 					case IConsumer::MESSAGE_ACK:
-						$channel->ack($message); // Acknowledge message
+						// Acknowledge message
+						$channel->ack($message);
+
 						break;
+
 					case IConsumer::MESSAGE_NACK:
-						$channel->nack($message); // Message will be requeued
+						// Message will be requeued
+						$channel->nack($message);
+
 						break;
+
 					case IConsumer::MESSAGE_REJECT:
-						$channel->reject($message, false); // Message will be discarded
+						// Message will be discarded
+						$channel->reject($message, false);
+
 						break;
+
 					case IConsumer::MESSAGE_REJECT_AND_TERMINATE:
-						$channel->reject($message, false); // Message will be discarded
+						// Message will be discarded
+						$channel->reject($message, false);
 						$client->stop();
+
 						break;
+
 					default:
 						throw new \InvalidArgumentException(
 							"Unknown return value of consumer [{$this->name}] user callback"

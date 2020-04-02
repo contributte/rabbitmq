@@ -17,15 +17,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class ConsumerCommand extends AbstractConsumerCommand
 {
 
-	/**
-	 * @var string
-	 */
-	protected static $defaultName = 'rabbitmq:consumer';
-
-
 	protected function configure(): void
 	{
-		$this->setName(self::$defaultName);
+		$this->setName('rabbitmq:consumer');
 		$this->setDescription('Run a RabbitMQ consumer');
 
 		$this->addArgument('consumerName', InputArgument::REQUIRED, 'Name of the consumer');
@@ -36,7 +30,7 @@ final class ConsumerCommand extends AbstractConsumerCommand
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): ?int
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$consumerName = $input->getArgument('consumerName');
 		$secondsToLive = $input->getArgument('secondsToLive');
@@ -45,7 +39,7 @@ final class ConsumerCommand extends AbstractConsumerCommand
 			throw new \UnexpectedValueException;
 		}
 
-		if (!is_numeric($secondsToLive)) {
+		if (!is_numeric($secondsToLive) || is_array($secondsToLive)) {
 			throw new \UnexpectedValueException;
 		}
 

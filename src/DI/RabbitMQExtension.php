@@ -27,7 +27,7 @@ final class RabbitMQExtension extends CompilerExtension
 	/**
 	 * @var array
 	 */
-	private $defaults = [
+	private array $defaults = [
 		'connections' => [],
 		'queues' => [],
 		'exchanges' => [],
@@ -35,30 +35,15 @@ final class RabbitMQExtension extends CompilerExtension
 		'consumers' => [],
 	];
 
-	/**
-	 * @var ConnectionsHelper
-	 */
-	private $connectionsHelper;
+	private ConnectionsHelper $connectionsHelper;
 
-	/**
-	 * @var QueuesHelper
-	 */
-	private $queuesHelper;
+	private QueuesHelper $queuesHelper;
 
-	/**
-	 * @var ProducersHelper
-	 */
-	private $producersHelper;
+	private ProducersHelper $producersHelper;
 
-	/**
-	 * @var ExchangesHelper
-	 */
-	private $exchangesHelper;
+	private ExchangesHelper $exchangesHelper;
 
-	/**
-	 * @var ConsumersHelper
-	 */
-	private $consumersHelper;
+	private ConsumersHelper $consumersHelper;
 
 
 	public function __construct()

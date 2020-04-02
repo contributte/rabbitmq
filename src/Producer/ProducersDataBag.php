@@ -34,10 +34,10 @@ final class ProducersDataBag extends AbstractDataBag
 	 */
 	public function addProducerByData(string $producerName, array $data): void
 	{
-		$data['deliveryMode'] = $data['deliveryMode'] ?? Producer::DELIVERY_MODE_PERSISTENT;
-		$data['contentType'] = $data['contentType'] ?? 'text/plain';
-		$data['exchange'] = $data['exchange'] ?? null;
-		$data['queue'] = $data['queue'] ?? null;
+		$data['deliveryMode'] ??= Producer::DELIVERY_MODE_PERSISTENT;
+		$data['contentType'] ??= 'text/plain';
+		$data['exchange'] ??= null;
+		$data['queue'] ??= null;
 
 		if (!in_array($data['deliveryMode'], ProducersHelper::DELIVERY_MODES, true)) {
 			throw new \InvalidArgumentException(

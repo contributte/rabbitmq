@@ -15,10 +15,7 @@ use Gamee\RabbitMQ\Connection\IConnection;
 final class Exchange implements IExchange
 {
 
-	/**
-	 * @var string
-	 */
-	private $name;
+	private string $name;
 
 	/**
 	 * @var string
@@ -58,12 +55,9 @@ final class Exchange implements IExchange
 	/**
 	 * @var QueueBinding[]
 	 */
-	private $queueBindings;
+	private array $queueBindings;
 
-	/**
-	 * @var IConnection
-	 */
-	private $connection;
+	private IConnection $connection;
 
 
 	public function __construct(

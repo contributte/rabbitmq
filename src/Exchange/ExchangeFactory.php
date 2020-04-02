@@ -18,30 +18,18 @@ use Gamee\RabbitMQ\Queue\QueueFactory;
 final class ExchangeFactory
 {
 
-	/**
-	 * @var ExchangesDataBag
-	 */
-	private $exchangesDataBag;
+	private ExchangesDataBag $exchangesDataBag;
 
-	/**
-	 * @var QueueFactory
-	 */
-	private $queueFactory;
+	private QueueFactory $queueFactory;
 
-	/**
-	 * @var ConnectionFactory
-	 */
-	private $connectionFactory;
+	private ConnectionFactory $connectionFactory;
 
 	/**
 	 * @var IExchange[]
 	 */
-	private $exchanges;
+	private array $exchanges;
 
-	/**
-	 * @var ExchangeDeclarator
-	 */
-	private $exchangeDeclarator;
+	private ExchangeDeclarator $exchangeDeclarator;
 
 
 	public function __construct(
@@ -94,13 +82,15 @@ final class ExchangeFactory
 
 		if ($exchangeData['queueBindings'] !== []) {
 			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
-				$queue = $this->queueFactory->getQueue($queueName); // (QueueFactoryException)
+				// (QueueFactoryException)
+				$queue = $this->queueFactory->getQueue($queueName);
 
 				$queueBindings[] = new QueueBinding(
 					$queue,
-					$queueBinding['routingKey']/*,
+					/*,
 					$queueBinding['noWait'],
 					$queueBinding['arguments']*/
+					$queueBinding['routingKey']
 				);
 			}
 		}

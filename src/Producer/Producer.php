@@ -19,25 +19,13 @@ final class Producer
 	public const DELIVERY_MODE_NON_PERSISTENT = 1;
 	public const DELIVERY_MODE_PERSISTENT = 2;
 
-	/**
-	 * @var IExchange|null
-	 */
-	private $exchange;
+	private ?IExchange $exchange = null;
 
-	/**
-	 * @var IQueue|null
-	 */
-	private $queue;
+	private ?IQueue $queue = null;
 
-	/**
-	 * @var string
-	 */
-	private $contentType;
+	private string $contentType;
 
-	/**
-	 * @var int
-	 */
-	private $deliveryMode;
+	private int $deliveryMode;
 
 
 	public function __construct(
@@ -85,8 +73,10 @@ final class Producer
 		$this->queue->getConnection()->getChannel()->publish(
 			$message,
 			$headers,
-			'', // Exchange name
-			$this->queue->getName() // Routing key, in this case the queue's name
+			// Exchange name
+			'',
+			// Routing key, in this case the queue's name
+			$this->queue->getName()
 		);
 	}
 

@@ -15,30 +15,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class DeclareQueuesAndExchangesCommand extends Command
 {
 
-	/**
-	 * @var string
-	 */
-	protected static $defaultName = 'rabbitmq:declareQueuesAndExchanges';
+	private QueuesDataBag $queuesDataBag;
 
-	/**
-	 * @var QueuesDataBag
-	 */
-	private $queuesDataBag;
+	private ExchangesDataBag $exchangesDataBag;
 
-	/**
-	 * @var ExchangesDataBag
-	 */
-	private $exchangesDataBag;
+	private QueueDeclarator $queueDeclarator;
 
-	/**
-	 * @var QueueDeclarator
-	 */
-	private $queueDeclarator;
-
-	/**
-	 * @var ExchangeDeclarator
-	 */
-	private $exchangeDeclarator;
+	private ExchangeDeclarator $exchangeDeclarator;
 
 
 	public function __construct(
@@ -48,7 +31,8 @@ final class DeclareQueuesAndExchangesCommand extends Command
 		ExchangeDeclarator $exchangeDeclarator
 	)
 	{
-		parent::__construct(self::$defaultName);
+		parent::__construct('rabbitmq:declareQueuesAndExchanges');
+
 		$this->queuesDataBag = $queuesDataBag;
 		$this->exchangesDataBag = $exchangesDataBag;
 		$this->queueDeclarator = $queueDeclarator;
@@ -64,17 +48,18 @@ final class DeclareQueuesAndExchangesCommand extends Command
 	}
 
 
-	protected function execute(InputInterface $input, OutputInterface $output): ?int
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$output->writeln('<info>Declaring queues:</info>');
+
 		foreach ($this->queuesDataBag->getDataKeys() as $queueName) {
 			$output->writeln($queueName);
 			$this->queueDeclarator->declareQueue($queueName);
 		}
 
 		$output->writeln('');
-
 		$output->writeln('<info>Declaring exchanges:</info>');
+
 		foreach ($this->exchangesDataBag->getDataKeys() as $exchangeName) {
 			$output->writeln($exchangeName);
 			$this->exchangeDeclarator->declareExchange($exchangeName);

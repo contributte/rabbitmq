@@ -27,7 +27,7 @@ final class ProducersHelper extends AbstractHelper
 	/**
 	 * @var array
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'exchange' => null,
 		'queue' => null,
 		'contentType' => 'text/plain',

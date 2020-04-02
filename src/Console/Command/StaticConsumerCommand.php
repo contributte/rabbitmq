@@ -17,15 +17,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class StaticConsumerCommand extends AbstractConsumerCommand
 {
 
-	/**
-	 * @var string
-	 */
-	protected static $defaultName = 'rabbitmq:staticConsumer';
-
-
 	protected function configure(): void
 	{
-		$this->setName(self::$defaultName);
+		$this->setName('rabbitmq:staticConsumer');
 		$this->setDescription('Run a RabbitMQ consumer but consume just particular amount of messages');
 
 		$this->addArgument('consumerName', InputArgument::REQUIRED, 'Name of the consumer');
@@ -36,7 +30,7 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): ?int
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$consumerName = $input->getArgument('consumerName');
 		$amountOfMessages = $input->getArgument('amountOfMessages');
@@ -45,7 +39,7 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 			throw new \UnexpectedValueException;
 		}
 
-		if (!is_numeric($amountOfMessages)) {
+		if (!is_numeric($amountOfMessages) || is_array($amountOfMessages)) {
 			throw new \UnexpectedValueException;
 		}
 

@@ -15,15 +15,9 @@ use Gamee\RabbitMQ\Connection\IConnection;
 final class Queue implements IQueue
 {
 
-	/**
-	 * @var string
-	 */
-	private $name;
+	private string $name;
 
-	/**
-	 * @var IConnection
-	 */
-	private $connection;
+	private IConnection $connection;
 
 	/**
 	 * @var bool
@@ -58,13 +52,14 @@ final class Queue implements IQueue
 
 	public function __construct(
 		string $name,
-		IConnection $connection/*,
+		/*,
 		bool $passive,
 		bool $durable,
 		bool $exclusive,
 		bool $autoDelete,
 		bool $noWait,
 		array $arguments*/
+		IConnection $connection
 	) {
 		$this->name = $name;
 		$this->connection = $connection;

@@ -21,10 +21,7 @@ use Gamee\RabbitMQ\Producer\ProducerFactory;
 final class Client
 {
 
-	/**
-	 * @var ProducerFactory
-	 */
-	private $producerFactory;
+	private ProducerFactory $producerFactory;
 
 
 	public function __construct(ProducerFactory $producerFactory)

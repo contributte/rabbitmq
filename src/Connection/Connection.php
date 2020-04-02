@@ -18,20 +18,14 @@ use Gamee\RabbitMQ\Connection\Exception\ConnectionException;
 final class Connection implements IConnection
 {
 
-	/**
-	 * @var Client
-	 */
-	private $bunnyClient;
+	private Client $bunnyClient;
 
 	/**
 	 * @var array
 	 */
-	private $connectionParams;
+	private array $connectionParams;
 
-	/**
-	 * @var Channel|null
-	 */
-	private $channel;
+	private ?Channel $channel = null;
 
 
 	public function __construct(
@@ -62,6 +56,12 @@ final class Connection implements IConnection
 		$this->bunnyClient = $this->createNewConnection();
 
 		$this->bunnyClient->connect();
+	}
+
+
+	public function __destruct()
+	{
+		$this->bunnyClient->disconnect();
 	}
 
 
@@ -106,12 +106,6 @@ final class Connection implements IConnection
 		}
 
 		return $this->channel;
-	}
-
-
-	public function __destruct()
-	{
-		$this->bunnyClient->disconnect();
 	}
 
 

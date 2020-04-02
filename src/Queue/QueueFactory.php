@@ -17,25 +17,16 @@ use Gamee\RabbitMQ\Queue\Exception\QueueFactoryException;
 final class QueueFactory
 {
 
-	/**
-	 * @var QueuesDataBag
-	 */
-	private $queuesDataBag;
+	private QueuesDataBag $queuesDataBag;
 
-	/**
-	 * @var ConnectionFactory
-	 */
-	private $connectionFactory;
+	private ConnectionFactory $connectionFactory;
 
 	/**
 	 * @var IQueue[]
 	 */
-	private $queues;
+	private array $queues;
 
-	/**
-	 * @var QueueDeclarator
-	 */
-	private $queueDeclarator;
+	private QueueDeclarator $queueDeclarator;
 
 
 	public function __construct(
@@ -85,13 +76,14 @@ final class QueueFactory
 
 		return new Queue(
 			$name,
-			$connection/*,
+			/*,
 			$queueData['passive'],
 			$queueData['durable'],
 			$queueData['exclusive'],
 			$queueData['autoDelete'],
 			$queueData['noWait'],
 			$queueData['arguments']*/
+			$connection
 		);
 	}
 

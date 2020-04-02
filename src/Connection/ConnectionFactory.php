@@ -15,15 +15,12 @@ use Gamee\RabbitMQ\Connection\Exception\ConnectionFactoryException;
 final class ConnectionFactory
 {
 
-	/**
-	 * @var ConnectionsDataBag
-	 */
-	private $connectionsDataBag;
+	private ConnectionsDataBag $connectionsDataBag;
 
 	/**
 	 * @var IConnection[]
 	 */
-	private $connections = [];
+	private array $connections = [];
 
 
 	public function __construct(ConnectionsDataBag $connectionsDataBag)

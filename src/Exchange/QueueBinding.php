@@ -15,15 +15,9 @@ use Gamee\RabbitMQ\Queue\IQueue;
 final class QueueBinding
 {
 
-	/**
-	 * @var IQueue
-	 */
-	private $queue;
+	private IQueue $queue;
 
-	/**
-	 * @var string
-	 */
-	private $routingKey;
+	private string $routingKey;
 
 	/**
 	 * @var bool
@@ -38,9 +32,10 @@ final class QueueBinding
 
 	public function __construct(
 		IQueue $queue,
-		string $routingKey/*,
+		/*,
 		bool $noWait,
 		array $arguments*/
+		string $routingKey
 	) {
 		$this->queue = $queue;
 		$this->routingKey = $routingKey;

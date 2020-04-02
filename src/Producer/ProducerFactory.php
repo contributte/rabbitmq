@@ -17,25 +17,16 @@ use Gamee\RabbitMQ\Queue\QueueFactory;
 final class ProducerFactory
 {
 
-	/**
-	 * @var ProducersDataBag
-	 */
-	private $producersDataBag;
+	private ProducersDataBag $producersDataBag;
 
-	/**
-	 * @var QueueFactory
-	 */
-	private $queueFactory;
+	private QueueFactory $queueFactory;
 
-	/**
-	 * @var ExchangeFactory
-	 */
-	private $exchangeFactory;
+	private ExchangeFactory $exchangeFactory;
 
 	/**
 	 * @var Producer[]
 	 */
-	private $producers;
+	private array $producers;
 
 
 	public function __construct(

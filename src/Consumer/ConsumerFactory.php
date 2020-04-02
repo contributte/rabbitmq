@@ -16,20 +16,14 @@ use Gamee\RabbitMQ\Queue\QueueFactory;
 final class ConsumerFactory
 {
 
-	/**
-	 * @var ConsumersDataBag
-	 */
-	private $consumersDataBag;
+	private ConsumersDataBag $consumersDataBag;
 
-	/**
-	 * @var QueueFactory
-	 */
-	private $queueFactory;
+	private QueueFactory $queueFactory;
 
 	/**
 	 * @var Consumer[]
 	 */
-	private $consumers = [];
+	private array $consumers = [];
 
 
 	public function __construct(

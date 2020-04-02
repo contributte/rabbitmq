@@ -21,7 +21,7 @@ final class ConnectionsHelper extends AbstractHelper
 	/**
 	 * @var array
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'host' => '127.0.0.1',
 		'port' => 5672,
 		'user' => 'guest',
