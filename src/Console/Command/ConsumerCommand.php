@@ -39,14 +39,10 @@ final class ConsumerCommand extends AbstractConsumerCommand
 			throw new \UnexpectedValueException;
 		}
 
-		if (!is_numeric($secondsToLive) || is_array($secondsToLive)) {
-			throw new \UnexpectedValueException;
-		}
-
 		$this->validateConsumerName($consumerName);
 
 		if ($secondsToLive !== null) {
-			if (!is_numeric($secondsToLive)) {
+			if (!is_numeric($secondsToLive) || is_array($secondsToLive)) {
 				throw new \UnexpectedValueException;
 			}
 
@@ -72,5 +68,4 @@ final class ConsumerCommand extends AbstractConsumerCommand
 			);
 		}
 	}
-
 }
