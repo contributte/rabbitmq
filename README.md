@@ -184,3 +184,30 @@ php index.php rabbitmq:consumer testConsumer
 ```
 php index.php rabbitmq:staticConsumer testConsumer 20
 ```
+
+## Maintainers
+
+<table>
+	<tbody>
+		<tr>
+			<td align="center">
+				<a href="https://github.com/paveljanda">
+						<img width="150" height="150" src="https://avatars0.githubusercontent.com/u/1488874?s=400&v=4">
+				</a>
+				</br>
+				<a href="https://github.com/paveljanda">Pavel Janda</a>
+			</td>
+			<td align="center">
+				<a href="https://github.com/gameeapp">
+						<img width="150" height="150" src="https://avatars3.githubusercontent.com/u/13903740?s=200&v=4">
+				</a>
+				</br>
+				<a href="https://github.com/gameeapp">Gameeapp</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+-----
+
+Thank you for testing, reporting and contributing.
