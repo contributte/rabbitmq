@@ -18,6 +18,9 @@ Ultra easy-to-use [`RabbitMQ`](https://www.rabbitmq.com/) implementation for [`N
 
 ## Documentation
 
+- [Installation](.docs/README.md#installation)
+- [Extension registration](.docs/README.md#extension-registration)
+- [Example configuration](.docs/README.md#example-configuration)
 - [Declaring Queues and Exchanges](.docs/README.md#declaring-queues-and-exchanges)
 - [Publishing messages](.docs/README.md#publishing-messages)
 - [Consuming messages](.docs/README.md#consuming-messages)

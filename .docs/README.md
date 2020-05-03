@@ -2,7 +2,7 @@
 
 Nette extension for RabbitMQ (using composer package [jakubkulhan/bunny](https://github.com/jakubkulhan/bunny))
 
-### Installation
+## Installation
 
 ```
 composer require contributte/rabbitmq
