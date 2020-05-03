@@ -2,17 +2,11 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\Console\Command;
 
-namespace Gamee\RabbitMQ\Console\Command;
-
-use Gamee\RabbitMQ\Consumer\ConsumerFactory;
-use Gamee\RabbitMQ\Consumer\ConsumersDataBag;
-use Gamee\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
+use Contributte\RabbitMQ\Consumer\ConsumerFactory;
+use Contributte\RabbitMQ\Consumer\ConsumersDataBag;
+use Contributte\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
 use Symfony\Component\Console\Command\Command;
 
 abstract class AbstractConsumerCommand extends Command

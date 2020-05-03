@@ -2,17 +2,11 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\Producer;
 
-namespace Gamee\RabbitMQ\Producer;
-
-use Gamee\RabbitMQ\Exchange\ExchangeFactory;
-use Gamee\RabbitMQ\Producer\Exception\ProducerFactoryException;
-use Gamee\RabbitMQ\Queue\QueueFactory;
+use Contributte\RabbitMQ\Exchange\ExchangeFactory;
+use Contributte\RabbitMQ\Producer\Exception\ProducerFactoryException;
+use Contributte\RabbitMQ\Queue\QueueFactory;
 
 final class ProducerFactory
 {

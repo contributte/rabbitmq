@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Gamee\RabbitMQ\Exchange;
+namespace Contributte\RabbitMQ\Exchange;
 
-use Gamee\RabbitMQ\Connection\ConnectionFactory;
-use Gamee\RabbitMQ\Exchange\Exception\ExchangeFactoryException;
-use Gamee\RabbitMQ\Queue\QueueFactory;
+use Contributte\RabbitMQ\Connection\ConnectionFactory;
+use Contributte\RabbitMQ\Exchange\Exception\ExchangeFactoryException;
+use Contributte\RabbitMQ\Queue\QueueFactory;
 
 final class ExchangeDeclarator
 {

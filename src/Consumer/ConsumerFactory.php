@@ -2,16 +2,10 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\Consumer;
 
-namespace Gamee\RabbitMQ\Consumer;
-
-use Gamee\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
-use Gamee\RabbitMQ\Queue\QueueFactory;
+use Contributte\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
+use Contributte\RabbitMQ\Queue\QueueFactory;
 
 final class ConsumerFactory
 {

@@ -2,18 +2,12 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
-
-namespace Gamee\RabbitMQ\Connection;
+namespace Contributte\RabbitMQ\Connection;
 
 use Bunny\Channel;
 use Bunny\Client;
 use Bunny\Exception\ClientException;
-use Gamee\RabbitMQ\Connection\Exception\ConnectionException;
+use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
 
 final class Connection implements IConnection
 {

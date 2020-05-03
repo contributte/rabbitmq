@@ -1,7 +1,7 @@
-[![Latest Stable Version](https://poser.pugx.org/gamee/nette-rabbitmq/v/stable)](https://packagist.org/packages/gamee/nette-rabbitmq)
-[![License](https://poser.pugx.org/gamee/nette-rabbitmq/license)](https://packagist.org/packages/gamee/nette-rabbitmq)
-[![Total Downloads](https://poser.pugx.org/gamee/nette-rabbitmq/downloads)](https://packagist.org/packages/gamee/nette-rabbitmq)
-[![Build Status](https://travis-ci.org/gameeapp/nette-rabbitmq.svg?branch=master)](https://travis-ci.org/gameeapp/nette-rabbitmq)
+[![Latest Stable Version](https://poser.pugx.org/contributte/rabbitmq/v/stable)](https://packagist.org/packages/contributte/rabbitmq)
+[![License](https://poser.pugx.org/contributte/rabbitmq/license)](https://packagist.org/packages/contributte/rabbitmq)
+[![Total Downloads](https://poser.pugx.org/contributte/rabbitmq/downloads)](https://packagist.org/packages/contributte/rabbitmq)
+[![Build Status](https://travis-ci.org/contributte/rabbitmq.svg?branch=master)](https://travis-ci.org/contributte/rabbitmq)
 
 # Nette RabbitMQ
 
@@ -12,7 +12,7 @@ Nette extension for RabbitMQ (using composer package [jakubkulhan/bunny](https:/
 ### Downloading composer package
 
 ```
-composer require gamee/nette-rabbitmq
+composer require contributte/rabbitmq
 ```
 
 ### Extension registration
@@ -21,7 +21,7 @@ config.neon:
 
 ```
 extensions:
-	rabbitmq: Gamee\RabbitMQ\DI\RabbitMQExtension
+	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
 ```
 
 ### Example configuration
@@ -93,7 +93,7 @@ services.neon:
 
 ```
 services:
-	- TestQueue(@Gamee\RabbitMQ\Client::getProducer(testProducer))
+	- TestQueue(@Contributte\RabbitMQ\Client::getProducer(testProducer))
 ```
 
 TestQueue.php:
@@ -103,7 +103,7 @@ TestQueue.php:
 
 declare(strict_types=1);
 
-use Gamee\RabbitMQ\Producer\Producer;
+use Contributte\RabbitMQ\Producer\Producer;
 
 final class TestQueue
 {
@@ -143,7 +143,7 @@ TestConsumer.php
 declare(strict_types=1);
 
 use Bunny\Message;
-use Gamee\RabbitMQ\Consumer\IConsumer;
+use Contributte\RabbitMQ\Consumer\IConsumer;
 
 final class TestConsumer implements IConsumer
 {

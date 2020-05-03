@@ -2,18 +2,12 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
-
-namespace Gamee\RabbitMQ\Consumer;
+namespace Contributte\RabbitMQ\Consumer;
 
 use Bunny\Channel;
 use Bunny\Client;
 use Bunny\Message;
-use Gamee\RabbitMQ\Queue\IQueue;
+use Contributte\RabbitMQ\Queue\IQueue;
 
 final class Consumer
 {

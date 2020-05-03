@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Gamee\RabbitMQ\Tests\Cases;
+namespace Contributte\RabbitMQ\Tests\Cases;
 
-use Gamee\RabbitMQ\Connection\IConnection;
-use Gamee\RabbitMQ\Exchange\IExchange;
-use Gamee\RabbitMQ\Producer\Producer;
-use Gamee\RabbitMQ\Queue\IQueue;
-use Gamee\RabbitMQ\Tests\Mocks\ChannelMock;
-use Gamee\RabbitMQ\Tests\Mocks\Helper\RabbitMQMessageHelper;
+use Contributte\RabbitMQ\Connection\IConnection;
+use Contributte\RabbitMQ\Exchange\IExchange;
+use Contributte\RabbitMQ\Producer\Producer;
+use Contributte\RabbitMQ\Queue\IQueue;
+use Contributte\RabbitMQ\Tests\Mocks\ChannelMock;
+use Contributte\RabbitMQ\Tests\Mocks\Helper\RabbitMQMessageHelper;
 use Tester\Assert;
 use Tester\TestCase;
 

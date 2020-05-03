@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gamee\RabbitMQ\Tests\Mocks\Helper;
+namespace Contributte\RabbitMQ\Tests\Mocks\Helper;
 
 final class RabbitMQMessageHelper
 {

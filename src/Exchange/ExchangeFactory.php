@@ -2,18 +2,12 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\Exchange;
 
-namespace Gamee\RabbitMQ\Exchange;
-
-use Gamee\RabbitMQ\Connection\ConnectionFactory;
-use Gamee\RabbitMQ\Exchange\Exception\ExchangeFactoryException;
-use Gamee\RabbitMQ\Queue\Exception\QueueFactoryException;
-use Gamee\RabbitMQ\Queue\QueueFactory;
+use Contributte\RabbitMQ\Connection\ConnectionFactory;
+use Contributte\RabbitMQ\Exchange\Exception\ExchangeFactoryException;
+use Contributte\RabbitMQ\Queue\Exception\QueueFactoryException;
+use Contributte\RabbitMQ\Queue\QueueFactory;
 
 final class ExchangeFactory
 {

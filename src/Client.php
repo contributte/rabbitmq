@@ -2,17 +2,11 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ;
 
-namespace Gamee\RabbitMQ;
-
-use Gamee\RabbitMQ\Producer\Exception\ProducerFactoryException;
-use Gamee\RabbitMQ\Producer\Producer;
-use Gamee\RabbitMQ\Producer\ProducerFactory;
+use Contributte\RabbitMQ\Producer\Exception\ProducerFactoryException;
+use Contributte\RabbitMQ\Producer\Producer;
+use Contributte\RabbitMQ\Producer\ProducerFactory;
 
 /**
  * This package uses composer library bunny/bunny. For more information,

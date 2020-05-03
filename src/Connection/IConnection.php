@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Gamee\RabbitMQ\Connection;
+namespace Contributte\RabbitMQ\Connection;
 
 use Bunny\Channel;
 use Bunny\Client;
-use Gamee\RabbitMQ\Connection\Exception\ConnectionException;
+use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
 
 interface IConnection
 {

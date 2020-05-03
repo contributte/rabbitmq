@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gamee\RabbitMQ\Queue;
+namespace Contributte\RabbitMQ\Queue;
 
-use Gamee\RabbitMQ\Connection\ConnectionFactory;
-use Gamee\RabbitMQ\Queue\Exception\QueueFactoryException;
+use Contributte\RabbitMQ\Connection\ConnectionFactory;
+use Contributte\RabbitMQ\Queue\Exception\QueueFactoryException;
 
 final class QueueDeclarator
 {

@@ -2,15 +2,9 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\Connection;
 
-namespace Gamee\RabbitMQ\Connection;
-
-use Gamee\RabbitMQ\Connection\Exception\ConnectionFactoryException;
+use Contributte\RabbitMQ\Connection\Exception\ConnectionFactoryException;
 
 final class ConnectionFactory
 {

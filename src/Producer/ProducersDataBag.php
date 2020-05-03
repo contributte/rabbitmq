@@ -2,16 +2,10 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\Producer;
 
-namespace Gamee\RabbitMQ\Producer;
-
-use Gamee\RabbitMQ\AbstractDataBag;
-use Gamee\RabbitMQ\DI\Helpers\ProducersHelper;
+use Contributte\RabbitMQ\AbstractDataBag;
+use Contributte\RabbitMQ\DI\Helpers\ProducersHelper;
 
 final class ProducersDataBag extends AbstractDataBag
 {

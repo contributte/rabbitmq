@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gamee\RabbitMQ\Tests\Cases;
+namespace Contributte\RabbitMQ\Tests\Cases;
 
 use Tester\Assert;
 use Tester\TestCase;

@@ -2,15 +2,9 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\Connection;
 
-namespace Gamee\RabbitMQ\Connection;
-
-use Gamee\RabbitMQ\AbstractDataBag;
+use Contributte\RabbitMQ\AbstractDataBag;
 
 final class ConnectionsDataBag extends AbstractDataBag
 {

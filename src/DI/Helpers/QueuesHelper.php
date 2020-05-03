@@ -2,17 +2,11 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\DI\Helpers;
 
-namespace Gamee\RabbitMQ\DI\Helpers;
-
-use Gamee\RabbitMQ\Queue\QueueDeclarator;
-use Gamee\RabbitMQ\Queue\QueueFactory;
-use Gamee\RabbitMQ\Queue\QueuesDataBag;
+use Contributte\RabbitMQ\Queue\QueueDeclarator;
+use Contributte\RabbitMQ\Queue\QueueFactory;
+use Contributte\RabbitMQ\Queue\QueuesDataBag;
 use Nette\DI\ContainerBuilder;
 use Nette\DI\ServiceDefinition;
 

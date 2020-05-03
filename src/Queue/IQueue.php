@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gamee\RabbitMQ\Queue;
+namespace Contributte\RabbitMQ\Queue;
 
-use Gamee\RabbitMQ\Connection\IConnection;
+use Contributte\RabbitMQ\Connection\IConnection;
 
 interface IQueue
 {

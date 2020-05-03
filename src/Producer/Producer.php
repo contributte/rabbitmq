@@ -2,16 +2,10 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\Producer;
 
-namespace Gamee\RabbitMQ\Producer;
-
-use Gamee\RabbitMQ\Exchange\IExchange;
-use Gamee\RabbitMQ\Queue\IQueue;
+use Contributte\RabbitMQ\Exchange\IExchange;
+use Contributte\RabbitMQ\Queue\IQueue;
 
 final class Producer
 {

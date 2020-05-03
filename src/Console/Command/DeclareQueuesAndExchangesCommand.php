@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gamee\RabbitMQ\Console\Command;
+namespace Contributte\RabbitMQ\Console\Command;
 
-use Gamee\RabbitMQ\Exchange\ExchangeDeclarator;
-use Gamee\RabbitMQ\Exchange\ExchangesDataBag;
-use Gamee\RabbitMQ\Queue\QueueDeclarator;
-use Gamee\RabbitMQ\Queue\QueuesDataBag;
+use Contributte\RabbitMQ\Exchange\ExchangeDeclarator;
+use Contributte\RabbitMQ\Exchange\ExchangesDataBag;
+use Contributte\RabbitMQ\Queue\QueueDeclarator;
+use Contributte\RabbitMQ\Queue\QueuesDataBag;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

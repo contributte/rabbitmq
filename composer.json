@@ -1,11 +1,11 @@
 {
-	"name": "gamee/nette-rabbitmq",
+	"name": "contributte/rabbitmq",
 	"type": "library",
 	"license": "MIT",
-	"homepage": "https://github.com/gameeapp/nette-rabbitmq",
+	"homepage": "https://github.com/contributte/rabbitmq",
 	"keywords": ["rabbitmq","rabbit","bunnyphp","bunny","nette","extension","php"],
 	"support": {
-		"issues": "https://github.com/gameeapp/nette-rabbitmq/issues"
+		"issues": "https://github.com/contributte/rabbitmq/issues"
 	},
 	"authors": [
 		{
@@ -14,12 +14,12 @@
 	],
 	"autoload": {
 		"psr-4": {
-			"Gamee\\RabbitMQ\\": "src/"
+			"Contributte\\RabbitMQ\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Gamee\\RabbitMQ\\Tests\\": "tests"
+			"Contributte\\RabbitMQ\\Tests\\": "tests"
 		}
 	},
 	"require": {

@@ -2,23 +2,17 @@
 
 declare(strict_types=1);
 
-/**
- * @copyright   Copyright (c) 2017 gameeapp.com <hello@gameeapp.com>
- * @author      Pavel Janda <pavel@gameeapp.com>
- * @package     Gamee
- */
+namespace Contributte\RabbitMQ\DI;
 
-namespace Gamee\RabbitMQ\DI;
-
-use Gamee\RabbitMQ\Client;
-use Gamee\RabbitMQ\Console\Command\ConsumerCommand;
-use Gamee\RabbitMQ\Console\Command\DeclareQueuesAndExchangesCommand;
-use Gamee\RabbitMQ\Console\Command\StaticConsumerCommand;
-use Gamee\RabbitMQ\DI\Helpers\ConnectionsHelper;
-use Gamee\RabbitMQ\DI\Helpers\ConsumersHelper;
-use Gamee\RabbitMQ\DI\Helpers\ExchangesHelper;
-use Gamee\RabbitMQ\DI\Helpers\ProducersHelper;
-use Gamee\RabbitMQ\DI\Helpers\QueuesHelper;
+use Contributte\RabbitMQ\Client;
+use Contributte\RabbitMQ\Console\Command\ConsumerCommand;
+use Contributte\RabbitMQ\Console\Command\DeclareQueuesAndExchangesCommand;
+use Contributte\RabbitMQ\Console\Command\StaticConsumerCommand;
+use Contributte\RabbitMQ\DI\Helpers\ConnectionsHelper;
+use Contributte\RabbitMQ\DI\Helpers\ConsumersHelper;
+use Contributte\RabbitMQ\DI\Helpers\ExchangesHelper;
+use Contributte\RabbitMQ\DI\Helpers\ProducersHelper;
+use Contributte\RabbitMQ\DI\Helpers\QueuesHelper;
 use Nette\DI\CompilerExtension;
 
 final class RabbitMQExtension extends CompilerExtension

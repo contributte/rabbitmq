@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gamee\RabbitMQ\Exchange;
+namespace Contributte\RabbitMQ\Exchange;
 
-use Gamee\RabbitMQ\Connection\IConnection;
+use Contributte\RabbitMQ\Connection\IConnection;
 
 interface IExchange
 {
