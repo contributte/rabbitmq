@@ -1,5 +1,6 @@
 {
 	"name": "contributte/rabbitmq",
+	"description": "Nette extension for RabbitMQ (using BunnyPHP)",
 	"type": "library",
 	"license": "MIT",
 	"homepage": "https://github.com/contributte/rabbitmq",
