@@ -30,6 +30,7 @@ rabbitmq:
 			password: guest
 			host: localhost
 			port: 5672
+			lazy: false
 
 	queues:
 		testQueue:
