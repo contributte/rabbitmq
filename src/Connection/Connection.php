@@ -62,12 +62,6 @@ final class Connection implements IConnection
 	}
 
 
-	public function getBunnyClient(): Client
-	{
-		return $this->bunnyClient;
-	}
-
-
 	/**
 	 * @throws ConnectionException
 	 */
