@@ -58,7 +58,8 @@ final class ConnectionFactory
 			(float) $connectionData['timeout'],
 			(bool) $connectionData['persistent'],
 			$connectionData['path'],
-			(bool) $connectionData['tcpNoDelay']
+			(bool) $connectionData['tcpNoDelay'],
+			(bool) $connectionData['lazy']
 		);
 	}
 

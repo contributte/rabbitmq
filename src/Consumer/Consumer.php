@@ -56,13 +56,7 @@ final class Consumer
 
 	public function consume(?int $maxSeconds = null, ?int $maxMessages = null): void
 	{
-		$bunnyClient = $this->queue->getConnection()->getBunnyClient();
-
-		$channel = $bunnyClient->channel();
-
-		if (!$channel instanceof Channel) {
-			throw new \UnexpectedValueException;
-		}
+		$channel = $this->queue->getConnection()->getChannel();
 
 		if ($this->prefetchSize !== null || $this->prefetchCount !== null) {
 			$channel->qos($this->prefetchSize ?? 0, $this->prefetchCount ?? 0);
@@ -111,6 +105,6 @@ final class Consumer
 			$this->queue->getName()
 		);
 
-		$bunnyClient->run($maxSeconds);
+		$channel->getClient()->run($maxSeconds);
 	}
 }

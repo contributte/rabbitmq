@@ -32,7 +32,8 @@ final class Connection implements IConnection
 		float $timeout,
 		bool $persistent,
 		string $path,
-		bool $tcpNoDelay
+		bool $tcpNoDelay,
+		bool $lazy = false
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -49,7 +50,9 @@ final class Connection implements IConnection
 
 		$this->bunnyClient = $this->createNewConnection();
 
-		$this->bunnyClient->connect();
+		if (!$lazy) {
+			$this->bunnyClient->connect();
+		}
 	}
 
 
@@ -70,36 +73,48 @@ final class Connection implements IConnection
 	 */
 	public function getChannel(): Channel
 	{
-		if (!$this->channel instanceof Channel) {
-			try {
-				$channel = $this->bunnyClient->channel();
+		if ($this->channel instanceof Channel) {
+			return $this->channel;
+		}
 
-				if (!$channel instanceof Channel) {
-					throw new \UnexpectedValueException;
-				}
+		try {
+			$this->connectIfNeeded();
+			$channel = $this->bunnyClient->channel();
 
-				$this->channel = $channel;
-			} catch (ClientException $e) {
-				if ($e->getMessage() !== 'Broken pipe or closed connection.') {
-					throw new ConnectionException($e->getMessage(), $e->getCode(), $e);
-				}
-
-				/**
-				 * Try to reconnect
-				 */
-				$this->bunnyClient = $this->createNewConnection();
-
-				$channel = $this->bunnyClient->channel();
-
-				if (!$channel instanceof Channel) {
-					throw new \UnexpectedValueException;
-				}
-
-				$this->channel = $channel;
+			if (!$channel instanceof Channel) {
+				throw new \UnexpectedValueException;
 			}
+
+			$this->channel = $channel;
+		} catch (ClientException $e) {
+			if ($e->getMessage() !== 'Broken pipe or closed connection.') {
+				throw new ConnectionException($e->getMessage(), $e->getCode(), $e);
+			}
+
+			/**
+			 * Try to reconnect
+			 */
+			$this->bunnyClient = $this->createNewConnection();
+
+			$channel = $this->bunnyClient->channel();
+
+			if (!$channel instanceof Channel) {
+				throw new \UnexpectedValueException;
+			}
+
+			$this->channel = $channel;
 		}
 
 		return $this->channel;
+	}
+
+	public function connectIfNeeded(): void
+	{
+		if ($this->bunnyClient->isConnected()) {
+			return;
+		}
+
+		$this->bunnyClient->connect();
 	}
 
 
