@@ -30,7 +30,7 @@ Ultra easy-to-use [`RabbitMQ`](https://www.rabbitmq.com/) implementation for [`N
 
 | State  | Version      | Branch   | Nette  | PHP     |
 |--------|--------------|----------|--------|---------|
-| stable | `^6.0.0`     | `master` | `3.0+` | `^7.3`  |
+| stable | `^6.0.0`     | `master` | `3.0+` | `^7.4`  |
 
 ## Maintainers
 
