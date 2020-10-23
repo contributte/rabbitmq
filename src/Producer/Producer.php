@@ -6,9 +6,12 @@ namespace Contributte\RabbitMQ\Producer;
 
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\Queue\IQueue;
+use Nette\SmartObject;
 
 final class Producer
 {
+
+	use SmartObject;
 
 	public const DELIVERY_MODE_NON_PERSISTENT = 1;
 	public const DELIVERY_MODE_PERSISTENT = 2;
@@ -20,6 +23,11 @@ final class Producer
 	private string $contentType;
 
 	private int $deliveryMode;
+
+	/**
+	 * @var callable[]|callable
+	 */
+	public $onPublish;
 
 
 	public function __construct(
@@ -46,6 +54,8 @@ final class Producer
 		if ($this->exchange !== null) {
 			$this->publishToExchange($message, $headers, $routingKey ?? '');
 		}
+
+		$this->onPublish($message, $headers, $routingKey);
 	}
 
 
@@ -88,4 +98,5 @@ final class Producer
 			$routingKey
 		);
 	}
+
 }

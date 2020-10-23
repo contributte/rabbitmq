@@ -7,9 +7,12 @@ namespace Contributte\RabbitMQ\Producer;
 use Contributte\RabbitMQ\Exchange\ExchangeFactory;
 use Contributte\RabbitMQ\Producer\Exception\ProducerFactoryException;
 use Contributte\RabbitMQ\Queue\QueueFactory;
+use Nette\SmartObject;
 
 final class ProducerFactory
 {
+
+	use SmartObject;
 
 	private ProducersDataBag $producersDataBag;
 
@@ -20,8 +23,12 @@ final class ProducerFactory
 	/**
 	 * @var Producer[]
 	 */
-	private array $producers;
+	private array $producers = [];
 
+	/**
+	 * @var callable
+	 */
+	public $onCreated;
 
 	public function __construct(
 		ProducersDataBag $producersDataBag,
@@ -70,12 +77,16 @@ final class ProducerFactory
 			$queue = $this->queueFactory->getQueue($producerData['queue']);
 		}
 
-		return new Producer(
+		$producer = new Producer(
 			$exchange,
 			$queue,
 			$producerData['contentType'],
 			$producerData['deliveryMode']
 		);
+
+		$this->onCreated($name, $producer);
+
+		return $producer;
 	}
 
 }
