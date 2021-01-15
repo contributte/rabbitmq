@@ -27,14 +27,17 @@
 		"php": ">=7.4",
 		"bunny/bunny": "^0.2.4 || ^0.3 || ^0.4",
 		"symfony/console": "~3.3 || ^4.0 || ^5.0",
-		"nette/di": "^3.0",
-		"tracy/tracy": "^2.5"
+		"nette/di": "^3.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.3",
 		"nette/neon": "^3.0",
 		"mockery/mockery": "^1.1",
-		"gamee/php-code-checker-rules": "^2.0"
+		"gamee/php-code-checker-rules": "^2.0",
+		"tracy/tracy": "^2.5"
+	},
+	"suggest": {
+		"tracy/tracy": "Allows using tracy bar panel"
 	},
 	"scripts": {
 		"phpstan": "vendor/bin/phpstan analyse src -c vendor/gamee/php-code-checker-rules/phpstan.neon --level 7",

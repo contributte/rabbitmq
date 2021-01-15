@@ -12,9 +12,7 @@ final class ExchangeDeclarator
 {
 
 	private ConnectionFactory $connectionFactory;
-
 	private ExchangesDataBag $exchangesDataBag;
-
 	private QueueFactory $queueFactory;
 
 

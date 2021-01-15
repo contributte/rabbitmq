@@ -63,7 +63,7 @@ rabbitmq:
 				prefetchSize: 0
 				prefetchCount: 5
 
-# to enable tracy bar
+# Enable tracy bar panel
 tracy:
     bar:
         - Contributte\RabbitMQ\Diagnostics\BarPanel

@@ -18,7 +18,6 @@ final class Connection implements IConnection
 	 * @var array
 	 */
 	private array $connectionParams;
-
 	private ?Channel $channel = null;
 
 

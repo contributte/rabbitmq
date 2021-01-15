@@ -11,7 +11,6 @@ final class ConsumerFactory
 {
 
 	private ConsumersDataBag $consumersDataBag;
-
 	private QueueFactory $queueFactory;
 
 	/**

@@ -28,15 +28,10 @@ final class RabbitMQExtension extends CompilerExtension
 		'producers' => [],
 		'consumers' => [],
 	];
-
 	private ConnectionsHelper $connectionsHelper;
-
 	private QueuesHelper $queuesHelper;
-
 	private ProducersHelper $producersHelper;
-
 	private ExchangesHelper $exchangesHelper;
-
 	private ConsumersHelper $consumersHelper;
 
 

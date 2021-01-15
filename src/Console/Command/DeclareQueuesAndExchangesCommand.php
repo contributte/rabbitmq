@@ -16,11 +16,8 @@ final class DeclareQueuesAndExchangesCommand extends Command
 {
 
 	private QueuesDataBag $queuesDataBag;
-
 	private ExchangesDataBag $exchangesDataBag;
-
 	private QueueDeclarator $queueDeclarator;
-
 	private ExchangeDeclarator $exchangeDeclarator;
 
 

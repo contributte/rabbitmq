@@ -10,7 +10,6 @@ final class Queue implements IQueue
 {
 
 	private string $name;
-
 	private IConnection $connection;
 
 	/**

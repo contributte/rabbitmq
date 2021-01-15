@@ -33,7 +33,7 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 			throw new \UnexpectedValueException;
 		}
 
-		if (!is_numeric($amountOfMessages) || is_array($amountOfMessages)) {
+		if (!is_numeric($amountOfMessages)) {
 			throw new \UnexpectedValueException;
 		}
 

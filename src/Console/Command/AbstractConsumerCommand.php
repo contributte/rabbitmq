@@ -13,7 +13,6 @@ abstract class AbstractConsumerCommand extends Command
 {
 
 	protected ConsumersDataBag $consumersDataBag;
-
 	protected ConsumerFactory $consumerFactory;
 
 

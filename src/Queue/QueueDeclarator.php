@@ -11,7 +11,6 @@ final class QueueDeclarator
 {
 
 	private QueuesDataBag $queuesDataBag;
-
 	private ConnectionFactory $connectionFactory;
 
 

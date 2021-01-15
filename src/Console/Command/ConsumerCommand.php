@@ -36,7 +36,7 @@ final class ConsumerCommand extends AbstractConsumerCommand
 		$this->validateConsumerName($consumerName);
 
 		if ($secondsToLive !== null) {
-			if (!is_numeric($secondsToLive) || is_array($secondsToLive)) {
+			if (!is_numeric($secondsToLive)) {
 				throw new \UnexpectedValueException;
 			}
 

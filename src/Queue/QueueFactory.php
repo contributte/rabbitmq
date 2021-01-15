@@ -12,14 +12,12 @@ final class QueueFactory
 {
 
 	private QueuesDataBag $queuesDataBag;
-
 	private ConnectionFactory $connectionFactory;
 
 	/**
 	 * @var IQueue[]
 	 */
 	private array $queues;
-
 	private QueueDeclarator $queueDeclarator;
 
 

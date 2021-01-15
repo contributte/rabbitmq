@@ -13,16 +13,13 @@ final class ExchangeFactory
 {
 
 	private ExchangesDataBag $exchangesDataBag;
-
 	private QueueFactory $queueFactory;
-
 	private ConnectionFactory $connectionFactory;
 
 	/**
 	 * @var IExchange[]
 	 */
 	private array $exchanges;
-
 	private ExchangeDeclarator $exchangeDeclarator;
 
 

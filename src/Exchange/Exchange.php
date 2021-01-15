@@ -50,7 +50,6 @@ final class Exchange implements IExchange
 	 * @var QueueBinding[]
 	 */
 	private array $queueBindings;
-
 	private IConnection $connection;
 
 

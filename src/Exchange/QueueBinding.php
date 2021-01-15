@@ -10,7 +10,6 @@ final class QueueBinding
 {
 
 	private IQueue $queue;
-
 	private string $routingKey;
 
 	/**

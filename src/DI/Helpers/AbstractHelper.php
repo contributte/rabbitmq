@@ -13,7 +13,6 @@ abstract class AbstractHelper
 	 * @var array
 	 */
 	protected array $defaults = [];
-
 	protected RabbitMQExtension $extension;
 
 

@@ -13,18 +13,14 @@ final class Consumer
 {
 
 	private string $name;
-
 	private IQueue $queue;
 
 	/**
 	 * @var callable
 	 */
 	private $callback;
-
 	private int $messages = 0;
-
 	private ?int $prefetchSize = null;
-
 	private ?int $prefetchCount = null;
 
 

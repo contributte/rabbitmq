@@ -7,17 +7,16 @@ namespace Contributte\RabbitMQ\Producer;
 use Contributte\RabbitMQ\Exchange\ExchangeFactory;
 use Contributte\RabbitMQ\Producer\Exception\ProducerFactoryException;
 use Contributte\RabbitMQ\Queue\QueueFactory;
-use Nette\SmartObject;
 
 final class ProducerFactory
 {
 
-	use SmartObject;
-
+	/**
+	 * @var callable[]
+	 */
+	public array $onCreatedCallbacks = [];
 	private ProducersDataBag $producersDataBag;
-
 	private QueueFactory $queueFactory;
-
 	private ExchangeFactory $exchangeFactory;
 
 	/**
@@ -25,10 +24,6 @@ final class ProducerFactory
 	 */
 	private array $producers = [];
 
-	/**
-	 * @var callable
-	 */
-	public $onCreated;
 
 	public function __construct(
 		ProducersDataBag $producersDataBag,
@@ -51,6 +46,12 @@ final class ProducerFactory
 		}
 
 		return $this->producers[$name];
+	}
+
+
+	public function addOnCreatedCallback(callable $callback): void
+	{
+		$this->onCreatedCallbacks[] = $callback;
 	}
 
 
@@ -84,9 +85,10 @@ final class ProducerFactory
 			$producerData['deliveryMode']
 		);
 
-		$this->onCreated($name, $producer);
+		foreach ($this->onCreatedCallbacks as $callback) {
+			($callback)($name, $producer);
+		}
 
 		return $producer;
 	}
-
 }
