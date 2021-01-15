@@ -62,6 +62,11 @@ rabbitmq:
 			qos:
 				prefetchSize: 0
 				prefetchCount: 5
+
+# to enable tracy bar
+tracy:
+    bar:
+        - Contributte\RabbitMQ\Diagnostics\BarPanel
 ```
 
 ## Declaring Queues and Exchanges

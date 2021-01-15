@@ -1,0 +1,18 @@
+<h1>RabbitMq, total sent <?php echo $this->totalMessages; ?></h1>
+
+<?php if(self::$displayCount !== 0 && $this->totalMessages > self::$displayCount): ?>
+<p>Displayed only first <?php echo self::$displayCount ?> messages</p>
+<?php endif; ?>
+
+<div class="tracy-inner">
+	<table class="tracy-bs-main">
+		<?php foreach ($this->sentMessages as $producerName => $producerMessages): ?>
+			<tr><th>Producer: <?php echo $producerName ?></th></tr>
+		<?php foreach ($producerMessages as $producerMessage): ?>
+			<tr>
+				<td><pre><?php echo $producerMessage ?></pre></td>
+			</tr>
+		<?php endforeach ?>
+		<?php endforeach ?>
+	</table>
+</div>
