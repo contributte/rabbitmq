@@ -1,4 +1,9 @@
-.idea
-composer.lock
+# Editor
+/.idea
+
+# Tests
+/tests/temp
+
+# Composer
 /vendor
-/tests/Cases/output
+/composer.lock
