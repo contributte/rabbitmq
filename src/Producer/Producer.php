@@ -21,7 +21,7 @@ final class Producer
 	/**
 	 * @var callable[]
 	 */
-	private array $onPublishCallbacks = [];
+	private array $publishCallbacks = [];
 
 
 	public function __construct(
@@ -49,7 +49,7 @@ final class Producer
 			$this->publishToExchange($message, $headers, $routingKey ?? '');
 		}
 
-		foreach ($this->onPublishCallbacks as $callback) {
+		foreach ($this->publishCallbacks as $callback) {
 			($callback)($message, $headers, $routingKey);
 		}
 	}
@@ -57,7 +57,7 @@ final class Producer
 
 	public function addOnPublishCallback(callable $callback): void
 	{
-		$this->onPublishCallbacks[] = $callback;
+		$this->publishCallbacks[] = $callback;
 	}
 
 

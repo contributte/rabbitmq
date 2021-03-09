@@ -14,7 +14,7 @@ final class ProducerFactory
 	/**
 	 * @var callable[]
 	 */
-	public array $onCreatedCallbacks = [];
+	public array $createdCallbacks = [];
 	private ProducersDataBag $producersDataBag;
 	private QueueFactory $queueFactory;
 	private ExchangeFactory $exchangeFactory;
@@ -51,7 +51,7 @@ final class ProducerFactory
 
 	public function addOnCreatedCallback(callable $callback): void
 	{
-		$this->onCreatedCallbacks[] = $callback;
+		$this->createdCallbacks[] = $callback;
 	}
 
 
@@ -85,7 +85,7 @@ final class ProducerFactory
 			$producerData['deliveryMode']
 		);
 
-		foreach ($this->onCreatedCallbacks as $callback) {
+		foreach ($this->createdCallbacks as $callback) {
 			($callback)($name, $producer);
 		}
 
