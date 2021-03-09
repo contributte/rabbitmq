@@ -4,7 +4,7 @@ Nette extension for RabbitMQ (using composer package [jakubkulhan/bunny](https:/
 
 ## Installation
 
-```
+```bash
 composer require contributte/rabbitmq
 ```
 
@@ -12,56 +12,56 @@ composer require contributte/rabbitmq
 
 config.neon:
 
-```
+```yaml
 extensions:
-	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
+    rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
 ```
 
 ## Example configuration
 
-```
+```yaml
 services:
-	- TestConsumer
+    - TestConsumer
 
 rabbitmq:
-	connections:
-		default:
-			user: guest
-			password: guest
-			host: localhost
-			port: 5672
-			lazy: false
+    connections:
+        default:
+            user: guest
+            password: guest
+            host: localhost
+            port: 5672
+            lazy: false
 
-	queues:
-		testQueue:
-			connection: default
-			# force queue declare on first queue operation during request
-			# autoCreate: true 
+    queues:
+        testQueue:
+            connection: default
+            # force queue declare on first queue operation during request
+            # autoCreate: true 
 
-	exchanges:
-		testExchange:
-			connection: default
-			type: fanout
-			queueBindings:
-				testQueue:
-					routingKey: testRoutingKey
-			# force exchange declare on first exchange operation during request
-			# autoCreate: true
+    exchanges:
+        testExchange:
+            connection: default
+            type: fanout
+            queueBindings:
+                testQueue:
+                    routingKey: testRoutingKey
+            # force exchange declare on first exchange operation during request
+            # autoCreate: true
 
-	producers:
-		testProducer:
-			exchange: testExchange
-			# queue: testQueue
-			contentType: application/json
-			deliveryMode: 2 # Producer::DELIVERY_MODE_PERSISTENT
+    producers:
+        testProducer:
+            exchange: testExchange
+            # queue: testQueue
+            contentType: application/json
+            deliveryMode: 2 # Producer::DELIVERY_MODE_PERSISTENT
 
-	consumers:
-		testConsumer:
-			queue: testQueue
-			callback: [@TestConsumer, consume]
-			qos:
-				prefetchSize: 0
-				prefetchCount: 5
+    consumers:
+        testConsumer:
+            queue: testQueue
+            callback: [@TestConsumer, consume]
+            qos:
+                prefetchSize: 0
+                prefetchCount: 5
 
 # Enable tracy bar panel
 tracy:
@@ -73,7 +73,7 @@ tracy:
 
 Since v3.0, all queues and exchanges are by default declared on demand using the console command: 
 
-```
+```bash
 php index.php rabbitmq:declareQueuesAndExchanges
 ```
 
@@ -90,9 +90,9 @@ when accessing undeclared queues/exchanges.
 
 services.neon:
 
-```
+```yaml
 services:
-	- TestQueue(@Contributte\RabbitMQ\Client::getProducer(testProducer))
+    - TestQueue(@Contributte\RabbitMQ\Client::getProducer(testProducer))
 ```
 
 TestQueue.php:
@@ -107,7 +107,7 @@ use Contributte\RabbitMQ\Producer\Producer;
 final class TestQueue
 {
 
-	/**
+    /**
 	 * @var Producer
 	 */
 	private $testProducer;
@@ -167,19 +167,19 @@ final class TestConsumer implements IConsumer
 
 There are two consumer commands prepared. `rabbitmq:consumer` wiil consume messages for specified amount of time (in seconds), to run indefinitely skip this parameter. Following command will be consuming messages for one hour:
 
-```
+```bash
 php index.php rabbitmq:consumer testConsumer 3600
 ```
 
 Following command will be consuming messages indefinitely:
 
-```
+```bash
 php index.php rabbitmq:consumer testConsumer
 ```
 
 
 `rabbitmq:staticConsumer` will consume particular amount of messages. Following example will consume just 20 messages:
 
-```
+```bash
 php index.php rabbitmq:staticConsumer testConsumer 20
 ```
