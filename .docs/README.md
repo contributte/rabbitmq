@@ -12,61 +12,61 @@ composer require contributte/rabbitmq
 
 config.neon:
 
-```yaml
+```neon
 extensions:
-    rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
+	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
 ```
 
 ## Example configuration
 
-```yaml
+```neon
 services:
-    - TestConsumer
+	- TestConsumer
 
 rabbitmq:
-    connections:
-        default:
-            user: guest
-            password: guest
-            host: localhost
-            port: 5672
-            lazy: false
+	connections:
+		default:
+			user: guest
+			password: guest
+			host: localhost
+			port: 5672
+			lazy: false
 
-    queues:
-        testQueue:
-            connection: default
-            # force queue declare on first queue operation during request
-            # autoCreate: true 
+	queues:
+		testQueue:
+			connection: default
+			# force queue declare on first queue operation during request
+			# autoCreate: true 
 
-    exchanges:
-        testExchange:
-            connection: default
-            type: fanout
-            queueBindings:
-                testQueue:
-                    routingKey: testRoutingKey
-            # force exchange declare on first exchange operation during request
-            # autoCreate: true
+	exchanges:
+		testExchange:
+			connection: default
+			type: fanout
+			queueBindings:
+				testQueue:
+					routingKey: testRoutingKey
+			# force exchange declare on first exchange operation during request
+			# autoCreate: true
 
-    producers:
-        testProducer:
-            exchange: testExchange
-            # queue: testQueue
-            contentType: application/json
-            deliveryMode: 2 # Producer::DELIVERY_MODE_PERSISTENT
+	producers:
+		testProducer:
+			exchange: testExchange
+			# queue: testQueue
+			contentType: application/json
+			deliveryMode: 2 # Producer::DELIVERY_MODE_PERSISTENT
 
-    consumers:
-        testConsumer:
-            queue: testQueue
-            callback: [@TestConsumer, consume]
-            qos:
-                prefetchSize: 0
-                prefetchCount: 5
+	consumers:
+		testConsumer:
+			queue: testQueue
+			callback: [@TestConsumer, consume]
+			qos:
+				prefetchSize: 0
+				prefetchCount: 5
 
 # Enable tracy bar panel
 tracy:
-    bar:
-        - Contributte\RabbitMQ\Diagnostics\BarPanel
+	bar:
+		- Contributte\RabbitMQ\Diagnostics\BarPanel
 ```
 
 ## Declaring Queues and Exchanges
@@ -90,9 +90,9 @@ when accessing undeclared queues/exchanges.
 
 services.neon:
 
-```yaml
+```neon
 services:
-    - TestQueue(@Contributte\RabbitMQ\Client::getProducer(testProducer))
+	- TestQueue(@Contributte\RabbitMQ\Client::getProducer(testProducer))
 ```
 
 TestQueue.php:
@@ -107,7 +107,7 @@ use Contributte\RabbitMQ\Producer\Producer;
 final class TestQueue
 {
 
-    /**
+	/**
 	 * @var Producer
 	 */
 	private $testProducer;
