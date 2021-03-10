@@ -4,7 +4,7 @@ Nette extension for RabbitMQ (using composer package [jakubkulhan/bunny](https:/
 
 ## Installation
 
-```
+```bash
 composer require contributte/rabbitmq
 ```
 
@@ -12,14 +12,14 @@ composer require contributte/rabbitmq
 
 config.neon:
 
-```
+```neon
 extensions:
 	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
 ```
 
 ## Example configuration
 
-```
+```neon
 services:
 	- TestConsumer
 
@@ -65,15 +65,15 @@ rabbitmq:
 
 # Enable tracy bar panel
 tracy:
-    bar:
-        - Contributte\RabbitMQ\Diagnostics\BarPanel
+	bar:
+		- Contributte\RabbitMQ\Diagnostics\BarPanel
 ```
 
 ## Declaring Queues and Exchanges
 
 Since v3.0, all queues and exchanges are by default declared on demand using the console command: 
 
-```
+```bash
 php index.php rabbitmq:declareQueuesAndExchanges
 ```
 
@@ -90,7 +90,7 @@ when accessing undeclared queues/exchanges.
 
 services.neon:
 
-```
+```neon
 services:
 	- TestQueue(@Contributte\RabbitMQ\Client::getProducer(testProducer))
 ```
@@ -167,19 +167,19 @@ final class TestConsumer implements IConsumer
 
 There are two consumer commands prepared. `rabbitmq:consumer` wiil consume messages for specified amount of time (in seconds), to run indefinitely skip this parameter. Following command will be consuming messages for one hour:
 
-```
+```bash
 php index.php rabbitmq:consumer testConsumer 3600
 ```
 
 Following command will be consuming messages indefinitely:
 
-```
+```bash
 php index.php rabbitmq:consumer testConsumer
 ```
 
 
 `rabbitmq:staticConsumer` will consume particular amount of messages. Following example will consume just 20 messages:
 
-```
+```bash
 php index.php rabbitmq:staticConsumer testConsumer 20
 ```
