@@ -1,14 +1,18 @@
-# RabbitMQ
+# Contributte / RabbitMQ
 
-Nette extension for RabbitMQ (using composer package [jakubkulhan/bunny](https://github.com/jakubkulhan/bunny))
+## Content
 
-## Installation
+- [Usage - how use it](#usage)
+    - [Extension registration](#extension-registration)
+    - [Example configuration](#example-configuration)
+    - [Declaring Queues and Exchanges](#declaring-queues-and-exchanges)
+    - [Publishing messages](#publishing-messages)
+    - [Consuming messages](#consuming-messages)
+    - [Running a consumer trough CLI](#running-a-consumer-trough-cli)
 
-```bash
-composer require contributte/rabbitmq
-```
+## Usage
 
-## Extension registration
+### Extension registration
 
 config.neon:
 
@@ -17,7 +21,7 @@ extensions:
 	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
 ```
 
-## Example configuration
+### Example configuration
 
 ```neon
 services:
@@ -69,7 +73,7 @@ tracy:
 		- Contributte\RabbitMQ\Diagnostics\BarPanel
 ```
 
-## Declaring Queues and Exchanges
+### Declaring Queues and Exchanges
 
 Since v3.0, all queues and exchanges are by default declared on demand using the console command: 
 
@@ -86,7 +90,7 @@ You may also want to declare the queues and exchanges via rabbitmq management in
 do so, don't run the declare console command and don't specify `autoCreate: true`, exceptions will be thrown 
 when accessing undeclared queues/exchanges.
 
-## Publishing messages
+### Publishing messages
 
 services.neon:
 
@@ -130,7 +134,7 @@ final class TestQueue
 }
 ```
 
-## Consuming messages
+### Consuming messages
 
 Your consumer callback has to return a confirmation that particular message has been acknowledges (or different states - unack, reject).
 
@@ -163,7 +167,7 @@ final class TestConsumer implements IConsumer
 }
 ```
 
-## Running a consumer trough CLI
+### Running a consumer trough CLI
 
 There are two consumer commands prepared. `rabbitmq:consumer` wiil consume messages for specified amount of time (in seconds), to run indefinitely skip this parameter. Following command will be consuming messages for one hour:
 
