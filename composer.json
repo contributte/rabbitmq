@@ -40,11 +40,6 @@
 	"suggest": {
 		"tracy/tracy": "Allows using tracy bar panel"
 	},
-	"scripts": {
-		"phpstan": "vendor/bin/phpstan analyse src -c vendor/gamee/php-code-checker-rules/phpstan.neon --level 7",
-		"phpcs": "vendor/bin/phpcs --standard=vendor/gamee/php-code-checker-rules/ruleset.xml --extensions=php,phpt --tab-width=4 --ignore=temp -sp src",
-		"phpcsfix": "vendor/bin/phpcbf --standard=vendor/gamee/php-code-checker-rules/ruleset.xml --extensions=php,phpt --tab-width=4 --ignore=temp -sp src"
-	},
 	"extra": {
 		"branch-alias": {
 			"dev-master": "9.0.x-dev"
