@@ -88,6 +88,13 @@ final class Consumer
 
 						break;
 
+					case IConsumer::MESSAGE_ACK_AND_TERMINATE:
+						// Acknowledge message and terminate
+						$channel->ack($message);
+						$client->stop();
+
+						break;
+
 					default:
 						throw new \InvalidArgumentException(
 							"Unknown return value of consumer [{$this->name}] user callback"
