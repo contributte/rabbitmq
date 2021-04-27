@@ -62,8 +62,13 @@ class BarPanel implements IBarPanel
 
 	function getPanel(): string
 	{
-		return Helpers::capture(function (): void {
+		ob_start(function () {});
+		try {
 			require __DIR__ . '/BarPanel.phtml';
-		});
+			return ob_get_clean();
+		} catch (\Throwable $e) {
+			ob_get_clean();
+			throw $e;
+		}
 	}
 }
