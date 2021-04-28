@@ -7,7 +7,6 @@ namespace Contributte\RabbitMQ\Diagnostics;
 use Contributte\RabbitMQ\Producer\Producer;
 use Contributte\RabbitMQ\Producer\ProducerFactory;
 use Nette\Utils\Html;
-use Tracy\Helpers;
 use Tracy\IBarPanel;
 
 class BarPanel implements IBarPanel
@@ -62,12 +61,14 @@ class BarPanel implements IBarPanel
 
 	function getPanel(): string
 	{
-		ob_start(function () {});
+		ob_start(static function (): void {});
 		try {
 			require __DIR__ . '/BarPanel.phtml';
-			return ob_get_clean();
+
+			return (string) ob_get_clean();
 		} catch (\Throwable $e) {
 			ob_get_clean();
+
 			throw $e;
 		}
 	}
