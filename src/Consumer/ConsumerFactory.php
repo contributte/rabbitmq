@@ -70,6 +70,18 @@ final class ConsumerFactory
 			$prefetchCount = $consumerData['qos']['prefetchCount'];
 		}
 
+		if (is_array($consumerData['bulk']) && $consumerData['bulk']['size']) {
+			return new BulkConsumer(
+				$name,
+				$queue,
+				$consumerData['callback'],
+				$prefetchSize,
+				$prefetchCount,
+				(int) $consumerData['bulk']['size'],
+				(int) $consumerData['bulk']['timeout']
+			);
+		}
+
 		return new Consumer(
 			$name,
 			$queue,
@@ -77,5 +89,6 @@ final class ConsumerFactory
 			$prefetchSize,
 			$prefetchCount
 		);
+
 	}
 }
