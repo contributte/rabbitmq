@@ -134,6 +134,70 @@ final class TestQueue
 }
 ```
 
+### Publishing messages in cycle
+
+If you need to run producer from CLI to periodically check for new messages. In that case, you will only publish messages, never read them, so you must send heartbeat yourself through api, to keep connection to RabbitMQ alive. You can do call heartbeat every request, it will be sent to the RabbitMQ only if needed (eq: time from last beat was longer then configured heartbeat time).
+
+LongRunningTestQueue.php:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Contributte\RabbitMQ\Producer\Producer;
+
+final class LongRunningTestQueue
+{
+
+	/**
+	 * @var Producer
+	 */
+	private $testProducer;
+	
+	/**
+     * @var DataProvider Some data provider 
+     */
+	private $dataProvider;
+	
+	/**
+     * @var bool 
+     */
+	private $running;
+
+
+	public function __construct(Producer $testProducer, DataProvider $dataProvider)
+	{
+		$this->testProducer = $testProducer;
+		$this->dataProvider = $dataProvider;
+	}
+	
+	public function run(): void {
+	    do {
+	        $message = $this->dataProvider->getMessage();
+	        if (!$message) {
+	            $this->testProducer->heartbeat();
+	            sleep(1);
+	            continue;
+	        }
+	        
+	        $this->publish($message);
+	    } while ($this->running);
+	}
+
+
+	public function publish(string $message): void
+	{
+		$json = json_encode(['message' => $message]);
+		$headers = [];
+
+		$this->testProducer->publish($json, $headers);
+	}
+
+}
+```
+
+
 ### Consuming messages
 
 Your consumer callback has to return a confirmation that particular message has been acknowledges (or different states - unack, reject).
