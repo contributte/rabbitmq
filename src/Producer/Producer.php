@@ -61,6 +61,17 @@ final class Producer
 	}
 
 
+	public function sendHeartbeat(): void
+	{
+		if ($this->queue !== null) {
+			$this->queue->getConnection()->sendHeartbeat();
+		}
+		if ($this->exchange !== null) {
+			$this->exchange->getConnection()->sendHeartbeat();
+		}
+	}
+
+
 	private function getBasicHeaders(): array
 	{
 		return [

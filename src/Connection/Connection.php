@@ -5,19 +5,17 @@ declare(strict_types=1);
 namespace Contributte\RabbitMQ\Connection;
 
 use Bunny\Channel;
-use Bunny\Client;
 use Bunny\Exception\ClientException;
 use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
 
 final class Connection implements IConnection
 {
 
-	private Client $bunnyClient;
+	private const HEARTBEAT_INTERVAL = 1;
 
-	/**
-	 * @var array
-	 */
+	private Client $bunnyClient;
 	private array $connectionParams;
+	private int $lastBeat = 0;
 	private ?Channel $channel = null;
 
 
@@ -57,7 +55,9 @@ final class Connection implements IConnection
 
 	public function __destruct()
 	{
-		$this->bunnyClient->disconnect();
+		if ($this->bunnyClient->isConnected()) {
+			$this->bunnyClient->disconnect();
+		}
 	}
 
 
@@ -101,6 +101,7 @@ final class Connection implements IConnection
 		return $this->channel;
 	}
 
+
 	public function connectIfNeeded(): void
 	{
 		if ($this->bunnyClient->isConnected()) {
@@ -108,6 +109,16 @@ final class Connection implements IConnection
 		}
 
 		$this->bunnyClient->connect();
+	}
+
+
+	public function sendHeartbeat(): void
+	{
+		$now = time();
+		if ($this->lastBeat < ($now - self::HEARTBEAT_INTERVAL) && $this->bunnyClient->isConnected()) {
+			$this->bunnyClient->sendHeartbeat();
+			$this->lastBeat = $now;
+		}
 	}
 
 

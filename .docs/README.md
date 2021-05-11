@@ -134,6 +134,71 @@ final class TestQueue
 }
 ```
 
+### Publishing messages in cycle
+
+Bunny does not support well producers that run a long time but send the message only once in a long period. Producers often drop connection in the middle but bunny have no idea about it (stream is closed) and if you try to write some data, an exception will be thrown about broken connection.
+Drawback: you must call heartbeat by yourself.
+In the example below, you can see that Connection::sendHearbeat() is callen in every single cycle - that is not a problem as internally, `contributte\rabbitmq` will actually let you send the heartbeat to rabbitmq only once per 1 second.
+
+LongRunningTestQueue.php:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Contributte\RabbitMQ\Producer\Producer;
+
+final class LongRunningTestQueue
+{
+
+	/**
+	 * @var Producer
+	 */
+	private $testProducer;
+	
+	/**
+     * @var DataProvider Some data provider 
+     */
+	private $dataProvider;
+	
+	/**
+     * @var bool 
+     */
+	private $running;
+
+
+	public function __construct(Producer $testProducer, DataProvider $dataProvider)
+	{
+		$this->testProducer = $testProducer;
+		$this->dataProvider = $dataProvider;
+	}
+	
+	public function run(): void {
+	    do {
+	        $message = $this->dataProvider->getMessage();
+	        if (!$message) {
+	            $this->testProducer->sendHeartbeat();
+	            continue;
+	        }
+	        
+	        $this->publish($message);
+	    } while ($this->running);
+	}
+
+
+	public function publish(string $message): void
+	{
+		$json = json_encode(['message' => $message]);
+		$headers = [];
+
+		$this->testProducer->publish($json, $headers);
+	}
+
+}
+```
+
+
 ### Consuming messages
 
 Your consumer callback has to return a confirmation that particular message has been acknowledges (or different states - unack, reject).
