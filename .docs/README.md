@@ -136,7 +136,9 @@ final class TestQueue
 
 ### Publishing messages in cycle
 
-If you need to run producer from CLI to periodically check for new messages. In that case, you will only publish messages, never read them, so you must send heartbeat yourself through api, to keep connection to RabbitMQ alive. You can do call heartbeat every request, it will be sent to the RabbitMQ only if needed (eq: time from last beat was longer then configured heartbeat time).
+Bunny does not support well producers that run a long time but send the message only once in a long period. Producers often drop connection in the middle but bunny have no idea about it (stream is closed) and if you try to write some data, an exception will be thrown about broken connection.
+Drawback: you must call heartbeat by yourself.
+In the example below, you can see that Connection::sendHearbeat() is callen in every single cycle - that is not a problem as internally, `contributte\rabbitmq` will actually let you send the heartbeat to rabbitmq only once per 1 second.
 
 LongRunningTestQueue.php:
 
@@ -176,8 +178,7 @@ final class LongRunningTestQueue
 	    do {
 	        $message = $this->dataProvider->getMessage();
 	        if (!$message) {
-	            $this->testProducer->heartbeat();
-	            sleep(1);
+	            $this->testProducer->sendHeartbeat();
 	            continue;
 	        }
 	        

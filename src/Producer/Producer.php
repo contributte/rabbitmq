@@ -61,13 +61,13 @@ final class Producer
 	}
 
 
-	public function heartbeat(): void
+	public function sendHeartbeat(): void
 	{
 		if ($this->queue !== null) {
-			$this->queue->getConnection()->heartbeat();
+			$this->queue->getConnection()->sendHeartbeat();
 		}
 		if ($this->exchange !== null) {
-			$this->exchange->getConnection()->heartbeat();
+			$this->exchange->getConnection()->sendHeartbeat();
 		}
 	}
 

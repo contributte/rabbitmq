@@ -19,5 +19,5 @@ interface IConnection
 	/**
 	 * @throws BunnyException
 	 */
-	public function heartbeat(): void;
+	public function sendHeartbeat(): void;
 }

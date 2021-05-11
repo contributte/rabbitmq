@@ -11,11 +11,9 @@ use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
 final class Connection implements IConnection
 {
 
-	private Client $bunnyClient;
+	private const HEARTBEAT_INTERVAL = 1;
 
-	/**
-	 * @var array
-	 */
+	private Client $bunnyClient;
 	private array $connectionParams;
 	private int $lastBeat = 0;
 	private ?Channel $channel = null;
@@ -114,14 +112,10 @@ final class Connection implements IConnection
 	}
 
 
-	public function heartbeat(): void
+	public function sendHeartbeat(): void
 	{
-		if ($this->connectionParams['heartbeat'] && $this->bunnyClient->isConnected()) {
-			$now = time();
-			if ($this->lastBeat > ($now - (int) $this->connectionParams['heartbeat'])) {
-				return;
-			}
-
+		$now = time();
+		if ($this->lastBeat < ($now - self::HEARTBEAT_INTERVAL) && $this->bunnyClient->isConnected()) {
 			$this->bunnyClient->sendHeartbeat();
 			$this->lastBeat = $now;
 		}
