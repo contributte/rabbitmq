@@ -18,7 +18,11 @@ config.neon:
 
 ```neon
 extensions:
+	# Nette 3.0+
 	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
+
+	# Nette 2.4
+	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension24
 ```
 
 ### Example configuration
@@ -40,7 +44,7 @@ rabbitmq:
 		testQueue:
 			connection: default
 			# force queue declare on first queue operation during request
-			# autoCreate: true 
+			# autoCreate: true
 
 	exchanges:
 		testExchange:
@@ -75,7 +79,7 @@ tracy:
 
 ### Declaring Queues and Exchanges
 
-Since v3.0, all queues and exchanges are by default declared on demand using the console command: 
+Since v3.0, all queues and exchanges are by default declared on demand using the console command:
 
 ```bash
 php index.php rabbitmq:declareQueuesAndExchanges
@@ -83,12 +87,12 @@ php index.php rabbitmq:declareQueuesAndExchanges
 
 It's intended to be a part of the deploy process to make sure all the queues and exchanges are prepared for use.
 
-If you need to override this behavior (for example only declare queues that are used during a request and nothing else), 
+If you need to override this behavior (for example only declare queues that are used during a request and nothing else),
 just add the `autoCreate: true` parameter to queue or exchange of your choice.
 
-You may also want to declare the queues and exchanges via rabbitmq management interface or a script but if you fail to 
-do so, don't run the declare console command and don't specify `autoCreate: true`, exceptions will be thrown 
-when accessing undeclared queues/exchanges.
+You may also want to declare the queues and exchanges via rabbitmq management interface or a script but if you fail to
+do so, don't run the declare console command and don't specify `autoCreate: true`, exceptions will be thrown when
+accessing undeclared queues/exchanges.
 
 ### Publishing messages
 
@@ -201,7 +205,8 @@ final class LongRunningTestQueue
 
 ### Consuming messages
 
-Your consumer callback has to return a confirmation that particular message has been acknowledges (or different states - unack, reject).
+Your consumer callback has to return a confirmation that particular message has been acknowledges (or different states -
+unack, reject).
 
 TestConsumer.php
 
@@ -234,7 +239,8 @@ final class TestConsumer implements IConsumer
 
 ### Running a consumer trough CLI
 
-There are two consumer commands prepared. `rabbitmq:consumer` wiil consume messages for specified amount of time (in seconds), to run indefinitely skip this parameter. Following command will be consuming messages for one hour:
+There are two consumer commands prepared. `rabbitmq:consumer` wiil consume messages for specified amount of time (in
+seconds), to run indefinitely skip this parameter. Following command will be consuming messages for one hour:
 
 ```bash
 php index.php rabbitmq:consumer testConsumer 3600
@@ -245,7 +251,6 @@ Following command will be consuming messages indefinitely:
 ```bash
 php index.php rabbitmq:consumer testConsumer
 ```
-
 
 `rabbitmq:staticConsumer` will consume particular amount of messages. Following example will consume just 20 messages:
 

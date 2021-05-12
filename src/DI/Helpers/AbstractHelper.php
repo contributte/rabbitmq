@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Contributte\RabbitMQ\DI\Helpers;
 
-use Contributte\RabbitMQ\DI\RabbitMQExtension;
+use Nette\DI\CompilerExtension;
 
 abstract class AbstractHelper
 {
@@ -13,10 +13,10 @@ abstract class AbstractHelper
 	 * @var array
 	 */
 	protected array $defaults = [];
-	protected RabbitMQExtension $extension;
+	protected CompilerExtension $extension;
 
 
-	public function __construct(RabbitMQExtension $extension)
+	public function __construct(CompilerExtension $extension)
 	{
 		$this->extension = $extension;
 	}

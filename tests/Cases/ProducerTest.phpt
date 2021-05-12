@@ -295,13 +295,11 @@ final class ProducerTest extends TestCase
 		$channelMock = new ChannelMock();
 
 		$connectionMock = \Mockery::mock(IConnection::class)
-			->shouldReceive('getChannel')->andReturn($channelMock)->getMock()
-		;
+			->shouldReceive('getChannel')->andReturn($channelMock)->getMock();
 
 		$queueMock = \Mockery::mock(IQueue::class)
 			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
-			->shouldReceive('getName')->andReturn($testQueueName)->getMock()
-		;
+			->shouldReceive('getName')->andReturn($testQueueName)->getMock();
 
 		$producer = new Producer(
 			null,
@@ -319,13 +317,11 @@ final class ProducerTest extends TestCase
 		$channelMock = new ChannelMock();
 
 		$connectionMock = \Mockery::mock(IConnection::class)
-			->shouldReceive('getChannel')->andReturn($channelMock)->getMock()
-		;
+			->shouldReceive('getChannel')->andReturn($channelMock)->getMock();
 
 		$exchangeMock = \Mockery::mock(IExchange::class)
 			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
-			->shouldReceive('getName')->andReturn($testExchange)->getMock()
-		;
+			->shouldReceive('getName')->andReturn($testExchange)->getMock();
 
 		$producer = new Producer(
 			$exchangeMock,

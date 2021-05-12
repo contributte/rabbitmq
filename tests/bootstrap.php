@@ -1,12 +1,13 @@
-<?php
+<?php declare(strict_types = 1);
 
-/**
- * vendor/bin/tester -p /usr/local/Cellar/php70/7.0.11_3/bin/php -c /usr/local/etc/php/7.0/php.ini -c /usr/local/etc/php/7.0/conf.d/ext-redis.ini tests/
- */
+use Ninjify\Nunjuck\Environment;
 
-namespace Contributte\RabbitMQ\Tests;
+if (@!include __DIR__ . '/../vendor/autoload.php') {
+	echo 'Install Nette Tester using `composer update --dev`';
+	exit(1);
+}
 
-require __DIR__ . '/../vendor/autoload.php';
-
-\Tester\Environment::setup();
-date_default_timezone_set('Europe/Prague');
+// Configure environment
+Environment::setupTester();
+Environment::setupTimezone();
+Environment::setupVariables(__DIR__);
