@@ -184,26 +184,26 @@ use Contributte\RabbitMQ\Consumer\IConsumer;
 final class TestConsumer
 {
 
-    /**
-     * @param Message[] $messages
-     * @return array(delivery_tag => MESSAGE_STATUS)
-     */
+	/**
+	 * @param Message[] $messages
+	 * @return array(delivery_tag => MESSAGE_STATUS)
+	 */
 	public function consume(array $messages): array
 	{
-	    $return = [];
-	    $data = [];
-	    foreach($messages as $message) {
-	        $data[$message->deliveryTag] = json_decode($message->content);
-	    }
-	    
-        /**
-         * @todo bulk message action
-         */ 
-         
-         foreach(array_keys($data) as $tag) {
-            $return[$tag] = IConsumer::MESSAGE_ACK; // Or ::MESSAGE_NACK || ::MESSAGE_REJECT
-         }
-	    
+		$return = [];
+		$data = [];
+		foreach($messages as $message) {
+			$data[$message->deliveryTag] = json_decode($message->content);
+		}
+		
+		/**
+		 * @todo bulk message action
+		 */ 
+		 
+		 foreach(array_keys($data) as $tag) {
+			$return[$tag] = IConsumer::MESSAGE_ACK; // Or ::MESSAGE_NACK || ::MESSAGE_REJECT
+		 }
+		
 		return $return; 
 	}
 
