@@ -56,7 +56,7 @@ final class Connection implements IConnection
 	public function __destruct()
 	{
 		if ($this->bunnyClient->isConnected()) {
-			$this->bunnyClient->disconnect();
+			$this->bunnyClient->syncDisconnect();
 		}
 	}
 
