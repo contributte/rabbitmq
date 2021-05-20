@@ -9,19 +9,20 @@ use Bunny\Client;
 use Bunny\Message;
 use Contributte\RabbitMQ\Queue\IQueue;
 
-final class Consumer
+class Consumer
 {
 
-	private string $name;
-	private IQueue $queue;
+	protected string $name;
+	protected IQueue $queue;
 
 	/**
 	 * @var callable
 	 */
-	private $callback;
-	private int $messages = 0;
-	private ?int $prefetchSize = null;
-	private ?int $prefetchCount = null;
+	protected $callback;
+	protected int $messages = 0;
+	protected ?int $prefetchSize = null;
+	protected ?int $prefetchCount = null;
+	protected ?int $maxMessages = null;
 
 
 	public function __construct(
@@ -52,6 +53,7 @@ final class Consumer
 
 	public function consume(?int $maxSeconds = null, ?int $maxMessages = null): void
 	{
+		$this->maxMessages = $maxMessages;
 		$channel = $this->queue->getConnection()->getChannel();
 
 		if ($this->prefetchSize !== null || $this->prefetchCount !== null) {
@@ -59,49 +61,13 @@ final class Consumer
 		}
 
 		$channel->consume(
-			function (Message $message, Channel $channel, Client $client) use ($maxMessages): void {
+			function (Message $message, Channel $channel, Client $client): void {
+				$this->messages++;
 				$result = call_user_func($this->callback, $message);
 
-				switch ($result) {
-					case IConsumer::MESSAGE_ACK:
-						// Acknowledge message
-						$channel->ack($message);
+				$this->sendResponse($message, $channel, $result, $client);
 
-						break;
-
-					case IConsumer::MESSAGE_NACK:
-						// Message will be requeued
-						$channel->nack($message);
-
-						break;
-
-					case IConsumer::MESSAGE_REJECT:
-						// Message will be discarded
-						$channel->reject($message, false);
-
-						break;
-
-					case IConsumer::MESSAGE_REJECT_AND_TERMINATE:
-						// Message will be discarded
-						$channel->reject($message, false);
-						$client->stop();
-
-						break;
-
-					case IConsumer::MESSAGE_ACK_AND_TERMINATE:
-						// Acknowledge message and terminate
-						$channel->ack($message);
-						$client->stop();
-
-						break;
-
-					default:
-						throw new \InvalidArgumentException(
-							"Unknown return value of consumer [{$this->name}] user callback"
-						);
-				}
-
-				if ($maxMessages !== null && ++$this->messages >= $maxMessages) {
+				if ($this->isMaxMessages()) {
 					$client->stop();
 				}
 			},
@@ -110,4 +76,52 @@ final class Consumer
 
 		$channel->getClient()->run($maxSeconds);
 	}
+
+	protected function sendResponse(Message $message, Channel $channel, int $result, Client $client): void
+	{
+		switch ($result) {
+			case IConsumer::MESSAGE_ACK:
+				// Acknowledge message
+				$channel->ack($message);
+
+				break;
+
+			case IConsumer::MESSAGE_NACK:
+				// Message will be requeued
+				$channel->nack($message);
+
+				break;
+
+			case IConsumer::MESSAGE_REJECT:
+				// Message will be discarded
+				$channel->reject($message, false);
+
+				break;
+
+			case IConsumer::MESSAGE_REJECT_AND_TERMINATE:
+				// Message will be discarded
+				$channel->reject($message, false);
+				$client->stop();
+
+				break;
+
+			case IConsumer::MESSAGE_ACK_AND_TERMINATE:
+				// Acknowledge message and terminate
+				$channel->ack($message);
+				$client->stop();
+
+				break;
+
+			default:
+				throw new \InvalidArgumentException(
+					"Unknown return value of consumer [{$this->name}] user callback"
+				);
+		}
+	}
+
+	protected function isMaxMessages(): bool
+	{
+		return $this->maxMessages !== null && $this->messages >= $this->maxMessages;
+	}
+
 }

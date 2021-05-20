@@ -37,7 +37,7 @@ abstract class AbstractConsumerCommand extends Command
 			throw new \InvalidArgumentException(
 				sprintf(
 					"Consumer [$consumerName] does not exist. \n\n Available consumers: %s",
-					implode('', array_map(function($s): string {
+					implode('', array_map(static function($s): string {
 						return "\n\t- [{$s}]";
 					}, $this->consumersDataBag->getDataKeys()))
 				)
