@@ -80,7 +80,11 @@ final class Connection implements IConnection
 
 			$this->channel = $channel;
 		} catch (ClientException $e) {
-			if ($e->getMessage() !== 'Broken pipe or closed connection.') {
+			if (!in_array(
+				$e->getMessage(),
+				['Broken pipe or closed connection.', 'Could not write data to socket.'],
+				true
+			)) {
 				throw new ConnectionException($e->getMessage(), $e->getCode(), $e);
 			}
 
