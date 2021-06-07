@@ -35,11 +35,12 @@ abstract class AbstractConsumerCommand extends Command
 
 		} catch (ConsumerFactoryException $e) {
 			throw new \InvalidArgumentException(
-				$e->getMessage() . sprintf(
-					"\n\n Available consumers: %s",
-					implode('', array_map(static function($s): string {
-						return "\n\t- [{$s}]";
-					}, $this->consumersDataBag->getDataKeys()))
+				sprintf(
+					"{$e->getMessage()}\n\n Available consumers: %s",
+					implode(
+						'',
+						array_map(static fn ($s): string => "\n\t- [{$s}]", $this->consumersDataBag->getDataKeys())
+					)
 				)
 			);
 		}
