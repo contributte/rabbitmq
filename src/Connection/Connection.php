@@ -10,13 +10,13 @@ use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
 
 final class Connection implements IConnection
 {
-
 	private const HEARTBEAT_INTERVAL = 1;
 
 	private Client $bunnyClient;
 	private array $connectionParams;
 	private int $lastBeat = 0;
 	private ?Channel $channel = null;
+	private array $onConnect = [];
 
 
 	public function __construct(
@@ -60,6 +60,16 @@ final class Connection implements IConnection
 		}
 	}
 
+	public function onConnect(callable $callback): void
+	{
+		if ($this->bunnyClient->isConnected()) {
+			$callback();
+
+			return;
+		}
+
+		$this->onConnect[] = $callback;
+	}
 
 	/**
 	 * @throws ConnectionException
@@ -92,6 +102,7 @@ final class Connection implements IConnection
 			 * Try to reconnect
 			 */
 			$this->bunnyClient = $this->createNewConnection();
+			$this->invokeCallbacks();
 
 			$channel = $this->bunnyClient->channel();
 
@@ -113,6 +124,7 @@ final class Connection implements IConnection
 		}
 
 		$this->bunnyClient->connect();
+		$this->invokeCallbacks();
 	}
 
 
@@ -129,5 +141,12 @@ final class Connection implements IConnection
 	private function createNewConnection(): Client
 	{
 		return new Client($this->connectionParams);
+	}
+
+	private function invokeCallbacks(): void
+	{
+		foreach($this->onConnect as $callback) {
+			$callback();
+		}
 	}
 }

@@ -20,4 +20,6 @@ interface IConnection
 	 * @throws BunnyException
 	 */
 	public function sendHeartbeat(): void;
+
+	public function onConnect(callable $callback): void;
 }
