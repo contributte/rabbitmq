@@ -1,50 +1,58 @@
 {
-	"name": "contributte/rabbitmq",
-	"description": "Nette extension for RabbitMQ (using BunnyPHP)",
-	"type": "library",
-	"license": "MIT",
-	"homepage": "https://github.com/contributte/rabbitmq",
-	"keywords": ["rabbitmq","rabbit","bunnyphp","bunny","nette","extension","php"],
-	"support": {
-		"issues": "https://github.com/contributte/rabbitmq/issues"
-	},
-	"authors": [
-		{
-			"name": "Pavel Janda"
-		}
-	],
-	"autoload": {
-		"psr-4": {
-			"Contributte\\RabbitMQ\\": "src/"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Contributte\\RabbitMQ\\Tests\\": "tests"
-		}
-	},
-	"require": {
-		"php": ">=7.4",
-		"bunny/bunny": "^0.2.4 || ^0.3 || ^0.4 || ^0.5",
-		"symfony/console": "~3.3 || ^4.0 || ^5.0",
-		"nette/di": "^2.4.17 || ^3.0.7",
-		"nette/utils": "^2.5.4 || ^3.2.0"
-	},
-	"require-dev": {
-		"ninjify/nunjuck": "^0.4",
-		"nette/neon": "^2.4.3 || ^3.2.1",
-		"mockery/mockery": "^1.3.3",
-		"gamee/php-code-checker-rules": "^2.0",
-		"tracy/tracy": "^2.5"
-	},
-	"suggest": {
-		"tracy/tracy": "Allows using tracy bar panel"
-	},
-	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"extra": {
-		"branch-alias": {
-			"dev-master": "9.0.x-dev"
-		}
-	}
+  "name": "contributte/rabbitmq",
+  "description": "Nette extension for RabbitMQ (using BunnyPHP)",
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://github.com/contributte/rabbitmq",
+  "keywords": [
+    "rabbitmq",
+    "rabbit",
+    "bunnyphp",
+    "bunny",
+    "nette",
+    "extension",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/contributte/rabbitmq/issues"
+  },
+  "authors": [
+    {
+      "name": "Pavel Janda"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Contributte\\RabbitMQ\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Contributte\\RabbitMQ\\Tests\\": "tests"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "bunny/bunny": "^0.2.4 || ^0.3 || ^0.4 || ^0.5",
+    "symfony/console": "~3.3 || ^4.0 || ^5.0",
+    "nette/di": "^2.4.17 || ^3.0.7",
+    "nette/utils": "^2.5.4 || ^3.2.0"
+  },
+  "require-dev": {
+    "ninjify/nunjuck": "^0.4",
+    "nette/neon": "^2.4.3 || ^3.2.1",
+    "mockery/mockery": "^1.3.3",
+    "gamee/php-code-checker-rules": "^2.0",
+    "tracy/tracy": "^2.5"
+  },
+  "suggest": {
+    "tracy/tracy": "Allows using tracy bar panel"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "extra": {
+    "branch-alias": {
+      "dev-master": "9.0.x-dev"
+    }
+  }
 }
