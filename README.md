@@ -9,9 +9,6 @@
 <p align=center>
   <a href="https://packagist.org/packages/mallgroup/rabbitmq"><img src="https://badgen.net/packagist/php/mallgroup/rabbitmq"></a>
   <a href="https://github.com/mallgroup/rabbitmq"><img src="https://badgen.net/github/license/mallgroup/rabbitmq"></a>
-  <a href="https://bit.ly/ctteg"><img src="https://badgen.net/badge/support/gitter/cyan"></a>
-  <a href="https://bit.ly/cttfo"><img src="https://badgen.net/badge/support/forum/yellow"></a>
-  <a href="https://contributte.org/partners.html"><img src="https://badgen.net/badge/sponsor/donations/F96854"></a>
 </p>
 
 <p align=center>
