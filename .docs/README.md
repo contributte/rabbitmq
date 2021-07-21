@@ -1,4 +1,4 @@
-# Contributte / RabbitMQ
+# Mallgroup / RabbitMQ
 
 ## Content
 
@@ -157,27 +157,18 @@ final class LongRunningTestQueue
 {
 
 	/**
-	 * @var Producer
-	 */
-	private $testProducer;
-	
-	/**
-     * @var DataProvider Some data provider 
+     * @var DataProvider Some data provider
      */
-	private $dataProvider;
-	
-	/**
-     * @var bool 
-     */
-	private $running;
-
+	private DataProvider $dataProvider;
+	private bool $running;
+	private Producer $testProducer;
 
 	public function __construct(Producer $testProducer, DataProvider $dataProvider)
 	{
 		$this->testProducer = $testProducer;
 		$this->dataProvider = $dataProvider;
 	}
-	
+
 	public function run(): void {
 	    do {
 	        $message = $this->dataProvider->getMessage();
@@ -185,7 +176,7 @@ final class LongRunningTestQueue
 	            $this->testProducer->sendHeartbeat();
 	            continue;
 	        }
-	        
+
 	        $this->publish($message);
 	    } while ($this->running);
 	}
@@ -265,16 +256,16 @@ final class TestConsumer
 		foreach($messages as $message) {
 			$data[$message->deliveryTag] = json_decode($message->content);
 		}
-		
+
 		/**
 		 * @todo bulk message action
-		 */ 
-		 
+		 */
+
 		 foreach(array_keys($data) as $tag) {
 			$return[$tag] = IConsumer::MESSAGE_ACK; // Or ::MESSAGE_NACK || ::MESSAGE_REJECT
 		 }
-		
-		return $return; 
+
+		return $return;
 	}
 
 }

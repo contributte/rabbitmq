@@ -1,9 +1,9 @@
 {
-  "name": "contributte/rabbitmq",
+  "name": "mallgroup/rabbitmq",
   "description": "Nette extension for RabbitMQ (using BunnyPHP)",
   "type": "library",
   "license": "MIT",
-  "homepage": "https://github.com/contributte/rabbitmq",
+  "homepage": "https://github.com/mallgroup/rabbitmq",
   "keywords": [
     "rabbitmq",
     "rabbit",
@@ -14,9 +14,15 @@
     "php"
   ],
   "support": {
-    "issues": "https://github.com/contributte/rabbitmq/issues"
+    "issues": "https://github.com/mallgroup/rabbitmq/issues"
   },
   "authors": [
+    {
+      "name": "Radovan Kepák"
+    },
+    {
+      "name": "Petr Kučera"
+    },
     {
       "name": "Pavel Janda"
     }
@@ -52,7 +58,7 @@
   "prefer-stable": true,
   "extra": {
     "branch-alias": {
-      "dev-master": "9.0.x-dev"
+      "dev-master": "9.1.x-dev"
     }
   }
 }
