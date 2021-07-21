@@ -17,6 +17,7 @@ final class Connection implements IConnection
 	private array $connectionParams;
 	private int $lastBeat = 0;
 	private ?Channel $channel = null;
+	private array $onConnect = [];
 
 
 	public function __construct(
@@ -58,6 +59,18 @@ final class Connection implements IConnection
 		if ($this->bunnyClient->isConnected()) {
 			$this->bunnyClient->syncDisconnect();
 		}
+	}
+
+
+	public function onConnect(callable $callback): void
+	{
+		if ($this->bunnyClient->isConnected()) {
+			$callback();
+
+			return;
+		}
+
+		$this->onConnect[] = $callback;
 	}
 
 
@@ -113,6 +126,7 @@ final class Connection implements IConnection
 		}
 
 		$this->bunnyClient->connect();
+		$this->invokeCallbacks();
 	}
 
 
@@ -124,6 +138,7 @@ final class Connection implements IConnection
 			$this->lastBeat = $now;
 		}
 	}
+
 
 	public function reconnect(): void
 	{
@@ -139,6 +154,15 @@ final class Connection implements IConnection
 
 		$this->channel = $channel;
 	}
+
+
+	private function invokeCallbacks(): void
+	{
+		foreach ($this->onConnect as $callback) {
+			$callback();
+		}
+	}
+
 
 	private function createNewConnection(): Client
 	{

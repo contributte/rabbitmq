@@ -63,7 +63,11 @@ final class QueueFactory
 		$connection = $this->connectionFactory->getConnection($queueData['connection']);
 
 		if ($queueData['autoCreate']) {
-			$this->queueDeclarator->declareQueue($name);
+			if ($queueData['autoCreate'] === 'lazy') {
+				$connection->onConnect(fn () => $this->queueDeclarator->declareQueue($name));
+			} else {
+				$this->queueDeclarator->declareQueue($name);
+			}
 		}
 
 		return new Queue(
