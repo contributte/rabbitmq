@@ -43,8 +43,10 @@ rabbitmq:
 	queues:
 		testQueue:
 			connection: default
-			# force queue declare on first queue operation during request
+			# force queue on queue usage (no matter if message is send or not)
 			# autoCreate: true
+			# force queue declare on first queue operation
+			# autoCreate: lazy
 
 	exchanges:
 		testExchange:
@@ -88,7 +90,10 @@ php index.php rabbitmq:declareQueuesAndExchanges
 It's intended to be a part of the deploy process to make sure all the queues and exchanges are prepared for use.
 
 If you need to override this behavior (for example only declare queues that are used during a request and nothing else),
-just add the `autoCreate: true` parameter to queue or exchange of your choice.
+just add the `autoCreate: true` parameter to queue or exchange of your choice. But this will try to create them even if
+exchange is added into script but not used at all (ie: autoloaded). If you really want to use this with first message
+published set value to `autoCreate: lazy`. That will ensure exchanges/queues are declared after really connection is
+established and needed.
 
 You may also want to declare the queues and exchanges via rabbitmq management interface or a script but if you fail to
 do so, don't run the declare console command and don't specify `autoCreate: true`, exceptions will be thrown when
