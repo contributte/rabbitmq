@@ -46,6 +46,51 @@ final class ProducerTest extends TestCase
 	}
 
 
+	public function testProducerTimeout(): void
+	{
+
+		$testQueueName = 'testQueue';
+
+		$channelMock = new ChannelMock($withSocketTimeout = true);
+
+		$connectionMock = \Mockery::mock(IConnection::class)
+			->shouldReceive('getChannel')->andReturn($channelMock)->getMock()
+			->shouldReceive('reconnect')->once()->getMock(); // \Mockery::close() needed at the end of test (eg. tearDown)
+
+		$queueMock = \Mockery::mock(IQueue::class)
+			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
+			->shouldReceive('getName')->andReturn($testQueueName)->getMock();
+
+		$producer = new Producer(
+			null,
+			$queueMock,
+			'application/json',
+			2
+		);
+
+
+		$messageHelper = RabbitMQMessageHelper::getInstance();
+		$messageHelper->reinit();
+
+		$producer->publish('test');
+
+		$testQueueMessages = $messageHelper->getQueueMessages($testQueueName);
+
+		Assert::same(
+			[
+				[
+					'body' => 'test',
+					'headers' => [
+						'content-type' => 'application/json',
+						'delivery-mode' => 2,
+					],
+				],
+			],
+			$testQueueMessages
+		);
+	}
+
+
 	public function testDirectExchange(): void
 	{
 		$exchangeName = 'testDirectExchange';
@@ -331,6 +376,11 @@ final class ProducerTest extends TestCase
 		);
 
 		return $producer;
+	}
+
+	protected function tearDown(): void
+	{
+		\Mockery::close();
 	}
 
 }

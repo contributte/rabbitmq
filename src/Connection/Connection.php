@@ -125,6 +125,20 @@ final class Connection implements IConnection
 		}
 	}
 
+	public function reconnect(): void
+	{
+		$this->bunnyClient->syncDisconnect(); // close current connection to get rid of error on script exit - destructor
+
+		$this->bunnyClient = $this->createNewConnection();
+		$this->bunnyClient->connect();
+		$channel = $this->bunnyClient->channel();
+
+		if (!$channel instanceof Channel) {
+			throw new \UnexpectedValueException;
+		}
+
+		$this->channel = $channel;
+	}
 
 	private function createNewConnection(): Client
 	{
