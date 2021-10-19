@@ -44,6 +44,7 @@ final class Connection implements IConnection
 			'persistent' => $persistent,
 			'path' => $path,
 			'tcp_nodelay' => $tcpNoDelay,
+			'read_write_timeout' => max($timeout, $heartbeat),
 		];
 
 		$this->bunnyClient = $this->createNewConnection();
