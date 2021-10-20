@@ -39,6 +39,8 @@ rabbitmq:
 			host: localhost
 			port: 5672
 			lazy: false
+			timeout: 1 # timeout for connection
+			timeoutRW: 90 # this is timeout for socket connection to the rabbitmq
 
 	queues:
 		testQueue:

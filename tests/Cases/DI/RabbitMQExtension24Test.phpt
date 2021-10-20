@@ -33,6 +33,8 @@ final class RabbitMQExtension24Test extends TestCase
 						host: localhost
 						port: 5672
 						lazy: false
+						timeout: 1
+						timeoutRW: 90.0
 			'));
 			$compiler->addDependencies([__FILE__]);
 		}, __METHOD__);

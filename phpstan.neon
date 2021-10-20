@@ -1,0 +1,10 @@
+includes:
+	- vendor/gamee/php-code-checker-rules/phpstan.neon
+
+parameters:
+	level: 7
+	paths:
+		- src
+	ignoreErrors:
+		- '#Call to an undefined method Nette\\DI\\Definitions\\Definition::setFactory\(\).#'
+		- '#Unable to resolve the template type T in call to method Nette\\DI\\ContainerBuilder::addDefinition\(\)#'
