@@ -31,7 +31,8 @@ final class Connection implements IConnection
 		bool $persistent,
 		string $path,
 		bool $tcpNoDelay,
-		bool $lazy = false
+		bool $lazy = false,
+		?float $timeoutRW = null
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -44,7 +45,7 @@ final class Connection implements IConnection
 			'persistent' => $persistent,
 			'path' => $path,
 			'tcp_nodelay' => $tcpNoDelay,
-			'read_write_timeout' => max($timeout, $heartbeat),
+			'read_write_timeout' => $timeoutRW ?? max($timeout, $heartbeat),
 		];
 
 		$this->bunnyClient = $this->createNewConnection();
