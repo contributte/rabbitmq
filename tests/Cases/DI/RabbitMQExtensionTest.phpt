@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Tests\Cases\DI;
 
-use Contributte\RabbitMQ\Connection\Connection;
 use Contributte\RabbitMQ\Connection\ConnectionFactory;
 use Contributte\RabbitMQ\DI\RabbitMQExtension24;
 use Contributte\RabbitMQ\Tests\Toolkit\NeonLoader;
