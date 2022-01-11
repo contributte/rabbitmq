@@ -82,9 +82,6 @@ final class ExchangeFactory
 
 				$queueBindings[] = new QueueBinding(
 					$queue,
-					/*,
-					$queueBinding['noWait'],
-					$queueBinding['arguments']*/
 					$queueBinding['routingKey']
 				);
 			}
@@ -92,13 +89,6 @@ final class ExchangeFactory
 
 		return new Exchange(
 			$name,
-			/*$exchangeData['type'],
-			$exchangeData['passive'],
-			$exchangeData['durable'],
-			$exchangeData['autoDelete'],
-			$exchangeData['internal'],
-			$exchangeData['noWait'],
-			$exchangeData['arguments'],*/
 			$queueBindings,
 			$connection
 		);
