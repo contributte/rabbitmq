@@ -7,43 +7,41 @@ namespace Contributte\RabbitMQ\DI\Helpers;
 use Contributte\RabbitMQ\Connection\ConnectionFactory;
 use Contributte\RabbitMQ\Connection\ConnectionsDataBag;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
+use Nette\Schema\Expect;
+use Nette\Schema\Schema;
 
 final class ConnectionsHelper extends AbstractHelper
 {
-
-	/**
-	 * @var array
-	 */
-	protected array $defaults = [
-		'host' => '127.0.0.1',
-		'port' => 5672,
-		'user' => 'guest',
-		'password' => 'guest',
-		'vhost' => '/',
-		'timeout' => 1,
-		'heartbeat' => 60.0,
-		'persistent' => false,
-		'path' => '/',
-		'tcpNoDelay' => false,
-		'lazy' => false,
-	];
-
+	public function getConfigSchema(): Schema {
+		return Expect::arrayOf(
+			Expect::structure([
+				'user' => Expect::string('guest'),
+				'password' => Expect::string('guest')->dynamic(),
+				'host' => Expect::string('127.0.0.1'),
+				'port' => Expect::int(5672),
+				'vhost' => Expect::string('/'),
+				'path' => Expect::string('/'),
+				'timeout' => Expect::anyOf(Expect::float(), Expect::int())->default(60)->castTo('float'),
+				'heartbeat' => Expect::anyOf(Expect::float(), Expect::int())->default(30)->castTo('float'),
+				'persistent' => Expect::bool(false),
+				'tcpNoDelay' => Expect::bool(false),
+				'lazy' => Expect::bool(true),
+				'ssl' => Expect::array(null)->required(false),
+				'admin' => Expect::structure([
+					'port' => Expect::int(15672),
+					'secure' => Expect::bool(false),
+				])->castTo('array')->required(false),
+			])->castTo('array'),
+			'string'
+		);
+	}
 
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
-		$connectionsConfig = [];
-
-		foreach ($config as $connectionName => $connectionData) {
-			$connectionsConfig[$connectionName] = $this->extension->validateConfig(
-				$this->getDefaults(),
-				$connectionData
-			);
-		}
-
 		$connectionsDataBag = $builder->addDefinition($this->extension->prefix('connectionsDataBag'))
 			->setFactory(ConnectionsDataBag::class)
-			->setArguments([$connectionsConfig]);
+			->setArguments([$config]);
 
 		return $builder->addDefinition($this->extension->prefix('connectionFactory'))
 			->setFactory(ConnectionFactory::class)

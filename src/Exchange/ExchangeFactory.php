@@ -68,7 +68,11 @@ final class ExchangeFactory
 		$connection = $this->connectionFactory->getConnection($exchangeData['connection']);
 
 		if ($exchangeData['autoCreate']) {
-			$this->exchangeDeclarator->declareExchange($name);
+			if ($exchangeData['autoCreate'] === 2) {
+				$connection->onConnect(fn () => $this->exchangeDeclarator->declareExchange($name));
+			} else {
+				$this->exchangeDeclarator->declareExchange($name);
+			}
 		}
 
 		if ($exchangeData['queueBindings'] !== []) {

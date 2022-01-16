@@ -8,40 +8,34 @@ use Contributte\RabbitMQ\Queue\QueueDeclarator;
 use Contributte\RabbitMQ\Queue\QueueFactory;
 use Contributte\RabbitMQ\Queue\QueuesDataBag;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
+use Nette\Schema\Expect;
+use Nette\Schema\Schema;
 
 final class QueuesHelper extends AbstractHelper
 {
-
-	/**
-	 * @var array
-	 */
-	protected array $defaults = [
-		'connection' => 'default',
-		'passive' => false,
-		'durable' => true,
-		'exclusive' => false,
-		'autoDelete' => false,
-		'noWait' => false,
-		'arguments' => [],
-		'autoCreate' => false,
-	];
+	public function getConfigSchema(): Schema {
+		return Expect::arrayOf(
+			Expect::structure([
+				'connection' => Expect::string('default'),
+				'passive' => Expect::bool(false),
+				'durable' => Expect::bool(true),
+				'exclusive' => Expect::bool(false),
+				'autoDelete' => Expect::bool(false),
+				'noWait' => Expect::bool(false),
+				'arguments' => Expect::array(),
+				'autoCreate' => Expect::int(2)->before(fn ($input) => $input === 'lazy' ? 2 : (int) $input),
+			])->castTo('array'),
+			'string'
+		);
+	}
 
 
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
-		$queuesConfig = [];
-
-		foreach ($config as $queueName => $queueData) {
-			$queuesConfig[$queueName] = $this->extension->validateConfig(
-				$this->getDefaults(),
-				$queueData
-			);
-		}
-
 		$queuesDataBag = $builder->addDefinition($this->extension->prefix('queuesDataBag'))
 			->setFactory(QueuesDataBag::class)
-			->setArguments([$queuesConfig]);
+			->setArguments([$config]);
 
 		$builder->addDefinition($this->extension->prefix('queueDeclarator'))
 			->setFactory(QueueDeclarator::class);

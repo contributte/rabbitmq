@@ -17,8 +17,12 @@ final class Connection implements IConnection
 	private array $connectionParams;
 	private int $lastBeat = 0;
 	private ?Channel $channel = null;
+	private array $onConnect = [];
 
 
+	/**
+	 * @throws \Exception
+	 */
 	public function __construct(
 		string $host,
 		int $port,
@@ -30,7 +34,8 @@ final class Connection implements IConnection
 		bool $persistent,
 		string $path,
 		bool $tcpNoDelay,
-		bool $lazy = false
+		bool $lazy = false,
+		?array $ssl = null
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -40,9 +45,11 @@ final class Connection implements IConnection
 			'vhost' => $vhost,
 			'heartbeat' => $heartbeat,
 			'timeout' => $timeout,
+			'read_write_timeout' => $timeout,
 			'persistent' => $persistent,
 			'path' => $path,
 			'tcp_nodelay' => $tcpNoDelay,
+			'ssl' => $ssl,
 		];
 
 		$this->bunnyClient = $this->createNewConnection();
@@ -60,9 +67,20 @@ final class Connection implements IConnection
 		}
 	}
 
+	public function onConnect(callable $callback): void
+	{
+		if ($this->bunnyClient->isConnected()) {
+			$callback();
+
+			return;
+		}
+
+		$this->onConnect[] = $callback;
+	}
+
 
 	/**
-	 * @throws ConnectionException
+	 * @throws ConnectionException|\Exception
 	 */
 	public function getChannel(): Channel
 	{
@@ -106,6 +124,9 @@ final class Connection implements IConnection
 	}
 
 
+	/**
+	 * @throws \Exception
+	 */
 	public function connectIfNeeded(): void
 	{
 		if ($this->bunnyClient->isConnected()) {
@@ -113,6 +134,7 @@ final class Connection implements IConnection
 		}
 
 		$this->bunnyClient->connect();
+		$this->invokeCallbacks();
 	}
 
 
@@ -125,6 +147,18 @@ final class Connection implements IConnection
 		}
 	}
 
+
+	public function getVhost(): string
+	{
+		return $this->connectionParams['vhost'];
+	}
+
+	private function invokeCallbacks(): void
+	{
+		foreach ($this->onConnect as $callback) {
+			$callback();
+		}
+	}
 
 	private function createNewConnection(): Client
 	{

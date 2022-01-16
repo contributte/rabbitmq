@@ -18,11 +18,7 @@ config.neon:
 
 ```neon
 extensions:
-	# Nette 3.0+
 	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
-
-	# Nette 2.4
-	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension24
 ```
 
 ### Example configuration
@@ -45,6 +41,8 @@ rabbitmq:
 			connection: default
 			# force queue declare on first queue operation during request
 			# autoCreate: true
+			# force queue declare as late as possible
+			# autoCreate: lazy
 
 	exchanges:
 		testExchange:
@@ -55,6 +53,25 @@ rabbitmq:
 					routingKey: testRoutingKey
 			# force exchange declare on first exchange operation during request
 			# autoCreate: true
+			# force queue declare as late as possible
+			# autoCreate: lazy
+
+		federatedExchange:
+			connection: default
+			type: fanout
+			queueBindings:
+				testQueue:
+					routingKey: testRoutingKey
+			# this will try connect to upstream rabbitmq (uri) and set federation
+			# rabbitmq_federation_management rabbit plugin and php curl extension required
+			# this function is still experimental!
+			federation:
+				uri: amqp://user:pass@host:port
+				prefetchCount: 10
+				reconnectDelay: 10
+				messageTTL: 3600
+				expires: 3600
+				ackMode: no-ack
 
 	producers:
 		testProducer:
@@ -93,6 +110,18 @@ just add the `autoCreate: true` parameter to queue or exchange of your choice.
 You may also want to declare the queues and exchanges via rabbitmq management interface or a script but if you fail to
 do so, don't run the declare console command and don't specify `autoCreate: true`, exceptions will be thrown when
 accessing undeclared queues/exchanges.
+
+If you need to declare the queues and exchanges as late as possible, you can set `autoCreate: lazy`, that will move creation
+on the real use of queues/exchanges, so initializing classes will not trigger creation.
+
+### Federation
+
+If your rabbit is capable of Federation, you can easily set federation exchange. Just be aware, you must be able to connect
+to upstream server and have correct rights.
+
+For now, only exchanges are supported for federation, but queues will be added in near future.
+
+if you need more about federation, see https://www.rabbitmq.com/federation.html
 
 ### Publishing messages
 
@@ -160,14 +189,14 @@ final class LongRunningTestQueue
 	 * @var Producer
 	 */
 	private $testProducer;
-	
+
 	/**
-     * @var DataProvider Some data provider 
+     * @var DataProvider Some data provider
      */
 	private $dataProvider;
-	
+
 	/**
-     * @var bool 
+     * @var bool
      */
 	private $running;
 
@@ -177,7 +206,7 @@ final class LongRunningTestQueue
 		$this->testProducer = $testProducer;
 		$this->dataProvider = $dataProvider;
 	}
-	
+
 	public function run(): void {
 	    do {
 	        $message = $this->dataProvider->getMessage();
@@ -185,7 +214,7 @@ final class LongRunningTestQueue
 	            $this->testProducer->sendHeartbeat();
 	            continue;
 	        }
-	        
+
 	        $this->publish($message);
 	    } while ($this->running);
 	}
@@ -265,16 +294,16 @@ final class TestConsumer
 		foreach($messages as $message) {
 			$data[$message->deliveryTag] = json_decode($message->content);
 		}
-		
+
 		/**
 		 * @todo bulk message action
-		 */ 
-		 
+		 */
+
 		 foreach(array_keys($data) as $tag) {
 			$return[$tag] = IConsumer::MESSAGE_ACK; // Or ::MESSAGE_NACK || ::MESSAGE_REJECT
 		 }
-		
-		return $return; 
+
+		return $return;
 	}
 
 }

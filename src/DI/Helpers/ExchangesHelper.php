@@ -8,39 +8,48 @@ use Contributte\RabbitMQ\Exchange\ExchangeDeclarator;
 use Contributte\RabbitMQ\Exchange\ExchangeFactory;
 use Contributte\RabbitMQ\Exchange\ExchangesDataBag;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
+use Nette\Schema\Expect;
+use Nette\Schema\Schema;
 
 final class ExchangesHelper extends AbstractHelper
 {
 
 	public const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout'];
 
-	/**
-	 * @var array
-	 */
-	protected array $defaults = [
-		'connection' => 'default',
-		// direct/topic/headers/fanout
-		'type' => 'direct',
-		'passive' => false,
-		'durable' => true,
-		'autoDelete' => false,
-		'internal' => false,
-		'noWait' => false,
-		'arguments' => [],
-		// See self::$queueBindingDefaults
-		'queueBindings' => [],
-		'autoCreate' => false,
-	];
-
-	/**
-	 * @var array
-	 */
-	private array $queueBindingDefaults = [
-		'routingKey' => '',
-		'noWait' => false,
-		'arguments' => [],
-	];
+	public function getConfigSchema(): Schema
+	{
+		return Expect::arrayOf(
+			Expect::structure([
+				'connection' => Expect::string('default'),
+				'type' => Expect::anyOf(...self::EXCHANGE_TYPES)->default(self::EXCHANGE_TYPES[0]),
+				'passive' => Expect::bool(false),
+				'durable' => Expect::bool(true),
+				'autoDelete' => Expect::bool(false),
+				'internal' => Expect::bool(false),
+				'noWait' => Expect::bool(false),
+				'arguments' => Expect::array(),
+				'queueBindings' => Expect::arrayOf(
+					Expect::structure([
+						'routingKey' => Expect::string(''),
+						'noWait' => Expect::bool(false),
+						'arguments' => Expect::array(),
+					])->castTo('array'),
+					'string'
+				)->default([]),
+				'federation' => Expect::structure([
+					'uri' => Expect::string()->required(),
+					'prefetchCount' => Expect::int(20)->min(1),
+					'reconnectDelay' => Expect::int(1)->min(1),
+					'messageTTL' => Expect::int(3600)->min(1),
+					'expires' => Expect::int(3600)->min(1),
+					'ackMode' => Expect::anyOf('on-confirm', 'on-publish', 'no-ack')->default('no-ack'),
+				])->castTo('array')->required(false),
+				'autoCreate' => Expect::int(2)->before(fn ($input) => $input === 'lazy' ? 2 : (int) $input),
+			])->castTo('array'),
+			'string'
+		);
+	}
 
 
 	/**
@@ -48,40 +57,9 @@ final class ExchangesHelper extends AbstractHelper
 	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
-		$exchangesConfig = [];
-
-		foreach ($config as $exchangeName => $exchangeData) {
-			$exchangeConfig = $this->extension->validateConfig(
-				$this->getDefaults(),
-				$exchangeData
-			);
-
-			/**
-			 * Validate exchange type
-			 */
-			if (!in_array($exchangeConfig['type'], self::EXCHANGE_TYPES, true)) {
-				throw new \InvalidArgumentException(
-					"Unknown exchange type [{$exchangeConfig['type']}]"
-				);
-			}
-
-			if ($exchangeConfig['queueBindings'] !== []) {
-				foreach ($exchangeConfig['queueBindings'] as $queueName => $queueBindingData) {
-					$queueBindingData['routingKey'] = (string) $queueBindingData['routingKey'];
-
-					$exchangeConfig['queueBindings'][$queueName] = $this->extension->validateConfig(
-						$this->queueBindingDefaults,
-						$queueBindingData
-					);
-				}
-			}
-
-			$exchangesConfig[$exchangeName] = $exchangeConfig;
-		}
-
 		$exchangesDataBag = $builder->addDefinition($this->extension->prefix('exchangesDataBag'))
 			->setFactory(ExchangesDataBag::class)
-			->setArguments([$exchangesConfig]);
+			->setArguments([$config]);
 
 		$builder->addDefinition($this->extension->prefix('exchangesDeclarator'))
 			->setFactory(ExchangeDeclarator::class);
