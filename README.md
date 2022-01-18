@@ -31,7 +31,7 @@ For details on how to use this package, check out our [documentation](.docs).
 
 | State  | Version      | Branch   | Nette        | PHP     |
 |--------|--------------|----------|--------------|---------|
-| dev    | `^9.1.x`     | `master` | `2.4 / 3.0+` | `>=7.4` |
+| dev    | `^10.0.x`    | `master` | `3.0+`       | `>=7.4` |
 | stable | `^9.0.0`     | `master` | `2.4 / 3.0+` | `>=7.4` |
 
 ## Development
