@@ -60,15 +60,6 @@ final class ConnectionFactory
 	}
 
 	/**
-	 * @return IConnection[]
-	 */
-	public function getConnections(): array
-	{
-		return $this->connections;
-	}
-
-
-	/**
 	 * @throws ConnectionFactoryException
 	 */
 	private function createApi(string $name): Api

@@ -19,6 +19,9 @@
   "authors": [
     {
       "name": "Pavel Janda"
+    },
+    {
+      "name": "Radovan Kepák"
     }
   ],
   "autoload": {
@@ -53,7 +56,7 @@
   "prefer-stable": true,
   "extra": {
     "branch-alias": {
-      "dev-master": "10.x-dev"
+      "dev-master": "10.0.x-dev"
     }
   }
 }

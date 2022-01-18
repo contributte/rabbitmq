@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Contributte\RabbitMQ\Tests\Mocks;
 
 use Bunny\Channel;
-use Bunny\Exception\ClientException;
 use Bunny\Message;
 use Contributte\RabbitMQ\Tests\Mocks\Helper\RabbitMQMessageHelper;
 use Nette\Neon\Neon;
@@ -17,7 +16,6 @@ final class ChannelMock extends Channel
 	 * @var RabbitMQMessageHelper
 	 */
 	private $messageHelper;
-	private bool $withSocketTimeout;
 
 	public $callback;
 
@@ -27,12 +25,11 @@ final class ChannelMock extends Channel
 	public array $nacks = [];
 	public int $nackPos = 0;
 
-	public function __construct(bool $withSocketTimeout = false)
+	public function __construct()
 	{
 		$config = Neon::decode(file_get_contents(__DIR__ . '/../config/config.test.neon'));
 
 		$this->messageHelper = RabbitMQMessageHelper::getInstance($config['rabbitmq']);
-		$this->withSocketTimeout = $withSocketTimeout;
 	}
 
 
@@ -45,11 +42,6 @@ final class ChannelMock extends Channel
 		$immediate = false
 	)
 	{
-		if($this->withSocketTimeout) {
-			$this->withSocketTimeout = false;
-			throw new ClientException('Could not write data to socket.');
-		}
-
 		if ($exchange === '') {
 			$this->messageHelper->publishToQueueDirectly($routingKey, $body, $headers);
 		} else {
