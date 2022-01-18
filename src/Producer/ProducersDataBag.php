@@ -18,7 +18,7 @@ final class ProducersDataBag extends AbstractDataBag
 		parent::__construct($data);
 
 		foreach ($data as $producerName => $producer) {
-			$this->addProducerByData($producerName, $producer);
+			$this->addProducerByData($producerName, (array) $producer);
 		}
 	}
 

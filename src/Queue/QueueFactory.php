@@ -25,8 +25,7 @@ final class QueueFactory
 		QueuesDataBag $queuesDataBag,
 		ConnectionFactory $connectionFactory,
 		QueueDeclarator $queueDeclarator
-	)
-	{
+	) {
 		$this->queuesDataBag = $queuesDataBag;
 		$this->connectionFactory = $connectionFactory;
 		$this->queueDeclarator = $queueDeclarator;
@@ -63,7 +62,7 @@ final class QueueFactory
 		$connection = $this->connectionFactory->getConnection($queueData['connection']);
 
 		if ($queueData['autoCreate']) {
-			if ($queueData['autoCreate'] === 'lazy') {
+			if ($queueData['autoCreate'] === 2) {
 				$connection->onConnect(fn () => $this->queueDeclarator->declareQueue($name));
 			} else {
 				$this->queueDeclarator->declareQueue($name);

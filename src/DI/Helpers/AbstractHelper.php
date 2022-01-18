@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace Contributte\RabbitMQ\DI\Helpers;
 
 use Nette\DI\CompilerExtension;
+use Nette\Schema\Schema;
 
 abstract class AbstractHelper
 {
-
-	/**
-	 * @var array
-	 */
-	protected array $defaults = [];
 	protected CompilerExtension $extension;
 
 
@@ -22,9 +18,5 @@ abstract class AbstractHelper
 	}
 
 
-	public function getDefaults(): array
-	{
-		return $this->defaults;
-	}
-
+	abstract public function getConfigSchema(): Schema;
 }

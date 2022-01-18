@@ -1,17 +1,17 @@
 ![](https://heatbadger.now.sh/github/readme/mallgroup/rabbitmq/)
 
-<p align=center>
+<p>
   <a href="https://github.com/mallgroup/rabbitmq/actions"><img src="https://badgen.net/github/checks/mallgroup/rabbitmq/master"></a>
   <a href="https://coveralls.io/r/mallgroup/rabbitmq"><img src="https://badgen.net/coveralls/c/github/mallgroup/rabbitmq"></a>
   <a href="https://packagist.org/packages/mallgroup/rabbitmq"><img src="https://badgen.net/packagist/dm/mallgroup/rabbitmq"></a>
   <a href="https://packagist.org/packages/mallgroup/rabbitmq"><img src="https://badgen.net/packagist/v/mallgroup/rabbitmq"></a>
 </p>
-<p align=center>
+<p>
   <a href="https://packagist.org/packages/mallgroup/rabbitmq"><img src="https://badgen.net/packagist/php/mallgroup/rabbitmq"></a>
   <a href="https://github.com/mallgroup/rabbitmq"><img src="https://badgen.net/github/license/mallgroup/rabbitmq"></a>
 </p>
 
-<p align=center>
+<p>
 Website <a href="https://mallgroup.com/">mallgroup.com</a> | Twitter <a href="https://twitter.com/mallcz_it">@mallcz_it</a>
 </p>
 
