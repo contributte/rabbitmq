@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Contributte\RabbitMQ\Producer;
 
-use Bunny\Exception\ClientException;
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\Queue\IQueue;
 
@@ -40,19 +39,18 @@ final class Producer
 
 	public function publish(string $message, array $headers = [], ?string $routingKey = null): void
 	{
-		try {
-			$this->sendPublish(...func_get_args());
-		} catch (ClientException $e) {
-			if (!in_array(
-				$e->getMessage(),
-				['Broken pipe or closed connection.', 'Could not write data to socket.'],
-				true
-			)) {
-				throw $e;
-			}
-			$this->reconnect();
+		$headers = array_merge($this->getBasicHeaders(), $headers);
 
-			$this->sendPublish(...func_get_args());
+		if ($this->queue !== null) {
+			$this->publishToQueue($message, $headers);
+		}
+
+		if ($this->exchange !== null) {
+			$this->publishToExchange($message, $headers, $routingKey ?? '');
+		}
+
+		foreach ($this->publishCallbacks as $callback) {
+			($callback)($message, $headers, $routingKey);
 		}
 	}
 
@@ -70,34 +68,6 @@ final class Producer
 		}
 		if ($this->exchange !== null) {
 			$this->exchange->getConnection()->sendHeartbeat();
-		}
-	}
-
-
-	private function reconnect(): void
-	{
-		if ($this->queue !== null) {
-			$this->queue->getConnection()->reconnect();
-		} elseif ($this->exchange !== null) {
-			$this->exchange->getConnection()->reconnect();
-		}
-	}
-
-
-	private function sendPublish(string $message, array $headers = [], ?string $routingKey = null): void
-	{
-		$headers = array_merge($this->getBasicHeaders(), $headers);
-
-		if ($this->queue !== null) {
-			$this->publishToQueue($message, $headers);
-		}
-
-		if ($this->exchange !== null) {
-			$this->publishToExchange($message, $headers, $routingKey ?? '');
-		}
-
-		foreach ($this->publishCallbacks as $callback) {
-			($callback)($message, $headers, $routingKey);
 		}
 	}
 

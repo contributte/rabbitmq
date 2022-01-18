@@ -68,7 +68,7 @@ final class ExchangeFactory
 		$connection = $this->connectionFactory->getConnection($exchangeData['connection']);
 
 		if ($exchangeData['autoCreate']) {
-			if ($exchangeData['autoCreate'] === 'lazy') {
+			if ($exchangeData['autoCreate'] === 2) {
 				$connection->onConnect(fn () => $this->exchangeDeclarator->declareExchange($name));
 			} else {
 				$this->exchangeDeclarator->declareExchange($name);

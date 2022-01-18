@@ -20,6 +20,9 @@ final class Connection implements IConnection
 	private array $onConnect = [];
 
 
+	/**
+	 * @throws \Exception
+	 */
 	public function __construct(
 		string $host,
 		int $port,
@@ -32,7 +35,7 @@ final class Connection implements IConnection
 		string $path,
 		bool $tcpNoDelay,
 		bool $lazy = false,
-		?float $timeoutRW = null
+		?array $ssl = null
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -42,10 +45,11 @@ final class Connection implements IConnection
 			'vhost' => $vhost,
 			'heartbeat' => $heartbeat,
 			'timeout' => $timeout,
+			'read_write_timeout' => $timeout,
 			'persistent' => $persistent,
 			'path' => $path,
 			'tcp_nodelay' => $tcpNoDelay,
-			'read_write_timeout' => $timeoutRW ?? max($timeout, $heartbeat),
+			'ssl' => $ssl,
 		];
 
 		$this->bunnyClient = $this->createNewConnection();
@@ -63,7 +67,6 @@ final class Connection implements IConnection
 		}
 	}
 
-
 	public function onConnect(callable $callback): void
 	{
 		if ($this->bunnyClient->isConnected()) {
@@ -77,7 +80,7 @@ final class Connection implements IConnection
 
 
 	/**
-	 * @throws ConnectionException
+	 * @throws ConnectionException|\Exception
 	 */
 	public function getChannel(): Channel
 	{
@@ -121,6 +124,9 @@ final class Connection implements IConnection
 	}
 
 
+	/**
+	 * @throws \Exception
+	 */
 	public function connectIfNeeded(): void
 	{
 		if ($this->bunnyClient->isConnected()) {
@@ -142,21 +148,10 @@ final class Connection implements IConnection
 	}
 
 
-	public function reconnect(): void
+	public function getVhost(): string
 	{
-		$this->bunnyClient->syncDisconnect(); // close current connection to get rid of error on script exit - destructor
-
-		$this->bunnyClient = $this->createNewConnection();
-		$this->bunnyClient->connect();
-		$channel = $this->bunnyClient->channel();
-
-		if (!$channel instanceof Channel) {
-			throw new \UnexpectedValueException;
-		}
-
-		$this->channel = $channel;
+		return $this->connectionParams['vhost'];
 	}
-
 
 	private function invokeCallbacks(): void
 	{
@@ -164,7 +159,6 @@ final class Connection implements IConnection
 			$callback();
 		}
 	}
-
 
 	private function createNewConnection(): Client
 	{

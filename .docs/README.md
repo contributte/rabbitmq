@@ -1,4 +1,4 @@
-# Mallgroup / RabbitMQ
+# Contributte / RabbitMQ
 
 ## Content
 
@@ -18,11 +18,7 @@ config.neon:
 
 ```neon
 extensions:
-	# Nette 3.0+
 	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
-
-	# Nette 2.4
-	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension24
 ```
 
 ### Example configuration
@@ -39,15 +35,13 @@ rabbitmq:
 			host: localhost
 			port: 5672
 			lazy: false
-			timeout: 1 # timeout for connection
-			timeoutRW: 90 # this is timeout for socket connection to the rabbitmq
 
 	queues:
 		testQueue:
 			connection: default
-			# force queue on queue usage (no matter if message is send or not)
+			# force queue declare on first queue operation during request
 			# autoCreate: true
-			# force queue declare on first queue operation
+			# force queue declare as late as possible
 			# autoCreate: lazy
 
 	exchanges:
@@ -59,6 +53,25 @@ rabbitmq:
 					routingKey: testRoutingKey
 			# force exchange declare on first exchange operation during request
 			# autoCreate: true
+			# force queue declare as late as possible
+			# autoCreate: lazy
+
+		federatedExchange:
+			connection: default
+			type: fanout
+			queueBindings:
+				testQueue:
+					routingKey: testRoutingKey
+			# this will try connect to upstream rabbitmq (uri) and set federation
+			# rabbitmq_federation_management rabbit plugin and php curl extension required
+			# this function is still experimental!
+			federation:
+				uri: amqp://user:pass@host:port
+				prefetchCount: 10
+				reconnectDelay: 10
+				messageTTL: 3600
+				expires: 3600
+				ackMode: no-ack
 
 	producers:
 		testProducer:
@@ -92,14 +105,23 @@ php index.php rabbitmq:declareQueuesAndExchanges
 It's intended to be a part of the deploy process to make sure all the queues and exchanges are prepared for use.
 
 If you need to override this behavior (for example only declare queues that are used during a request and nothing else),
-just add the `autoCreate: true` parameter to queue or exchange of your choice. But this will try to create them even if
-exchange is added into script but not used at all (ie: autoloaded). If you really want to use this with first message
-published set value to `autoCreate: lazy`. That will ensure exchanges/queues are declared after really connection is
-established and needed.
+just add the `autoCreate: true` parameter to queue or exchange of your choice.
 
 You may also want to declare the queues and exchanges via rabbitmq management interface or a script but if you fail to
 do so, don't run the declare console command and don't specify `autoCreate: true`, exceptions will be thrown when
 accessing undeclared queues/exchanges.
+
+If you need to declare the queues and exchanges as late as possible, you can set `autoCreate: lazy`, that will move creation
+on the real use of queues/exchanges, so initializing classes will not trigger creation.
+
+### Federation
+
+If your rabbit is capable of Federation, you can easily set federation exchange. Just be aware, you must be able to connect
+to upstream server and have correct rights.
+
+For now, only exchanges are supported for federation, but queues will be added in near future.
+
+if you need more about federation, see https://www.rabbitmq.com/federation.html
 
 ### Publishing messages
 
@@ -164,11 +186,20 @@ final class LongRunningTestQueue
 {
 
 	/**
+	 * @var Producer
+	 */
+	private $testProducer;
+
+	/**
      * @var DataProvider Some data provider
      */
-	private DataProvider $dataProvider;
-	private bool $running;
-	private Producer $testProducer;
+	private $dataProvider;
+
+	/**
+     * @var bool
+     */
+	private $running;
+
 
 	public function __construct(Producer $testProducer, DataProvider $dataProvider)
 	{

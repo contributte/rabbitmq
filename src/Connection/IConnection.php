@@ -21,7 +21,7 @@ interface IConnection
 	 */
 	public function sendHeartbeat(): void;
 
-	public function reconnect(): void;
-
 	public function onConnect(callable $callback): void;
+
+	public function getVhost(): string;
 }

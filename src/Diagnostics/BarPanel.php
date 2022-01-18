@@ -59,7 +59,7 @@ class BarPanel implements IBarPanel
 	}
 
 
-	function getPanel(): string
+	public function getPanel(): string
 	{
 		ob_start(static function (): void {});
 		try {

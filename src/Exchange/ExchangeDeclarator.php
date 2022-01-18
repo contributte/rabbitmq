@@ -10,7 +10,6 @@ use Contributte\RabbitMQ\Queue\QueueFactory;
 
 final class ExchangeDeclarator
 {
-
 	private ConnectionFactory $connectionFactory;
 	private ExchangesDataBag $exchangesDataBag;
 	private QueueFactory $queueFactory;
@@ -20,8 +19,7 @@ final class ExchangeDeclarator
 		ConnectionFactory $connectionFactory,
 		ExchangesDataBag $exchangesDataBag,
 		QueueFactory $queueFactory
-	)
-	{
+	) {
 		$this->connectionFactory = $connectionFactory;
 		$this->exchangesDataBag = $exchangesDataBag;
 		$this->queueFactory = $queueFactory;
@@ -60,6 +58,26 @@ final class ExchangeDeclarator
 					$queueBinding['noWait'],
 					$queueBinding['arguments']
 				);
+			}
+		}
+
+		if (isset($exchangeData['federation'])) {
+			try {
+				$api = $this->connectionFactory->getApi($exchangeData['connection']);
+				$federation = $exchangeData['federation'];
+
+				$api->createFederation(
+					$name,
+					$connection->getVhost(),
+					$federation['uri'],
+					$federation['prefetchCount'],
+					$federation['reconnectDelay'],
+					$federation['messageTTL'],
+					$federation['expires'],
+					$federation['ackMode'],
+				);
+			} catch (\RuntimeException $e) {
+				throw new ExchangeFactoryException("Failed to create federated exchange [$name]", $e->getCode(), $e);
 			}
 		}
 	}
