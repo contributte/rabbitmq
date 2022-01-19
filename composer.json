@@ -50,7 +50,8 @@
     "tracy/tracy": "^2.5"
   },
   "suggest": {
-    "tracy/tracy": "Allows using tracy bar panel"
+    "tracy/tracy": "Allows using tracy bar panel",
+    "ext-curl": "Allows usage of Federation"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
