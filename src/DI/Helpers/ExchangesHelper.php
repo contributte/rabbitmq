@@ -38,7 +38,7 @@ final class ExchangesHelper extends AbstractHelper
 					'string'
 				)->default([]),
 				'federation' => Expect::structure([
-					'uri' => Expect::string()->required(),
+					'uri' => Expect::string()->required()->dynamic(),
 					'prefetchCount' => Expect::int(20)->min(1),
 					'reconnectDelay' => Expect::int(1)->min(1),
 					'messageTTL' => Expect::int(3600)->min(1),
