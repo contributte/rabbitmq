@@ -23,11 +23,11 @@ final class ConsumersHelper extends AbstractHelper
 				'bulk' => Expect::structure([
 					'size' => Expect::int()->min(1),
 					'timeout' => Expect::int()->min(1),
-				])->required(false),
+				])->castTo('array')->required(false),
 				'qos' => Expect::structure([
 					'prefetchSize' => Expect::int()->nullable(),
 					'prefetchCount' => Expect::int()->nullable(),
-				])->required(false),
+				])->castTo('array')->required(false),
 			])->castTo('array'),
 			'string'
 		);
