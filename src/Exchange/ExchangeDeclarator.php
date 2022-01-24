@@ -75,6 +75,7 @@ final class ExchangeDeclarator
 					$federation['messageTTL'],
 					$federation['expires'],
 					$federation['ackMode'],
+					$federation['policy']
 				);
 			} catch (\RuntimeException $e) {
 				throw new ExchangeFactoryException("Failed to create federated exchange [$name]", $e->getCode(), $e);

@@ -68,10 +68,15 @@ rabbitmq:
 			federation:
 				uri: amqp://user:pass@host:port
 				prefetchCount: 10
-				reconnectDelay: 10
-				messageTTL: 3600
-				expires: 3600
+				reconnectDelay: 10 # value in seconds, same as rabbitmq
+				messageTTL: 3600000 # value in milliseconds, same as rabbitmq
+				expires: 3600000
 				ackMode: no-ack
+				policy: # this is optionally
+				    priority: 1 # default is 0, priority of policy to create
+				    arguments: # all possible arguments, you can use CamelCase or dashes
+				        HASync: all # this will be translated as ha-sync: all
+				        ha-sync-mode: automatic
 
 	producers:
 		testProducer:

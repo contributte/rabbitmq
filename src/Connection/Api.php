@@ -36,7 +36,8 @@ class Api implements IApi
 		int $reconnectDelay,
 		int $messageTTL,
 		int $expires,
-		string $ackMode
+		string $ackMode,
+		array $policy
 	): bool {
 		$uniqueName = $exchange . '-' . substr(md5($uri), -8);
 		$policyName = $uniqueName . '-policy';
@@ -47,8 +48,8 @@ class Api implements IApi
 				'uri' => $uri,
 				'prefetch-count' => $prefetch,
 				'reconnect-delay' => $reconnectDelay,
-				'message-ttl' => $messageTTL * 1000,
-				'expires' => $expires * 1000,
+				'message-ttl' => $messageTTL,
+				'expires' => $expires,
 				'ack-mode' => $ackMode,
 				'exchange' => $exchange,
 			],
@@ -56,10 +57,8 @@ class Api implements IApi
 		$policyParams = [
 			'pattern' => $exchange,
 			'apply-to' => 'exchanges',
-			'definition' => (object) [
-				'federation-upstream' => $federationName,
-				'message-ttl' => $messageTTL * 1000,
-			],
+			'priority' => $policy['priority'],
+			'definition' => (object) ($policy['arguments'] + ['federation-upstream' => $federationName]),
 		];
 
 		$this->createFederationUpstream($federationName, $vhost, $federationParams);

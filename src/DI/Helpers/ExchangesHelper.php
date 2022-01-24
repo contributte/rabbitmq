@@ -41,9 +41,16 @@ final class ExchangesHelper extends AbstractHelper
 					'uri' => Expect::string()->required()->dynamic(),
 					'prefetchCount' => Expect::int(20)->min(1),
 					'reconnectDelay' => Expect::int(1)->min(1),
-					'messageTTL' => Expect::int(3600)->min(1),
-					'expires' => Expect::int(3600)->min(1),
+					'messageTTL' => Expect::int(3600000)->min(1),
+					'expires' => Expect::int(3600000)->min(1),
 					'ackMode' => Expect::anyOf('on-confirm', 'on-publish', 'no-ack')->default('no-ack'),
+					'policy' => Expect::structure([
+						'priority' => Expect::int(0),
+						'arguments' => Expect::arrayOf(
+							Expect::anyOf(Expect::string(), Expect::int(), Expect::bool()),
+							'string'
+						)->default([])->before(fn ($arguments) => $this->normalizePolicyArguments($arguments)),
+					])->castTo('array'),
 				])->castTo('array')->required(false),
 				'autoCreate' => Expect::int(2)->before(fn ($input) => $input === 'lazy' ? 2 : (int) $input),
 			])->castTo('array'),
@@ -67,5 +74,20 @@ final class ExchangesHelper extends AbstractHelper
 		return $builder->addDefinition($this->extension->prefix('exchangeFactory'))
 			->setFactory(ExchangeFactory::class)
 			->setArguments([$exchangesDataBag]);
+	}
+
+	protected function normalizePolicyArguments(array $arguments = []): array
+	{
+		$return = [];
+		foreach($arguments as $key => $value) {
+			$return[$this->normalizePolicyArgumentKey($key)] = $value;
+		}
+
+		return $return;
+	}
+
+	private function normalizePolicyArgumentKey(string $key): string
+	{
+		return strtolower(preg_replace(['/([a-z\d])([A-Z])/', '/([^-])([A-Z][a-z])/'], '$1-$2', $key));
 	}
 }
