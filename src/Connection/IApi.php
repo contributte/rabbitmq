@@ -16,6 +16,7 @@ interface IApi
 		int $reconnectDelay,
 		int $messageTTL,
 		int $expires,
-		string $ackMode
+		string $ackMode,
+		array $policy
 	): bool;
 }
