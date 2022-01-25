@@ -39,10 +39,10 @@ rabbitmq:
 	queues:
 		testQueue:
 			connection: default
-			# force queue declare on first queue operation during request
-			# autoCreate: true
-			# force queue declare as late as possible
-			# autoCreate: lazy
+			autoCreate: lazy
+			  # true - force queue declare on first queue operation during request
+			  # lazy - force queue declare as late as possible (when first needed)
+			  # false - do not declare (will fail if not created)
 
 	exchanges:
 		testExchange:
@@ -51,10 +51,10 @@ rabbitmq:
 			queueBindings:
 				testQueue:
 					routingKey: testRoutingKey
-			# force exchange declare on first exchange operation during request
-			# autoCreate: true
-			# force queue declare as late as possible
-			# autoCreate: lazy
+			autoCreate: lazy
+			  # true - force queue declare on first queue operation during request
+			  # lazy - force queue declare as late as possible (when first needed)
+			  # false - do not declare (will fail if not created)
 
 		federatedExchange:
 			connection: default
