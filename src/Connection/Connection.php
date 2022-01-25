@@ -45,7 +45,7 @@ final class Connection implements IConnection
 			'vhost' => $vhost,
 			'heartbeat' => $heartbeat,
 			'timeout' => $timeout,
-			'read_write_timeout' => $timeout,
+			'read_write_timeout' => max($heartbeat, $timeout) * 2,
 			'persistent' => $persistent,
 			'path' => $path,
 			'tcp_nodelay' => $tcpNoDelay,
