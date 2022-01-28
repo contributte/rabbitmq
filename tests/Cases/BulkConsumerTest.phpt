@@ -6,11 +6,17 @@ namespace Contributte\RabbitMQ\Tests\Cases;
 
 use Bunny\Client;
 use Bunny\Message;
+use Contributte\RabbitMQ\Connection\ConnectionFactory;
 use Contributte\RabbitMQ\Connection\IConnection;
 use Contributte\RabbitMQ\Consumer\BulkConsumer;
 use Contributte\RabbitMQ\Consumer\Exception\UnexpectedConsumerResultTypeException;
 use Contributte\RabbitMQ\Consumer\IConsumer;
+use Contributte\RabbitMQ\Exchange\ExchangeDeclarator;
+use Contributte\RabbitMQ\Exchange\ExchangesDataBag;
+use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
+use Contributte\RabbitMQ\Queue\QueueDeclarator;
+use Contributte\RabbitMQ\Queue\QueuesDataBag;
 use Contributte\RabbitMQ\Tests\Mocks\ChannelMock;
 use Contributte\RabbitMQ\Tests\Mocks\QueueMock;
 use Tester\Assert;
@@ -41,7 +47,7 @@ final class BulkConsumerTest extends TestCase
 			return array_map(fn($message) => IConsumer::MESSAGE_ACK, $messages);
 		};
 
-		$instance = new BulkConsumer('bulkTest', $queueMock, $callback, null, null, 3, 2);
+		$instance = new BulkConsumer($this->createLazyDeclarator(), 'bulkTest', $queueMock, $callback, null, null, 3, 2);
 
 		$instance->consume(2);
 
@@ -80,7 +86,7 @@ final class BulkConsumerTest extends TestCase
 			throw new \Exception("test");
 		};
 
-		$instance = new BulkConsumer('bulkTest', $queueMock, $callback, null, null, 3, 2);
+		$instance = new BulkConsumer($this->createLazyDeclarator(), 'bulkTest', $queueMock, $callback, null, null, 3, 2);
 
 		$instance->consume(2);
 
@@ -119,7 +125,7 @@ final class BulkConsumerTest extends TestCase
 			return true;
 		};
 
-		$instance = new BulkConsumer('bulkTest', $queueMock, $callback, null, null, 3, 2);
+		$instance = new BulkConsumer($this->createLazyDeclarator(), 'bulkTest', $queueMock, $callback, null, null, 3, 2);
 
 		Assert::exception(fn () => $instance->consume(2), UnexpectedConsumerResultTypeException::class);
 
@@ -187,6 +193,20 @@ final class BulkConsumerTest extends TestCase
 						}
 					} while ($this->running && $data !== null);
 				}
+			}
+		};
+	}
+
+	protected function createLazyDeclarator(): LazyDeclarator
+	{
+		return new class extends LazyDeclarator{
+			public function __construct()
+			{
+				$this->queuesDataBag = \Mockery::spy(QueuesDataBag::class);
+				$this->exchangesDataBag = \Mockery::spy(ExchangesDataBag::class);
+				$this->queueDeclarator = \Mockery::spy(QueueDeclarator::class);
+				$this->exchangeDeclarator = \Mockery::spy(ExchangeDeclarator::class);
+				$this->connectionFactory = \Mockery::spy(ConnectionFactory::class);
 			}
 		};
 	}

@@ -10,26 +10,15 @@ use Contributte\RabbitMQ\Queue\QueueFactory;
 
 final class ExchangeDeclarator
 {
-	private ConnectionFactory $connectionFactory;
-	private ExchangesDataBag $exchangesDataBag;
-	private QueueFactory $queueFactory;
-
-
-	public function __construct(
-		ConnectionFactory $connectionFactory,
-		ExchangesDataBag $exchangesDataBag,
-		QueueFactory $queueFactory
-	) {
-		$this->connectionFactory = $connectionFactory;
-		$this->exchangesDataBag = $exchangesDataBag;
-		$this->queueFactory = $queueFactory;
+	public function __construct(private ConnectionFactory $connectionFactory, private ExchangesDataBag $exchangesDataBag, private QueueFactory $queueFactory)
+	{
 	}
 
 
 	public function declareExchange(string $name): void
 	{
 		try {
-			$exchangeData = $this->exchangesDataBag->getDataBykey($name);
+			$exchangeData = $this->exchangesDataBag->getDataByKey($name);
 		} catch (\InvalidArgumentException $e) {
 			throw new ExchangeFactoryException("Exchange [$name] does not exist");
 		}

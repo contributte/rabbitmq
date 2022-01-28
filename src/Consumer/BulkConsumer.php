@@ -9,6 +9,7 @@ use Bunny\Channel;
 use Bunny\Client;
 use Bunny\Message;
 use Contributte\RabbitMQ\Consumer\Exception\UnexpectedConsumerResultTypeException;
+use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
 
 class BulkConsumer extends Consumer
@@ -22,6 +23,7 @@ class BulkConsumer extends Consumer
 	protected ?int $stopTime = null;
 
 	public function __construct(
+		private LazyDeclarator $lazyDeclarator,
 		string $name,
 		IQueue $queue,
 		callable $callback,
@@ -30,7 +32,7 @@ class BulkConsumer extends Consumer
 		int $bulkSize,
 		int $bulkTime
 	) {
-		parent::__construct($name, $queue, $callback, $prefetchSize, $prefetchCount);
+		parent::__construct($this->lazyDeclarator, $name, $queue, $callback, $prefetchSize, $prefetchCount);
 
 		if ($bulkSize > 0 && $bulkTime > 0) {
 			$this->bulkSize = $bulkSize;
@@ -103,12 +105,12 @@ class BulkConsumer extends Consumer
 
 		try {
 			$result = call_user_func($this->callback, $messages);
-		} catch (\Throwable $e) {
-			$result = array_map(static fn () => IConsumer::MESSAGE_NACK, $messages);
+		} catch (\Throwable) {
+			$result = array_map(static fn (Message $message) => IConsumer::MESSAGE_NACK, $messages);
 		}
 
 		if (!is_array($result)) {
-			$result = array_map(static fn () => IConsumer::MESSAGE_NACK, $messages);
+			$result = array_map(static fn (Message $message) => IConsumer::MESSAGE_NACK, $messages);
 			$this->sendResultsBack($client, $result);
 
 			throw new UnexpectedConsumerResultTypeException(
@@ -122,6 +124,9 @@ class BulkConsumer extends Consumer
 		$this->buffer = [];
 	}
 
+	/**
+	 * @param array<int> $result
+	 */
 	private function sendResultsBack(AbstractClient $client, array $result): void
 	{
 		if ($client instanceof Client) {

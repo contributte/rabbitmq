@@ -9,16 +9,8 @@ use Contributte\RabbitMQ\Connection\IConnection;
 final class Queue implements IQueue
 {
 
-	private string $name;
-	private IConnection $connection;
-
-
-	public function __construct(
-		string $name,
-		IConnection $connection
-	) {
-		$this->name = $name;
-		$this->connection = $connection;
+	public function __construct(private string $name, private IConnection $connection)
+	{
 	}
 
 

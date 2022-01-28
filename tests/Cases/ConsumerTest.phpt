@@ -6,10 +6,16 @@ namespace Contributte\RabbitMQ\Tests\Cases;
 
 use Bunny\Client;
 use Bunny\Message;
+use Contributte\RabbitMQ\Connection\ConnectionFactory;
 use Contributte\RabbitMQ\Connection\IConnection;
 use Contributte\RabbitMQ\Consumer\Consumer;
 use Contributte\RabbitMQ\Consumer\IConsumer;
+use Contributte\RabbitMQ\Exchange\ExchangeDeclarator;
+use Contributte\RabbitMQ\Exchange\ExchangesDataBag;
+use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
+use Contributte\RabbitMQ\Queue\QueueDeclarator;
+use Contributte\RabbitMQ\Queue\QueuesDataBag;
 use Contributte\RabbitMQ\Tests\Mocks\ChannelMock;
 use Contributte\RabbitMQ\Tests\Mocks\QueueMock;
 use Tester\Assert;
@@ -43,7 +49,7 @@ final class ConsumerTest extends TestCase
 			return IConsumer::MESSAGE_ACK;
 		};
 
-		$instance = new Consumer('bulkTest', $queueMock, $callback, null, null);
+		$instance = new Consumer($this->createLazyDeclarator(),'bulkTest', $queueMock, $callback, null, null);
 
 		$instance->consume(1);
 
@@ -80,7 +86,7 @@ final class ConsumerTest extends TestCase
 			return IConsumer::MESSAGE_ACK;
 		};
 
-		$instance = new Consumer('bulkTest', $queueMock, $callback, null, null);
+		$instance = new Consumer($this->createLazyDeclarator(), 'bulkTest', $queueMock, $callback, null, null);
 
 		$instance->consume(null, 5);
 		Assert::same(5, $countOfConsumerCallbackCalls, 'Number of consumer callback calls');
@@ -119,7 +125,7 @@ final class ConsumerTest extends TestCase
 			throw new \Exception("test-exc");
 		};
 
-		$instance = new Consumer('bulkTest', $queueMock, $callback, null, null);
+		$instance = new Consumer($this->createLazyDeclarator(), 'bulkTest', $queueMock, $callback, null, null);
 
 		Assert::exception(fn() => $instance->consume(2), \Exception::class, 'test-exc');
 
@@ -151,7 +157,7 @@ final class ConsumerTest extends TestCase
 			return true;
 		};
 
-		$instance = new Consumer('bulkTest', $queueMock, $callback, null, null);
+		$instance = new Consumer($this->createLazyDeclarator(),'bulkTest', $queueMock, $callback, null, null);
 
 		Assert::exception(fn() => $instance->consume(1), \TypeError::class);
 
@@ -183,13 +189,27 @@ final class ConsumerTest extends TestCase
 			return PHP_INT_MAX - 987654321;
 		};
 
-		$instance = new Consumer('bulkTest', $queueMock, $callback, null, null);
+		$instance = new Consumer($this->createLazyDeclarator(), 'bulkTest', $queueMock, $callback, null, null);
 
 		Assert::exception(fn() => $instance->consume(1), \InvalidArgumentException::class);
 
 		Assert::same(1, $countOfConsumerCallbackCalls, 'Number of consumer callback calls');
 		Assert::count(0, $channelMock->nacks, 'Number of NACKs');
 		Assert::same([], $channelMock->nacks, 'NACKs data');
+	}
+
+	protected function createLazyDeclarator(): LazyDeclarator
+	{
+		return new class extends LazyDeclarator{
+			public function __construct()
+			{
+				$this->queuesDataBag = \Mockery::spy(QueuesDataBag::class);
+				$this->exchangesDataBag = \Mockery::spy(ExchangesDataBag::class);
+				$this->queueDeclarator = \Mockery::spy(QueueDeclarator::class);
+				$this->exchangeDeclarator = \Mockery::spy(ExchangeDeclarator::class);
+				$this->connectionFactory = \Mockery::spy(ConnectionFactory::class);
+			}
+		};
 	}
 
 	protected function createClient(int $numberOfMessages = 2)

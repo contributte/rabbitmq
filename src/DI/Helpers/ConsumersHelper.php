@@ -33,6 +33,9 @@ final class ConsumersHelper extends AbstractHelper
 		);
 	}
 
+	/**
+	 * @param array<string, mixed> $config
+	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$consumersDataBag = $builder->addDefinition($this->extension->prefix('consumersDataBag'))

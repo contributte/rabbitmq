@@ -8,11 +8,13 @@ abstract class AbstractDataBag
 {
 
 	/**
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	protected array $data = [];
 
-
+	/**
+	 * @param array<string, mixed> $data
+	 */
 	public function __construct(array $data)
 	{
 		foreach ($data as $queueOrExchangeName => $config) {
@@ -20,17 +22,22 @@ abstract class AbstractDataBag
 		}
 	}
 
-
-	public function getDataBykey(string $key): array
+	/**
+	 * @param string $key
+	 * @return array<string,mixed>
+	 */
+	public function getDataByKey(string $key): array
 	{
 		if (!isset($this->data[$key])) {
 			throw new \InvalidArgumentException("Data at key [$key] not found");
 		}
 
-		return (array) $this->data[$key];
+		return $this->data[$key];
 	}
 
-
+	/**
+	 * @return string[]
+	 */
 	public function getDataKeys(): array
 	{
 		return array_keys($this->data);

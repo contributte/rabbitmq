@@ -16,7 +16,6 @@ class BarPanel implements IBarPanel
 	 * how many messages to display maximum on tracy bar, set 0 for unlimited?
 	 */
 	public static int $displayCount = 100;
-	private ProducerFactory $producerFactory;
 
 	/**
 	 * @var array<string, string[]>
@@ -24,10 +23,8 @@ class BarPanel implements IBarPanel
 	private array $sentMessages = [];
 	private int $totalMessages = 0;
 
-	public function __construct(ProducerFactory $producerFactory)
+	public function __construct(private ProducerFactory $producerFactory)
 	{
-		$this->producerFactory = $producerFactory;
-
 		$this->producerFactory->addOnCreatedCallback(
 			function (string $name, Producer $producer): void {
 				$this->sentMessages[$name] = [];
@@ -61,7 +58,8 @@ class BarPanel implements IBarPanel
 
 	public function getPanel(): string
 	{
-		ob_start(static function (): void {});
+		ob_start(static function (): void {
+		});
 		try {
 			require __DIR__ . '/BarPanel.phtml';
 

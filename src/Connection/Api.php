@@ -20,6 +20,10 @@ class Api implements IApi
 		$this->url = ($secure ? 'https' : 'http') . '://' . $host . ':' . $port;
 	}
 
+	/**
+	 * @throws \JsonException
+	 * @return array<int, mixed>
+	 */
 	public function getFederations(): array
 	{
 		$url = $this->url . '/api/federation-links';
@@ -28,6 +32,10 @@ class Api implements IApi
 		return (array) $response['data'];
 	}
 
+	/**
+	 * @throws \JsonException
+	 * @param array<string, mixed> $policy
+	 */
 	public function createFederation(
 		string $exchange,
 		string $vhost,
@@ -67,6 +75,10 @@ class Api implements IApi
 		return true;
 	}
 
+	/**
+	 * @throws \JsonException
+	 * @param array<string, mixed> $params
+	 */
 	private function createFederationUpstream(string $name, string $vhost, array $params): void
 	{
 		$response = $this->put(
@@ -77,6 +89,10 @@ class Api implements IApi
 		$this->verifyResponse($response);
 	}
 
+	/**
+	 * @throws \JsonException
+	 * @param array<string, mixed> $params
+	 */
 	private function createFederationPolicy(string $name, string $vhost, array $params): void
 	{
 		$response = $this->put(
@@ -87,6 +103,10 @@ class Api implements IApi
 		$this->verifyResponse($response);
 	}
 
+	/**
+	 * @param array<string, mixed> $response
+	 * @return void
+	 */
 	private function verifyResponse(array $response): void
 	{
 		if ($response['status'] <= 200 || $response['status'] >= 300) {
@@ -101,16 +121,30 @@ class Api implements IApi
 		}
 	}
 
+	/**
+	 * @throws \JsonException
+	 * @param array<string, mixed> $params
+	 * @return array<string, mixed> $params
+	 */
 	private function put(string $url, array $params): array
 	{
 		return $this->request('PUT', $url, $params);
 	}
 
+	/**
+	 * @throws \JsonException
+	 * @return array<string, mixed> $params
+	 */
 	private function get(string $url): array
 	{
 		return $this->request('GET', $url);
 	}
 
+	/**
+	 * @param array<string, mixed> $params
+	 * @return array<string, mixed>
+	 * @throws \JsonException
+	 */
 	private function request(string $method, string $url, array $params = []): array
 	{
 		$curl = curl_init($url);
@@ -123,7 +157,7 @@ class Api implements IApi
 		if ($method === 'PUT') {
 			curl_setopt_array($curl, [
 				CURLOPT_CUSTOMREQUEST => $method,
-				CURLOPT_POSTFIELDS => json_encode($params),
+				CURLOPT_POSTFIELDS => json_encode($params, JSON_THROW_ON_ERROR),
 			]);
 		}
 
@@ -141,7 +175,7 @@ class Api implements IApi
 
 		return [
 			'status' => $info['http_code'],
-			'data' => json_decode((string) $response),
+			'data' => json_decode((string) $response, flags: JSON_THROW_ON_ERROR),
 		];
 	}
 }

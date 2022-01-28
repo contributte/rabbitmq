@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Contributte\RabbitMQ\Producer;
 
+use Bunny\Exception\ClientException;
 use Contributte\RabbitMQ\Exchange\IExchange;
+use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
 
 final class Producer
@@ -13,30 +15,23 @@ final class Producer
 	public const DELIVERY_MODE_NON_PERSISTENT = 1;
 	public const DELIVERY_MODE_PERSISTENT = 2;
 
-	private ?IExchange $exchange = null;
-	private ?IQueue $queue = null;
-	private string $contentType;
-	private int $deliveryMode;
-
 	/**
 	 * @var callable[]
 	 */
 	private array $publishCallbacks = [];
 
-
 	public function __construct(
-		?IExchange $exchange,
-		?IQueue $queue,
-		string $contentType,
-		int $deliveryMode
+		private ?IExchange     $exchange,
+		private ?IQueue        $queue,
+		private string         $contentType,
+		private int            $deliveryMode,
+		private LazyDeclarator $lazyDeclarator
 	) {
-		$this->exchange = $exchange;
-		$this->queue = $queue;
-		$this->contentType = $contentType;
-		$this->deliveryMode = $deliveryMode;
 	}
 
-
+	/**
+	 * @param array<string, string|int> $headers
+	 */
 	public function publish(string $message, array $headers = [], ?string $routingKey = null): void
 	{
 		$headers = array_merge($this->getBasicHeaders(), $headers);
@@ -63,6 +58,7 @@ final class Producer
 
 	public function sendHeartbeat(): void
 	{
+		trigger_error(__METHOD__ . '() is deprecated, use dependency ConnectionFactory::sendHeartbeat().', E_USER_DEPRECATED);
 		if ($this->queue !== null) {
 			$this->queue->getConnection()->sendHeartbeat();
 		}
@@ -72,6 +68,9 @@ final class Producer
 	}
 
 
+	/**
+	 * @return array<string, string|int>
+	 */
 	private function getBasicHeaders(): array
 	{
 		return [
@@ -80,35 +79,50 @@ final class Producer
 		];
 	}
 
-
+	/**
+	 * @param array<string, string|int> $headers
+	 */
 	private function publishToQueue(string $message, array $headers = []): void
 	{
-		if ($this->queue === null) {
+		if (null === $queue = $this->queue) {
 			throw new \UnexpectedValueException('Queue is not defined');
 		}
 
-		$this->queue->getConnection()->getChannel()->publish(
+		$this->tryPublish(static fn () => $queue->getConnection()->getChannel()->publish(
 			$message,
 			$headers,
-			// Exchange name
 			'',
-			// Routing key, in this case the queue's name
-			$this->queue->getName()
-		);
+			$queue->getName()
+		));
 	}
 
 
+	/**
+	 * @param array<string, string|int> $headers
+	 */
 	private function publishToExchange(string $message, array $headers, string $routingKey): void
 	{
-		if ($this->exchange === null) {
+		if (null === $exchange = $this->exchange) {
 			throw new \UnexpectedValueException('Exchange is not defined');
 		}
 
-		$this->exchange->getConnection()->getChannel()->publish(
+		$this->tryPublish(static fn () => $exchange->getConnection()->getChannel()->publish(
 			$message,
 			$headers,
-			$this->exchange->getName(),
+			$exchange->getName(),
 			$routingKey
-		);
+		));
+	}
+
+	private function tryPublish(callable $publish): void
+	{
+		try {
+			$publish();
+		} catch (ClientException $e) {
+			if ($e->getCode() === 404) {
+				$this->lazyDeclarator->declare();
+				$publish();
+			}
+		}
 	}
 }

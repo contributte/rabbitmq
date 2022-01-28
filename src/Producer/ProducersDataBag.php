@@ -24,7 +24,8 @@ final class ProducersDataBag extends AbstractDataBag
 
 
 	/**
-	 * @throws \InvalidArgumentException
+	 * @param string $producerName
+	 * @param array<string, mixed> $data
 	 */
 	public function addProducerByData(string $producerName, array $data): void
 	{

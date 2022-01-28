@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Contributte\RabbitMQ\Consumer;
 
 use Contributte\RabbitMQ\Consumer\Exception\ConsumerFactoryException;
+use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\QueueFactory;
 
 final class ConsumerFactory
 {
-
-	private ConsumersDataBag $consumersDataBag;
-	private QueueFactory $queueFactory;
-
 	/**
 	 * @var Consumer[]
 	 */
@@ -20,11 +17,10 @@ final class ConsumerFactory
 
 
 	public function __construct(
-		ConsumersDataBag $consumersDataBag,
-		QueueFactory $queueFactory
+		private ConsumersDataBag $consumersDataBag,
+		private QueueFactory $queueFactory,
+		private LazyDeclarator $lazyDeclarator,
 	) {
-		$this->consumersDataBag = $consumersDataBag;
-		$this->queueFactory = $queueFactory;
 	}
 
 
@@ -47,9 +43,8 @@ final class ConsumerFactory
 	private function create(string $name): Consumer
 	{
 		try {
-			$consumerData = $this->consumersDataBag->getDataBykey($name);
-
-		} catch (\InvalidArgumentException $e) {
+			$consumerData = $this->consumersDataBag->getDataByKey($name);
+		} catch (\InvalidArgumentException) {
 			throw new ConsumerFactoryException("Consumer [$name] does not exist");
 		}
 
@@ -72,6 +67,7 @@ final class ConsumerFactory
 
 		if (is_array($consumerData['bulk']) && $consumerData['bulk']['size']) {
 			return new BulkConsumer(
+				$this->lazyDeclarator,
 				$name,
 				$queue,
 				$consumerData['callback'],
@@ -83,12 +79,12 @@ final class ConsumerFactory
 		}
 
 		return new Consumer(
+			$this->lazyDeclarator,
 			$name,
 			$queue,
 			$consumerData['callback'],
 			$prefetchSize,
 			$prefetchCount
 		);
-
 	}
 }

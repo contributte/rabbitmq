@@ -13,7 +13,8 @@ use Nette\Schema\Schema;
 
 final class ConnectionsHelper extends AbstractHelper
 {
-	public function getConfigSchema(): Schema {
+	public function getConfigSchema(): Schema
+	{
 		return Expect::arrayOf(
 			Expect::structure([
 				'user' => Expect::string('guest'),
@@ -37,6 +38,11 @@ final class ConnectionsHelper extends AbstractHelper
 		);
 	}
 
+	/**
+	 * @param ContainerBuilder $builder
+	 * @param array<string, mixed> $config
+	 * @return ServiceDefinition
+	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$connectionsDataBag = $builder->addDefinition($this->extension->prefix('connectionsDataBag'))
@@ -47,5 +53,4 @@ final class ConnectionsHelper extends AbstractHelper
 			->setFactory(ConnectionFactory::class)
 			->setArguments([$connectionsDataBag]);
 	}
-
 }

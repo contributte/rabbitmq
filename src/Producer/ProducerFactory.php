@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Contributte\RabbitMQ\Producer;
 
 use Contributte\RabbitMQ\Exchange\ExchangeFactory;
+use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Producer\Exception\ProducerFactoryException;
 use Contributte\RabbitMQ\Queue\QueueFactory;
 
@@ -15,9 +16,6 @@ final class ProducerFactory
 	 * @var callable[]
 	 */
 	public array $createdCallbacks = [];
-	private ProducersDataBag $producersDataBag;
-	private QueueFactory $queueFactory;
-	private ExchangeFactory $exchangeFactory;
 
 	/**
 	 * @var Producer[]
@@ -25,14 +23,8 @@ final class ProducerFactory
 	private array $producers = [];
 
 
-	public function __construct(
-		ProducersDataBag $producersDataBag,
-		QueueFactory $queueFactory,
-		ExchangeFactory $exchangeFactory
-	) {
-		$this->producersDataBag = $producersDataBag;
-		$this->queueFactory = $queueFactory;
-		$this->exchangeFactory = $exchangeFactory;
+	public function __construct(private ProducersDataBag $producersDataBag, private QueueFactory $queueFactory, private ExchangeFactory $exchangeFactory, private LazyDeclarator $lazyDeclarator)
+	{
 	}
 
 
@@ -61,9 +53,8 @@ final class ProducerFactory
 	private function create(string $name): Producer
 	{
 		try {
-			$producerData = $this->producersDataBag->getDataBykey($name);
-
-		} catch (\InvalidArgumentException $e) {
+			$producerData = $this->producersDataBag->getDataByKey($name);
+		} catch (\InvalidArgumentException) {
 			throw new ProducerFactoryException("Producer [$name] does not exist");
 		}
 
@@ -82,7 +73,8 @@ final class ProducerFactory
 			$exchange,
 			$queue,
 			$producerData['contentType'],
-			$producerData['deliveryMode']
+			$producerData['deliveryMode'],
+			$this->lazyDeclarator,
 		);
 
 		foreach ($this->createdCallbacks as $callback) {

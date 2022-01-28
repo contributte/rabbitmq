@@ -16,6 +16,7 @@ final class ExchangesHelper extends AbstractHelper
 {
 
 	public const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout'];
+	//public const CREATE_TYPES = [0 => false, 1 => true, 2 => 'lazy'];
 
 	public function getConfigSchema(): Schema
 	{
@@ -41,18 +42,18 @@ final class ExchangesHelper extends AbstractHelper
 					'uri' => Expect::string()->required()->dynamic(),
 					'prefetchCount' => Expect::int(20)->min(1),
 					'reconnectDelay' => Expect::int(1)->min(1),
-					'messageTTL' => Expect::int(3600000)->min(1),
-					'expires' => Expect::int(3600000)->min(1),
-					'ackMode' => Expect::anyOf('on-confirm', 'on-publish', 'no-ack')->default('no-ack'),
+					'messageTTL' => Expect::int(3_600_000)->min(1),
+					'expires' => Expect::int(3_600_000)->min(1),
+					'ackMode' => Expect::anyOf(...self::ACK_TYPES)->default(self::ACK_TYPES[0]),
 					'policy' => Expect::structure([
 						'priority' => Expect::int(0),
 						'arguments' => Expect::arrayOf(
 							Expect::anyOf(Expect::string(), Expect::int(), Expect::bool()),
 							'string'
-						)->default([])->before(fn ($arguments) => $this->normalizePolicyArguments($arguments)),
+						)->default([])->before(fn (array $arguments) => $this->normalizePolicyArguments($arguments)),
 					])->castTo('array'),
 				])->castTo('array')->required(false),
-				'autoCreate' => Expect::int(2)->before(fn ($input) => $input === 'lazy' ? 2 : (int) $input),
+				'autoCreate' => Expect::int(2)->before(fn (mixed $input) => $input === 'lazy' ? 2 : (int) $input),
 			])->castTo('array'),
 			'string'
 		);
@@ -61,6 +62,7 @@ final class ExchangesHelper extends AbstractHelper
 
 	/**
 	 * @throws \InvalidArgumentException
+	 * @param array<string, mixed> $config
 	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
@@ -76,10 +78,14 @@ final class ExchangesHelper extends AbstractHelper
 			->setArguments([$exchangesDataBag]);
 	}
 
+	/**
+	 * @param array<string, mixed> $arguments
+	 * @return array<string, mixed>
+	 */
 	protected function normalizePolicyArguments(array $arguments = []): array
 	{
 		$return = [];
-		foreach($arguments as $key => $value) {
+		foreach ($arguments as $key => $value) {
 			$return[$this->normalizePolicyArgumentKey($key)] = $value;
 		}
 

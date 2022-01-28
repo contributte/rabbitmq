@@ -16,5 +16,4 @@ interface IConsumer
 	public const MESSAGE_ACK_AND_TERMINATE = 5;
 
 	public function consume(Message $message): int;
-
 }
