@@ -9,22 +9,17 @@ use Bunny\Message;
 
 class BulkMessage
 {
-	private Message $message;
-	private Channel $channel;
-
-	public function __construct(
-		Message $message,
-		Channel $channel
-	) {
-		$this->message = $message;
-		$this->channel = $channel;
+	public function __construct(private Message $message, private Channel $channel)
+	{
 	}
 
-	public function getMessage(): Message {
+	public function getMessage(): Message
+	{
 		return $this->message;
 	}
 
-	public function getChannel(): Channel {
+	public function getChannel(): Channel
+	{
 		return $this->channel;
 	}
 }

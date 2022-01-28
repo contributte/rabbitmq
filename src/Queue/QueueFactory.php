@@ -11,24 +11,17 @@ use Contributte\RabbitMQ\Queue\Exception\QueueFactoryException;
 final class QueueFactory
 {
 
-	private QueuesDataBag $queuesDataBag;
-	private ConnectionFactory $connectionFactory;
-
 	/**
 	 * @var IQueue[]
 	 */
-	private array $queues;
-	private QueueDeclarator $queueDeclarator;
+	private array $queues = [];
 
 
 	public function __construct(
-		QueuesDataBag $queuesDataBag,
-		ConnectionFactory $connectionFactory,
-		QueueDeclarator $queueDeclarator
+		private QueuesDataBag $queuesDataBag,
+		private ConnectionFactory $connectionFactory,
+		private QueueDeclarator $queueDeclarator
 	) {
-		$this->queuesDataBag = $queuesDataBag;
-		$this->connectionFactory = $connectionFactory;
-		$this->queueDeclarator = $queueDeclarator;
 	}
 
 
@@ -52,21 +45,16 @@ final class QueueFactory
 	private function create(string $name): IQueue
 	{
 		try {
-			$queueData = $this->queuesDataBag->getDataBykey($name);
-
-		} catch (\InvalidArgumentException $e) {
+			$queueData = $this->queuesDataBag->getDataByKey($name);
+		} catch (\InvalidArgumentException) {
 			throw new QueueFactoryException("Queue [$name] does not exist");
 		}
 
 		// (ConnectionFactoryException)
 		$connection = $this->connectionFactory->getConnection($queueData['connection']);
 
-		if ($queueData['autoCreate']) {
-			if ($queueData['autoCreate'] === 2) {
-				$connection->onConnect(fn () => $this->queueDeclarator->declareQueue($name));
-			} else {
-				$this->queueDeclarator->declareQueue($name);
-			}
+		if ($queueData['autoCreate'] === 1) {
+			$this->queueDeclarator->declareQueue($name);
 		}
 
 		return new Queue(
@@ -74,5 +62,4 @@ final class QueueFactory
 			$connection
 		);
 	}
-
 }

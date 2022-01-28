@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="MyStandard">
+	<description>PSR2 with tabs instead of spaces.</description>
+
+	<config name="installed_paths" value="vendor/slevomat/coding-standard"/>
+
+	<file>.</file>
+	<exclude-pattern>./tests/</exclude-pattern>
+	<exclude-pattern>./vendor/</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+
+	<arg name="tab-width" value="4" />
+	<rule ref="PSR2">
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent" />
+	</rule>
+	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent" />
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+		<properties>
+			<property name="indent" value="4" />
+			<property name="tabIndent" value="true" />
+		</properties>
+	</rule>
+	<rule ref="Generic.Files.LineEndings">
+		<exclude name="Generic.Files.LineEndings.InvalidEOLChar"/>
+	</rule>
+</ruleset>

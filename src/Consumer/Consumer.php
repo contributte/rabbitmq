@@ -6,37 +6,31 @@ namespace Contributte\RabbitMQ\Consumer;
 
 use Bunny\Channel;
 use Bunny\Client;
+use Bunny\Exception\ClientException;
 use Bunny\Message;
+use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
 
 class Consumer
 {
-
-	protected string $name;
-	protected IQueue $queue;
 
 	/**
 	 * @var callable
 	 */
 	protected $callback;
 	protected int $messages = 0;
-	protected ?int $prefetchSize = null;
-	protected ?int $prefetchCount = null;
 	protected ?int $maxMessages = null;
 
 
 	public function __construct(
-		string $name,
-		IQueue $queue,
+		private LazyDeclarator $lazyDeclarator,
+		protected string $name,
+		protected IQueue $queue,
 		callable $callback,
-		?int $prefetchSize,
-		?int $prefetchCount
+		protected ?int $prefetchSize,
+		protected ?int $prefetchCount,
 	) {
-		$this->name = $name;
-		$this->queue = $queue;
 		$this->callback = $callback;
-		$this->prefetchSize = $prefetchSize;
-		$this->prefetchCount = $prefetchCount;
 	}
 
 
@@ -60,19 +54,28 @@ class Consumer
 			$channel->qos($this->prefetchSize ?? 0, $this->prefetchCount ?? 0);
 		}
 
-		$channel->consume(
-			function (Message $message, Channel $channel, Client $client): void {
-				$this->messages++;
-				$result = call_user_func($this->callback, $message);
+		$callback = function (Message $message, Channel $channel, Client $client): void {
+			$this->messages++;
+			$result = call_user_func($this->callback, $message);
 
-				$this->sendResponse($message, $channel, $result, $client);
+			$this->sendResponse($message, $channel, $result, $client);
 
-				if ($this->isMaxMessages()) {
-					$client->stop();
-				}
-			},
-			$this->queue->getName()
-		);
+			if ($this->isMaxMessages()) {
+				$client->stop();
+			}
+		};
+
+		try {
+			$channel->consume($callback, $this->queue->getName());
+		} catch (ClientException $e) {
+			if ($e->getCode() !== 404) {
+				throw $e;
+			}
+
+			$this->lazyDeclarator->declare();
+			$channel = $this->queue->getConnection()->getChannel();
+			$channel->consume($callback, $this->queue->getName());
+		}
 
 		$channel->getClient()->run($maxSeconds);
 	}
@@ -123,5 +126,4 @@ class Consumer
 	{
 		return $this->maxMessages !== null && $this->messages >= $this->maxMessages;
 	}
-
 }

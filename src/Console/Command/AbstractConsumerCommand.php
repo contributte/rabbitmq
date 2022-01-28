@@ -12,16 +12,9 @@ use Symfony\Component\Console\Command\Command;
 abstract class AbstractConsumerCommand extends Command
 {
 
-	protected ConsumersDataBag $consumersDataBag;
-	protected ConsumerFactory $consumerFactory;
-
-
-	public function __construct(ConsumersDataBag $consumersDataBag, ConsumerFactory $consumerFactory)
+	public function __construct(protected ConsumersDataBag $consumersDataBag, protected ConsumerFactory $consumerFactory)
 	{
 		parent::__construct();
-
-		$this->consumersDataBag = $consumersDataBag;
-		$this->consumerFactory = $consumerFactory;
 	}
 
 
@@ -32,7 +25,6 @@ abstract class AbstractConsumerCommand extends Command
 	{
 		try {
 			$this->consumerFactory->getConsumer($consumerName);
-
 		} catch (ConsumerFactoryException $e) {
 			throw new \InvalidArgumentException(
 				sprintf(
@@ -46,5 +38,4 @@ abstract class AbstractConsumerCommand extends Command
 			);
 		}
 	}
-
 }

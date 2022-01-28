@@ -9,8 +9,6 @@ use Contributte\RabbitMQ\Connection\Exception\ConnectionFactoryException;
 final class ConnectionFactory
 {
 
-	private ConnectionsDataBag $connectionsDataBag;
-
 	/**
 	 * @var IConnection[]
 	 */
@@ -22,9 +20,8 @@ final class ConnectionFactory
 	private array $requests = [];
 
 
-	public function __construct(ConnectionsDataBag $connectionsDataBag)
+	public function __construct(private ConnectionsDataBag $connectionsDataBag)
 	{
-		$this->connectionsDataBag = $connectionsDataBag;
 	}
 
 
@@ -69,12 +66,12 @@ final class ConnectionFactory
 				throw new \RuntimeException('RabbitMQ API requires cURL extension.');
 			}
 
-			$connectionData = $this->connectionsDataBag->getDataBykey($name);
+			$connectionData = $this->connectionsDataBag->getDataByKey($name);
 
 			if (!isset($connectionData['admin']['port'])) {
 				throw new ConnectionFactoryException("Connection [$name] does not have admin port");
 			}
-		} catch (\InvalidArgumentException $e) {
+		} catch (\InvalidArgumentException) {
 			throw new ConnectionFactoryException("Connection [$name] does not exist");
 		}
 
@@ -94,8 +91,8 @@ final class ConnectionFactory
 	private function create(string $name): IConnection
 	{
 		try {
-			$connectionData = $this->connectionsDataBag->getDataBykey($name);
-		} catch (\InvalidArgumentException $e) {
+			$connectionData = $this->connectionsDataBag->getDataByKey($name);
+		} catch (\InvalidArgumentException) {
 			throw new ConnectionFactoryException("Connection [$name] does not exist");
 		}
 
@@ -114,5 +111,4 @@ final class ConnectionFactory
 			$connectionData['ssl']
 		);
 	}
-
 }

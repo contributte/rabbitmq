@@ -15,12 +15,8 @@ use Contributte\RabbitMQ\Producer\ProducerFactory;
 final class Client
 {
 
-	private ProducerFactory $producerFactory;
-
-
-	public function __construct(ProducerFactory $producerFactory)
+	public function __construct(private ProducerFactory $producerFactory)
 	{
-		$this->producerFactory = $producerFactory;
 	}
 
 
@@ -31,5 +27,4 @@ final class Client
 	{
 		return $this->producerFactory->getProducer($name);
 	}
-
 }

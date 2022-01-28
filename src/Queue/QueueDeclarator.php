@@ -10,23 +10,17 @@ use Contributte\RabbitMQ\Queue\Exception\QueueFactoryException;
 final class QueueDeclarator
 {
 
-	private QueuesDataBag $queuesDataBag;
-	private ConnectionFactory $connectionFactory;
-
-
-	public function __construct(ConnectionFactory $connectionFactory, QueuesDataBag $queuesDataBag)
-	{
-		$this->queuesDataBag = $queuesDataBag;
-		$this->connectionFactory = $connectionFactory;
+	public function __construct(
+		private ConnectionFactory $connectionFactory,
+		private QueuesDataBag $queuesDataBag
+	) {
 	}
-
 
 	public function declareQueue(string $name): void
 	{
 		try {
-			$queueData = $this->queuesDataBag->getDataBykey($name);
-
-		} catch (\InvalidArgumentException $e) {
+			$queueData = $this->queuesDataBag->getDataByKey($name);
+		} catch (\InvalidArgumentException) {
 			throw new QueueFactoryException("Queue [$name] does not exist");
 		}
 

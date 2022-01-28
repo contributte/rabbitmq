@@ -9,12 +9,11 @@ use Nette\Schema\Schema;
 
 abstract class AbstractHelper
 {
-	protected CompilerExtension $extension;
+	public const ACK_TYPES = ['on-confirm', 'on-publish', 'no-ack'];
 
-
-	public function __construct(CompilerExtension $extension)
-	{
-		$this->extension = $extension;
+	public function __construct(
+		protected CompilerExtension $extension
+	) {
 	}
 
 

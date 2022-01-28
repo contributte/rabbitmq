@@ -7,6 +7,9 @@ if (@!include __DIR__ . '/../vendor/autoload.php') {
 	exit(1);
 }
 
+// Bypass finals
+\Tester\Environment::bypassFinals();
+
 // Configure environment
 Environment::setupTester();
 Environment::setupTimezone();

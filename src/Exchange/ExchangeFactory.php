@@ -12,30 +12,18 @@ use Contributte\RabbitMQ\Queue\QueueFactory;
 final class ExchangeFactory
 {
 
-	private ExchangesDataBag $exchangesDataBag;
-	private QueueFactory $queueFactory;
-	private ConnectionFactory $connectionFactory;
-
 	/**
 	 * @var IExchange[]
 	 */
-	private array $exchanges;
-	private ExchangeDeclarator $exchangeDeclarator;
-
+	private array $exchanges = [];
 
 	public function __construct(
-		ExchangesDataBag $exchangesDataBag,
-		QueueFactory $queueFactory,
-		ExchangeDeclarator $exchangeDeclarator,
-		ConnectionFactory $connectionFactory
-	)
-	{
-		$this->exchangesDataBag = $exchangesDataBag;
-		$this->queueFactory = $queueFactory;
-		$this->connectionFactory = $connectionFactory;
-		$this->exchangeDeclarator = $exchangeDeclarator;
+		private ExchangesDataBag $exchangesDataBag,
+		private QueueFactory $queueFactory,
+		private ExchangeDeclarator $exchangeDeclarator,
+		private ConnectionFactory $connectionFactory
+	) {
 	}
-
 
 	/**
 	 * @throws ExchangeFactoryException
@@ -49,7 +37,6 @@ final class ExchangeFactory
 		return $this->exchanges[$name];
 	}
 
-
 	/**
 	 * @throws ExchangeFactoryException
 	 * @throws QueueFactoryException
@@ -59,20 +46,15 @@ final class ExchangeFactory
 		$queueBindings = [];
 
 		try {
-			$exchangeData = $this->exchangesDataBag->getDataBykey($name);
-
-		} catch (\InvalidArgumentException $e) {
+			$exchangeData = $this->exchangesDataBag->getDataByKey($name);
+		} catch (\InvalidArgumentException) {
 			throw new ExchangeFactoryException("Exchange [$name] does not exist");
 		}
 
 		$connection = $this->connectionFactory->getConnection($exchangeData['connection']);
 
-		if ($exchangeData['autoCreate']) {
-			if ($exchangeData['autoCreate'] === 2) {
-				$connection->onConnect(fn () => $this->exchangeDeclarator->declareExchange($name));
-			} else {
-				$this->exchangeDeclarator->declareExchange($name);
-			}
+		if ($exchangeData['autoCreate'] === 1) {
+			$this->exchangeDeclarator->declareExchange($name);
 		}
 
 		if ($exchangeData['queueBindings'] !== []) {

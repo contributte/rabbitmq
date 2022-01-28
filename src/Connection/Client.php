@@ -15,7 +15,8 @@ class Client extends BunnyClient
 	/**
 	 * @throws BunnyException
 	 */
-	public function sendHeartbeat(): void {
+	public function sendHeartbeat(): void
+	{
 		$this->getWriter()->appendFrame(new HeartbeatFrame(), $this->writeBuffer);
 		$this->flushWriteBuffer();
 	}
@@ -38,7 +39,7 @@ class Client extends BunnyClient
 
 			$this->connectionClose(0, '', 0, 0);
 			$this->closeStream();
-		} catch (ClientException $e) {
+		} catch (ClientException) {
 			// swallow, we do not care we are not connected, we want to close connection anyway
 		}
 

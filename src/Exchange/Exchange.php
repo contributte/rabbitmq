@@ -9,23 +9,14 @@ use Contributte\RabbitMQ\Connection\IConnection;
 final class Exchange implements IExchange
 {
 
-	private string $name;
-
 	/**
-	 * @var QueueBinding[]
+	 * @param QueueBinding[] $queueBindings
 	 */
-	private array $queueBindings;
-	private IConnection $connection;
-
-
 	public function __construct(
-		string $name,
-		array $queueBindings,
-		IConnection $connection
+		private string $name,
+		private array $queueBindings,
+		private IConnection $connection
 	) {
-		$this->name = $name;
-		$this->queueBindings = $queueBindings;
-		$this->connection = $connection;
 	}
 
 
@@ -34,7 +25,9 @@ final class Exchange implements IExchange
 		return $this->name;
 	}
 
-
+	/**
+	 * @return QueueBinding[]
+	 */
 	public function getQueueBindings(): array
 	{
 		return $this->queueBindings;

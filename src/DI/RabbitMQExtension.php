@@ -13,13 +13,21 @@ use Contributte\RabbitMQ\DI\Helpers\ConsumersHelper;
 use Contributte\RabbitMQ\DI\Helpers\ExchangesHelper;
 use Contributte\RabbitMQ\DI\Helpers\ProducersHelper;
 use Contributte\RabbitMQ\DI\Helpers\QueuesHelper;
+use Contributte\RabbitMQ\LazyDeclarator;
+use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\DI\PhpGenerator;
 use Nette\PhpGenerator\PhpLiteral;
+use Nette\PhpGenerator\Closure;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 
+/**
+ * @property-read string $name
+ * @property-read Compiler $compiler
+ * @property-read Closure $initialization
+ */
 final class RabbitMQExtension extends CompilerExtension
 {
 	private ConnectionsHelper $connectionsHelper;
@@ -27,7 +35,6 @@ final class RabbitMQExtension extends CompilerExtension
 	private ProducersHelper $producersHelper;
 	private ExchangesHelper $exchangesHelper;
 	private ConsumersHelper $consumersHelper;
-
 
 	public function __construct()
 	{
@@ -59,29 +66,10 @@ final class RabbitMQExtension extends CompilerExtension
 
 		$this->processConfig(new PhpGenerator($builder), $config);
 
-		/**
-		 * Connections
-		 */
 		$this->connectionsHelper->setup($builder, $config['connections']);
-
-		/**
-		 * Queues
-		 */
 		$this->queuesHelper->setup($builder, $config['queues']);
-
-		/**
-		 * Exchanges
-		 */
 		$this->exchangesHelper->setup($builder, $config['exchanges']);
-
-		/**
-		 * Producers
-		 */
 		$this->producersHelper->setup($builder, $config['producers']);
-
-		/**
-		 * Consumers
-		 */
 		$this->consumersHelper->setup($builder, $config['consumers']);
 
 		/**
@@ -89,6 +77,8 @@ final class RabbitMQExtension extends CompilerExtension
 		 */
 		$builder->addDefinition($this->prefix('client'))
 			->setFactory(Client::class);
+		$builder->addDefinition($this->prefix('declarator'))
+			->setFactory(LazyDeclarator::class);
 
 		$this->setupConsoleCommand();
 	}
@@ -111,12 +101,10 @@ final class RabbitMQExtension extends CompilerExtension
 			->setTags(['console.command' => 'rabbitmq:declareQueuesAndExchanges']);
 	}
 
-	/**
-	 * @param mixed $item
-	 */
-	protected function processConfig(PhpGenerator $generator, &$item): void {
+	protected function processConfig(PhpGenerator $generator, mixed &$item): void
+	{
 		if (is_array($item)) {
-			foreach($item as &$value) {
+			foreach ($item as &$value) {
 				$this->processConfig($generator, $value);
 			}
 		} elseif ($item instanceof Statement) {

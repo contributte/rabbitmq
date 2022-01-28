@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace Contributte\RabbitMQ\Tests\Cases;
 
+use Contributte\RabbitMQ\Connection\ConnectionFactory;
 use Contributte\RabbitMQ\Connection\IConnection;
+use Contributte\RabbitMQ\Exchange\ExchangeDeclarator;
+use Contributte\RabbitMQ\Exchange\ExchangesDataBag;
 use Contributte\RabbitMQ\Exchange\IExchange;
+use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Producer\Producer;
 use Contributte\RabbitMQ\Queue\IQueue;
+use Contributte\RabbitMQ\Queue\QueueDeclarator;
+use Contributte\RabbitMQ\Queue\QueuesDataBag;
 use Contributte\RabbitMQ\Tests\Mocks\ChannelMock;
 use Contributte\RabbitMQ\Tests\Mocks\Helper\RabbitMQMessageHelper;
 use Tester\Assert;
@@ -305,7 +311,8 @@ final class ProducerTest extends TestCase
 			null,
 			$queueMock,
 			'application/json',
-			2
+			2,
+			$this->createLazyDeclarator()
 		);
 
 		return $producer;
@@ -327,12 +334,27 @@ final class ProducerTest extends TestCase
 			$exchangeMock,
 			null,
 			'application/json',
-			2
+			2,
+			$this->createLazyDeclarator()
 		);
 
 		return $producer;
 	}
 
+
+	protected function createLazyDeclarator(): LazyDeclarator
+	{
+		return new class extends LazyDeclarator{
+			public function __construct()
+			{
+				$this->queuesDataBag = \Mockery::spy(QueuesDataBag::class);
+				$this->exchangesDataBag = \Mockery::spy(ExchangesDataBag::class);
+				$this->queueDeclarator = \Mockery::spy(QueueDeclarator::class);
+				$this->exchangeDeclarator = \Mockery::spy(ExchangeDeclarator::class);
+				$this->connectionFactory = \Mockery::spy(ConnectionFactory::class);
+			}
+		};
+	}
 }
 
 (new ProducerTest())->run();

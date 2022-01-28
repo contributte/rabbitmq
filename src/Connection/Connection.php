@@ -7,6 +7,8 @@ namespace Contributte\RabbitMQ\Connection;
 use Bunny\Channel;
 use Bunny\Exception\ClientException;
 use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
+use Contributte\RabbitMQ\Exchange\IExchange;
+use Contributte\RabbitMQ\Queue\IQueue;
 
 final class Connection implements IConnection
 {
@@ -14,14 +16,17 @@ final class Connection implements IConnection
 	private const HEARTBEAT_INTERVAL = 1;
 
 	private Client $bunnyClient;
+	/**
+	 * @var array<string, mixed>
+	 */
 	private array $connectionParams;
+	private float $heartbeat;
 	private int $lastBeat = 0;
 	private ?Channel $channel = null;
-	private array $onConnect = [];
-
 
 	/**
 	 * @throws \Exception
+	 * @param array<string, mixed> $ssl
 	 */
 	public function __construct(
 		string $host,
@@ -53,6 +58,7 @@ final class Connection implements IConnection
 		];
 
 		$this->bunnyClient = $this->createNewConnection();
+		$this->heartbeat = max($heartbeat, self::HEARTBEAT_INTERVAL);
 
 		if (!$lazy) {
 			$this->bunnyClient->connect();
@@ -66,18 +72,6 @@ final class Connection implements IConnection
 			$this->bunnyClient->syncDisconnect();
 		}
 	}
-
-	public function onConnect(callable $callback): void
-	{
-		if ($this->bunnyClient->isConnected()) {
-			$callback();
-
-			return;
-		}
-
-		$this->onConnect[] = $callback;
-	}
-
 
 	/**
 	 * @throws ConnectionException|\Exception
@@ -134,14 +128,13 @@ final class Connection implements IConnection
 		}
 
 		$this->bunnyClient->connect();
-		$this->invokeCallbacks();
 	}
 
 
 	public function sendHeartbeat(): void
 	{
 		$now = time();
-		if ($this->lastBeat < ($now - self::HEARTBEAT_INTERVAL) && $this->bunnyClient->isConnected()) {
+		if ($this->lastBeat < ($now - $this->heartbeat) && $this->bunnyClient->isConnected()) {
 			$this->bunnyClient->sendHeartbeat();
 			$this->lastBeat = $now;
 		}
@@ -153,15 +146,21 @@ final class Connection implements IConnection
 		return $this->connectionParams['vhost'];
 	}
 
-	private function invokeCallbacks(): void
-	{
-		foreach ($this->onConnect as $callback) {
-			$callback();
-		}
-	}
-
 	private function createNewConnection(): Client
 	{
 		return new Client($this->connectionParams);
+	}
+
+	public function isConnected(): bool
+	{
+		return $this->bunnyClient->isConnected();
+	}
+
+	/**
+	 * @internal
+	 */
+	public function resetChannel(): void
+	{
+		$this->channel = null;
 	}
 }

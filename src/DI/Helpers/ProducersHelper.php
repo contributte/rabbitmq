@@ -33,7 +33,9 @@ final class ProducersHelper extends AbstractHelper
 			'string'
 		);
 	}
-
+	/**
+	 * @param array<string, mixed> $config
+	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$producersDataBag = $builder->addDefinition($this->extension->prefix('producersDataBag'))

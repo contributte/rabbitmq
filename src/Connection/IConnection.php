@@ -20,8 +20,9 @@ interface IConnection
 	 * @throws BunnyException
 	 */
 	public function sendHeartbeat(): void;
-
-	public function onConnect(callable $callback): void;
-
+	public function isConnected(): bool;
 	public function getVhost(): string;
+
+	/** @internal */
+	public function resetChannel(): void;
 }

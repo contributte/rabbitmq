@@ -9,16 +9,8 @@ use Contributte\RabbitMQ\Queue\IQueue;
 final class QueueBinding
 {
 
-	private IQueue $queue;
-	private string $routingKey;
-
-
-	public function __construct(
-		IQueue $queue,
-		string $routingKey
-	) {
-		$this->queue = $queue;
-		$this->routingKey = $routingKey;
+	public function __construct(private IQueue $queue, private string $routingKey)
+	{
 	}
 
 

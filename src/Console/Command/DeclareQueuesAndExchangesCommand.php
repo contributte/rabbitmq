@@ -15,25 +15,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class DeclareQueuesAndExchangesCommand extends Command
 {
 
-	private QueuesDataBag $queuesDataBag;
-	private ExchangesDataBag $exchangesDataBag;
-	private QueueDeclarator $queueDeclarator;
-	private ExchangeDeclarator $exchangeDeclarator;
-
-
 	public function __construct(
-		QueuesDataBag $queuesDataBag,
-		QueueDeclarator $queueDeclarator,
-		ExchangesDataBag $exchangesDataBag,
-		ExchangeDeclarator $exchangeDeclarator
-	)
-	{
+		private QueuesDataBag $queuesDataBag,
+		private QueueDeclarator $queueDeclarator,
+		private ExchangesDataBag $exchangesDataBag,
+		private ExchangeDeclarator $exchangeDeclarator
+	) {
 		parent::__construct('rabbitmq:declareQueuesAndExchanges');
-
-		$this->queuesDataBag = $queuesDataBag;
-		$this->exchangesDataBag = $exchangesDataBag;
-		$this->queueDeclarator = $queueDeclarator;
-		$this->exchangeDeclarator = $exchangeDeclarator;
 	}
 
 

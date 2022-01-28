@@ -11,7 +11,9 @@ interface IExchange
 
 	public function getName(): string;
 
-
+	/**
+	 * @return QueueBinding[]
+	 */
 	public function getQueueBindings(): array;
 
 

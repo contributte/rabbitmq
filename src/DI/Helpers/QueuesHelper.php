@@ -14,7 +14,8 @@ use Nette\Schema\Schema;
 
 final class QueuesHelper extends AbstractHelper
 {
-	public function getConfigSchema(): Schema {
+	public function getConfigSchema(): Schema
+	{
 		return Expect::arrayOf(
 			Expect::structure([
 				'connection' => Expect::string('default'),
@@ -24,13 +25,15 @@ final class QueuesHelper extends AbstractHelper
 				'autoDelete' => Expect::bool(false),
 				'noWait' => Expect::bool(false),
 				'arguments' => Expect::array(),
-				'autoCreate' => Expect::int(2)->before(fn ($input) => $input === 'lazy' ? 2 : (int) $input),
+				'autoCreate' => Expect::int(2)->before(fn (mixed $input) => $input === 'lazy' ? 2 : (int) $input),
 			])->castTo('array'),
 			'string'
 		);
 	}
 
-
+	/**
+	 * @param array<string, mixed> $config
+	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$queuesDataBag = $builder->addDefinition($this->extension->prefix('queuesDataBag'))
@@ -44,5 +47,4 @@ final class QueuesHelper extends AbstractHelper
 			->setFactory(QueueFactory::class)
 			->setArguments([$queuesDataBag]);
 	}
-
 }

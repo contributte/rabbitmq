@@ -1,5 +1,5 @@
 {
-  "name": "mallgroup/rabbitmq",
+  "name": "contributte/rabbitmq",
   "description": "Nette extension for RabbitMQ (using BunnyPHP)",
   "type": "library",
   "license": "MIT",
@@ -19,6 +19,9 @@
   "authors": [
     {
       "name": "Pavel Janda"
+    },
+    {
+      "name": "Radovan Kepák"
     }
   ],
   "autoload": {
@@ -32,29 +35,46 @@
     }
   },
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.0 <8.2",
     "bunny/bunny": "^0.2.4 || ^0.3 || ^0.4 || ^0.5",
     "symfony/console": "~3.3 || ^4.0 || ^5.0 || ^6.0",
     "nette/di": "^3.0.7",
     "nette/utils": "^3.2.0",
-    "nette/schema": "^1.2"
+    "nette/schema": "^1.2",
+    "phpstan/phpstan": "^1.4"
   },
   "require-dev": {
-    "ninjify/nunjuck": "^0.4",
-    "nette/neon": "^3.2.1",
+    "squizlabs/php_codesniffer": "^3.6",
+    "nette/tester": "^2.4",
+    "nette/neon": "^2.4.3 || ^3.2.1",
     "mockery/mockery": "^1.3.3",
-    "gamee/php-code-checker-rules": "^2.0|^3.0",
-    "tracy/tracy": "^2.5"
+    "tracy/tracy": "^2.5",
+    "vimeo/psalm": "^4.9",
+    "ninjify/nunjuck": "^0.4"
+  },
+  "scripts": {
+    "phpcs": "./vendor/bin/phpcs -p -n --standard=phpcsRuleset.xml",
+    "fix-style": "./vendor/bin/phpcbf -p -n --standard=phpcsRuleset.xml",
+    "phpstan": "phpstan analyse",
+    "psalm": "psalm",
+    "tests": "./vendor/bin/nunjack -s -p php -C tests/Cases",
+    "coverage": "./vendor/bin/nunjack -s -p phpdbg -C --coverage ./coverage.xml --coverage-src ./src ./tests/Cases"
   },
   "suggest": {
     "tracy/tracy": "Allows using tracy bar panel",
-    "ext-curl": "Allows usage of Federation"
+    "ext-curl": "Allows to use federation plugin"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "extra": {
     "branch-alias": {
-      "dev-master": "10.x-dev"
+      "dev-master": "10.0.x-dev"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": false,
+      "composer/package-versions-deprecated": true
     }
   }
 }
