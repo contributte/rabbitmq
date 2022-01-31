@@ -58,7 +58,7 @@ final class Producer
 
 	public function sendHeartbeat(): void
 	{
-		trigger_error(__METHOD__ . '() is deprecated, use dependency ConnectionFactory::sendHeartbeat().', E_USER_DEPRECATED);
+		trigger_error(__METHOD__ . '() is deprecated, use ConnectionFactory::sendHeartbeat().', E_USER_DEPRECATED);
 		if ($this->queue !== null) {
 			$this->queue->getConnection()->sendHeartbeat();
 		}

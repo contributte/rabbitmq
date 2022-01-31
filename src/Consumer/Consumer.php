@@ -21,7 +21,6 @@ class Consumer
 	protected int $messages = 0;
 	protected ?int $maxMessages = null;
 
-
 	public function __construct(
 		private LazyDeclarator $lazyDeclarator,
 		protected string $name,
@@ -33,12 +32,10 @@ class Consumer
 		$this->callback = $callback;
 	}
 
-
 	public function getQueue(): IQueue
 	{
 		return $this->queue;
 	}
-
 
 	public function getCallback(): callable
 	{

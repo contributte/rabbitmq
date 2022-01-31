@@ -15,10 +15,10 @@ use Contributte\RabbitMQ\Producer\ProducerFactory;
 final class Client
 {
 
-	public function __construct(private ProducerFactory $producerFactory)
-	{
+	public function __construct(
+		private ProducerFactory $producerFactory
+	) {
 	}
-
 
 	/**
 	 * @throws ProducerFactoryException

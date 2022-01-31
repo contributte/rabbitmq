@@ -12,8 +12,10 @@ use Symfony\Component\Console\Command\Command;
 abstract class AbstractConsumerCommand extends Command
 {
 
-	public function __construct(protected ConsumersDataBag $consumersDataBag, protected ConsumerFactory $consumerFactory)
-	{
+	public function __construct(
+		protected ConsumersDataBag $consumersDataBag,
+		protected ConsumerFactory $consumerFactory
+	) {
 		parent::__construct();
 	}
 

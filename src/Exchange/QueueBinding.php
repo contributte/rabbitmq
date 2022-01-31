@@ -13,12 +13,10 @@ final class QueueBinding
 	{
 	}
 
-
 	public function getQueue(): IQueue
 	{
 		return $this->queue;
 	}
-
 
 	public function getRoutingKey(): string
 	{

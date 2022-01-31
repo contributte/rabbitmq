@@ -19,7 +19,6 @@ final class Exchange implements IExchange
 	) {
 	}
 
-
 	public function getName(): string
 	{
 		return $this->name;
@@ -32,7 +31,6 @@ final class Exchange implements IExchange
 	{
 		return $this->queueBindings;
 	}
-
 
 	public function getConnection(): IConnection
 	{

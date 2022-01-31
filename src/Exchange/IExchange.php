@@ -16,6 +16,5 @@ interface IExchange
 	 */
 	public function getQueueBindings(): array;
 
-
 	public function getConnection(): IConnection;
 }

@@ -19,11 +19,10 @@ final class ConnectionFactory
 	 */
 	private array $requests = [];
 
-
-	public function __construct(private ConnectionsDataBag $connectionsDataBag)
-	{
+	public function __construct(
+		private ConnectionsDataBag $connectionsDataBag
+	) {
 	}
-
 
 	/**
 	 * @return IConnection[]
@@ -32,7 +31,6 @@ final class ConnectionFactory
 	{
 		return $this->connections;
 	}
-
 
 	/**
 	 * @throws ConnectionFactoryException|\Exception
@@ -45,7 +43,6 @@ final class ConnectionFactory
 
 		return $this->connections[$name];
 	}
-
 
 	public function getApi(string $name): IApi
 	{
@@ -83,7 +80,6 @@ final class ConnectionFactory
 			$connectionData['admin']['port']
 		);
 	}
-
 
 	/**
 	 * @throws ConnectionFactoryException|\Exception

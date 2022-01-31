@@ -15,14 +15,12 @@ final class ConsumerFactory
 	 */
 	private array $consumers = [];
 
-
 	public function __construct(
 		private ConsumersDataBag $consumersDataBag,
 		private QueueFactory $queueFactory,
 		private LazyDeclarator $lazyDeclarator,
 	) {
 	}
-
 
 	/**
 	 * @throws ConsumerFactoryException
@@ -35,7 +33,6 @@ final class ConsumerFactory
 
 		return $this->consumers[$name];
 	}
-
 
 	/**
 	 * @throws ConsumerFactoryException

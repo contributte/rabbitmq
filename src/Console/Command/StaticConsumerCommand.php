@@ -20,7 +20,6 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 		$this->addArgument('amountOfMessages', InputArgument::REQUIRED, 'Amount of messages to consume');
 	}
 
-
 	/**
 	 * @throws \InvalidArgumentException
 	 */
@@ -47,7 +46,6 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 
 		return 0;
 	}
-
 
 	/**
 	 * @throws \InvalidArgumentException

@@ -19,7 +19,6 @@ use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\DI\PhpGenerator;
 use Nette\PhpGenerator\PhpLiteral;
-use Nette\PhpGenerator\Closure;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 
@@ -82,7 +81,6 @@ final class RabbitMQExtension extends CompilerExtension
 
 		$this->setupConsoleCommand();
 	}
-
 
 	public function setupConsoleCommand(): void
 	{

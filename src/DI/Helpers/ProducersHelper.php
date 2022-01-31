@@ -33,6 +33,7 @@ final class ProducersHelper extends AbstractHelper
 			'string'
 		);
 	}
+
 	/**
 	 * @param array<string, mixed> $config
 	 */

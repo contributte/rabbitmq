@@ -10,10 +10,12 @@ use Contributte\RabbitMQ\Queue\QueueFactory;
 
 final class ExchangeDeclarator
 {
-	public function __construct(private ConnectionFactory $connectionFactory, private ExchangesDataBag $exchangesDataBag, private QueueFactory $queueFactory)
-	{
+	public function __construct(
+		private ConnectionFactory $connectionFactory,
+		private ExchangesDataBag $exchangesDataBag,
+		private QueueFactory $queueFactory
+	) {
 	}
-
 
 	public function declareExchange(string $name): void
 	{

@@ -22,7 +22,6 @@ final class ProducersDataBag extends AbstractDataBag
 		}
 	}
 
-
 	/**
 	 * @param string $producerName
 	 * @param array<string, mixed> $data

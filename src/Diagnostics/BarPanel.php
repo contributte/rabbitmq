@@ -41,7 +41,6 @@ class BarPanel implements IBarPanel
 		);
 	}
 
-
 	public function getTab(): string
 	{
 		$img = Html::el('')->addHtml((string) file_get_contents(__DIR__ . '/rabbitmq-icon.svg'));
@@ -54,7 +53,6 @@ class BarPanel implements IBarPanel
 
 		return (string) $tab;
 	}
-
 
 	public function getPanel(): string
 	{

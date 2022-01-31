@@ -16,14 +16,12 @@ final class QueueFactory
 	 */
 	private array $queues = [];
 
-
 	public function __construct(
 		private QueuesDataBag $queuesDataBag,
 		private ConnectionFactory $connectionFactory,
 		private QueueDeclarator $queueDeclarator
 	) {
 	}
-
 
 	/**
 	 * @throws QueueFactoryException
@@ -37,10 +35,9 @@ final class QueueFactory
 		return $this->queues[$name];
 	}
 
-
 	/**
 	 * @throws QueueFactoryException
-	 * @throws ConnectionFactoryException
+	 * @throws ConnectionFactoryException|\Exception
 	 */
 	private function create(string $name): IQueue
 	{

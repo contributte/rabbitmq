@@ -9,8 +9,10 @@ use Bunny\Message;
 
 class BulkMessage
 {
-	public function __construct(private Message $message, private Channel $channel)
-	{
+	public function __construct(
+		private Message $message,
+		private Channel $channel
+	) {
 	}
 
 	public function getMessage(): Message

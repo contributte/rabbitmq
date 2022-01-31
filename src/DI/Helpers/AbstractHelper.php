@@ -16,6 +16,5 @@ abstract class AbstractHelper
 	) {
 	}
 
-
 	abstract public function getConfigSchema(): Schema;
 }

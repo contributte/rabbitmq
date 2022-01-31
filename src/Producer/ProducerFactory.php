@@ -22,11 +22,13 @@ final class ProducerFactory
 	 */
 	private array $producers = [];
 
-
-	public function __construct(private ProducersDataBag $producersDataBag, private QueueFactory $queueFactory, private ExchangeFactory $exchangeFactory, private LazyDeclarator $lazyDeclarator)
-	{
+	public function __construct(
+		private ProducersDataBag $producersDataBag,
+		private QueueFactory $queueFactory,
+		private ExchangeFactory $exchangeFactory,
+		private LazyDeclarator $lazyDeclarator
+	) {
 	}
-
 
 	/**
 	 * @throws ProducerFactoryException
@@ -40,12 +42,10 @@ final class ProducerFactory
 		return $this->producers[$name];
 	}
 
-
 	public function addOnCreatedCallback(callable $callback): void
 	{
 		$this->createdCallbacks[] = $callback;
 	}
-
 
 	/**
 	 * @throws ProducerFactoryException
