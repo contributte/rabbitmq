@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset>
+	<!-- Contributte Coding Standard -->
+	<rule ref="./vendor/contributte/code-rules/paveljanda/ruleset.xml">
+		<exclude name="SlevomatCodingStandard.Classes.ForbiddenPublicProperty.ForbiddenPublicProperty"/>
+	</rule>
+
+	<!-- Specific rules -->
+	<rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
+		<properties>
+			<property name="rootNamespaces" type="array">
+				<element key="src" value="Contributte\RabbitMQ"/>
+				<element key="tests/cases" value="Tests\Cases"/>
+				<element key="tests/fixtures" value="Tests\Fixtures"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Exclude folders -->
+	<exclude-pattern>/tests/tmp</exclude-pattern>
+</ruleset>
