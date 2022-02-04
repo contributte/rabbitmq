@@ -62,6 +62,13 @@ class BarPanel implements IBarPanel
 	function getPanel(): string
 	{
 		ob_start(static function (): void {});
+
+		// @codingStandardsIgnoreStart
+		$sentMessages = $this->sentMessages;
+		$totalMessages = $this->totalMessages;
+		$displayCount = self::$displayCount;
+		// @codingStandardsIgnoreEnd
+
 		try {
 			require __DIR__ . '/BarPanel.phtml';
 
