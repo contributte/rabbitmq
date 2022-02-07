@@ -14,6 +14,7 @@ interface IConsumer
 	public const MESSAGE_REJECT = 3;
 	public const MESSAGE_REJECT_AND_TERMINATE = 4;
 	public const MESSAGE_ACK_AND_TERMINATE = 5;
+	public const MESSAGE_NACK_AND_TERMINATE = 6;
 
 	public function consume(Message $message): int;
 }

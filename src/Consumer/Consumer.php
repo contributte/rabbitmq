@@ -115,6 +115,13 @@ class Consumer
 
 				break;
 
+			case IConsumer::MESSAGE_NACK_AND_TERMINATE:
+				// Message will be requeued
+				$channel->nack($message);
+				$client->stop();
+
+				break;
+
 			default:
 				throw new \InvalidArgumentException(
 					"Unknown return value of consumer [{$this->name}] user callback"
