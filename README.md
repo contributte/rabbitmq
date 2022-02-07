@@ -29,10 +29,10 @@ For details on how to use this package, check out our [documentation](.docs).
 
 ## Versions
 
-| State  | Version      | Branch   | Nette        | PHP     |
-|--------|--------------|----------|--------------|---------|
-| dev    | `^10.0.x`    | `master` | `3.0+`       | `>=7.4` |
-| stable | `^9.0.0`     | `master` | `2.4 / 3.0+` | `>=7.4` |
+| State  | Version   | Branch   | Nette    | PHP     |
+|--------|-----------|----------|----------|---------|
+| dev    | `^10.x.x` | `master` | `3.0+`   | `>=8.0` |
+| stable | `^10.0.0` | `master` | `3.0+`   | `>=8.0` |
 
 ## Development
 
