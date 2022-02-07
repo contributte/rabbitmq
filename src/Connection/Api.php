@@ -175,7 +175,7 @@ class Api implements IApi
 
 		return [
 			'status' => $info['http_code'],
-			'data' => json_decode((string) $response, flags: JSON_THROW_ON_ERROR),
+			'data' => $response ? json_decode((string) $response, flags: JSON_THROW_ON_ERROR) : '',
 		];
 	}
 }

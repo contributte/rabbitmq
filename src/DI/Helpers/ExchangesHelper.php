@@ -94,6 +94,6 @@ final class ExchangesHelper extends AbstractHelper
 
 	private function normalizePolicyArgumentKey(string $key): string
 	{
-		return strtolower(preg_replace(['/([a-z\d])([A-Z])/', '/([^-])([A-Z][a-z])/'], '$1-$2', $key));
+		return strtolower((string) preg_replace(['/([a-z\d])([A-Z])/', '/([^-])([A-Z][a-z])/'], '$1-$2', $key));
 	}
 }

@@ -58,16 +58,24 @@ class BarPanel implements IBarPanel
 
 	public function getPanel(): string
 	{
-		ob_start(static function (): void {
-		});
-		try {
-			require __DIR__ . '/BarPanel.phtml';
+		$panel = Html::el();
+		$panel->addHtml(Html::el('h1')->setText("RabbitMq, total sent {$this->totalMessages}"));
 
-			return (string) ob_get_clean();
-		} catch (\Throwable $e) {
-			ob_get_clean();
-
-			throw $e;
+		if (self::$displayCount !== 0 && $this->totalMessages > self::$displayCount) {
+			$panel->addHtml('p')->setText('Displayed only first ' . self::$displayCount . ' messages');
 		}
+
+
+		$table = Html::el('table', ['class' => 'tracy-bs-main']);
+		foreach ($this->sentMessages as $producer => $messages) {
+			$table->addHtml(Html::el()->setHtml('<tr><th>Producer: ' . $producer . '</th></tr>'));
+			foreach ($messages as $message) {
+				$table->addHtml(Html::el()->setHtml('<tr><td><pre>' . Html::el()->setText($message) . '</pre></td></tr>'));
+			}
+		}
+
+		$panel->addHtml(Html::el('div', ['class' => 'tracy-inner'])->addHtml($table));
+
+		return (string) $panel;
 	}
 }
