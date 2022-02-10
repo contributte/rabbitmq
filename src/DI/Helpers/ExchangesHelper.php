@@ -13,7 +13,7 @@ use Nette\DI\ServiceDefinition;
 final class ExchangesHelper extends AbstractHelper
 {
 
-	public const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout'];
+	public const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout', 'x-delayed-message'];
 
 	/**
 	 * @var array
