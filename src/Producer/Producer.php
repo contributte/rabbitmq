@@ -122,7 +122,9 @@ final class Producer
 			if ($e->getCode() === 404) {
 				$this->lazyDeclarator->declare();
 				$publish();
+				return;
 			}
+			throw $e;
 		}
 	}
 }
