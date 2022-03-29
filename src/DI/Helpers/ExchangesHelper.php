@@ -15,8 +15,7 @@ use Nette\Schema\Schema;
 final class ExchangesHelper extends AbstractHelper
 {
 
-	public const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout'];
-	//public const CREATE_TYPES = [0 => false, 1 => true, 2 => 'lazy'];
+	public const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout', 'x-delayed-message'];
 
 	public function getConfigSchema(): Schema
 	{

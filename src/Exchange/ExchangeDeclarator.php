@@ -67,7 +67,7 @@ final class ExchangeDeclarator
 					$federation['policy']
 				);
 			} catch (\RuntimeException $e) {
-				throw new ExchangeFactoryException("Failed to create federated exchange [$name]", $e->getCode(), $e);
+				throw new ExchangeFactoryException("Failed to create federated exchange [$name]", (int) $e->getCode(), $e);
 			}
 		}
 	}

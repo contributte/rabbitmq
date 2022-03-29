@@ -18,8 +18,8 @@ use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\DI\PhpGenerator;
+use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PhpLiteral;
-use Nette\PhpGenerator\Closure;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 
@@ -108,7 +108,12 @@ final class RabbitMQExtension extends CompilerExtension
 				$this->processConfig($generator, $value);
 			}
 		} elseif ($item instanceof Statement) {
-			$item = new PhpLiteral($generator->formatStatement($item));
+			if (class_exists(Literal::class)) {
+				$item = new Literal($generator->formatStatement($item));
+			} else {
+				/** @psalm-suppress DeprecatedClass */
+				$item = new PhpLiteral($generator->formatStatement($item));
+			}
 		}
 	}
 }
