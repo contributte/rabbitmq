@@ -163,4 +163,14 @@ final class Connection implements IConnection
 	{
 		$this->channel = null;
 	}
+
+	/**
+	 * @internal
+	 */
+	public function resetConnection(): void
+	{
+		$this->resetChannel();
+		$this->bunnyClient->syncDisconnect();
+		$this->bunnyClient = $this->createNewConnection();
+	}
 }
