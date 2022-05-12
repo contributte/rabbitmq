@@ -25,4 +25,6 @@ interface IConnection
 
 	/** @internal */
 	public function resetChannel(): void;
+	/** @internal */
+	public function resetConnection(): void;
 }

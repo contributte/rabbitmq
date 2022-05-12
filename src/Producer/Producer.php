@@ -8,6 +8,8 @@ use Bunny\Exception\ClientException;
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
+use Nette\Utils\Callback;
+use Tracy\Dumper;
 
 final class Producer
 {
@@ -88,12 +90,7 @@ final class Producer
 			throw new \UnexpectedValueException('Queue is not defined');
 		}
 
-		$this->tryPublish(static fn () => $queue->getConnection()->getChannel()->publish(
-			$message,
-			$headers,
-			'',
-			$queue->getName()
-		));
+		$this->tryPublish($queue, $message, $headers, '', $queue->getName());
 	}
 
 
@@ -106,24 +103,46 @@ final class Producer
 			throw new \UnexpectedValueException('Exchange is not defined');
 		}
 
-		$this->tryPublish(static fn () => $exchange->getConnection()->getChannel()->publish(
-			$message,
-			$headers,
-			$exchange->getName(),
-			$routingKey
-		));
+		$this->tryPublish($exchange, $message, $headers, $exchange->getName(), $routingKey);
 	}
 
-	private function tryPublish(callable $publish): void
+	/**
+	 * @param array<string, string|int> $headers
+	 */
+	private function tryPublish(IQueue|IExchange $target, string $message, array $headers, string $exchange, string $routingKey, int $try = 0): void
 	{
 		try {
-			$publish();
+			$target->getConnection()->getChannel()->publish(
+				$message,
+				$headers,
+				$exchange,
+				$routingKey
+			);
 		} catch (ClientException $e) {
+			if ($try >= 2) {
+				throw $e;
+			}
+
+			// Exchange do not exists, lazy declare
 			if ($e->getCode() === 404) {
 				$this->lazyDeclarator->declare();
-				$publish();
+				$this->tryPublish($target, $message, $headers, $exchange, $routingKey, ++$try);
 				return;
 			}
+
+			// Try to reset connection if issue is broken pipe or closed connection
+			if (in_array(
+				$e->getMessage(),
+				['Broken pipe or closed connection.', 'Could not write data to socket.'],
+				true
+			)) {
+				$target->getConnection()->resetChannel();
+				$target->getConnection()->resetConnection();
+
+				$this->tryPublish($target, $message, $headers, $exchange, $routingKey, ++$try);
+				return;
+			}
+
 			throw $e;
 		}
 	}
