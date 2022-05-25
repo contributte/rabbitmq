@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Contributte\RabbitMQ\Connection;
 
-use Nette\InvalidStateException;
+use Contributte\RabbitMQ\Exchange\IExchange;
 
 class Api implements IApi
 {
@@ -51,34 +51,41 @@ class Api implements IApi
 	 * @param array<string, mixed> $policy
 	 */
 	public function createFederation(
-		string $type,
-		string $target,
+		string $name,
 		string $vhost,
 		string $uri,
 		int $prefetch,
 		int $reconnectDelay,
-		int $messageTTL,
-		int $expires,
+		?int $messageTTL,
+		?int $expires,
 		string $ackMode,
 		array $policy
 	): bool {
-		$uniqueName = "{$type}-{$target}-" . substr(md5($uri), -8);
+		$uniqueName = "{$name}-" . substr(md5($uri), -8);
 		$policyName = "{$uniqueName}-policy";
 		$federationName = "{$uniqueName}-federation";
 
-		$federationParams = [
-			'value' => (object) [
-				'uri' => $uri,
-				'prefetch-count' => $prefetch,
-				'reconnect-delay' => $reconnectDelay,
-				'message-ttl' => $messageTTL,
-				'expires' => $expires,
-				'ack-mode' => $ackMode,
-				$type => $target,
-			],
+		$federationParamsPrototype = [
+			'uri' => $uri,
+			'prefetch-count' => $prefetch,
+			'reconnect-delay' => $reconnectDelay,
+			'ack-mode' => $ackMode,
+			'exchange' => $name,
 		];
+
+		if ($messageTTL) {
+			$federationParamsPrototype['message-ttl'] = $messageTTL;
+		}
+		if ($expires) {
+			$federationParamsPrototype['expires'] = $expires;
+		}
+
+		$federationParams = [
+			'value' => (object) $federationParamsPrototype
+		];
+
 		$policyParams = [
-			'pattern' => $target,
+			'pattern' => $name,
 			'apply-to' => 'exchanges',
 			'priority' => $policy['priority'],
 			'definition' => (object) ($policy['arguments'] + ['federation-upstream' => $federationName]),
@@ -187,8 +194,8 @@ class Api implements IApi
 			$url = $this->url . '/api/policies/' . urlencode($vhost) . '/' . $name;
 			$response = $this->get($url);
 
-			if ($response['status'] !== self::HTTP_OK) {
-				throw new InvalidStateException('Failed to get policy.');
+			if ($response['status'] === self::HTTP_NOT_FOUND && isset($response['data']->error)) {
+				return [];
 			}
 		} catch (\JsonException) {
 		}
@@ -235,8 +242,8 @@ class Api implements IApi
 			$url = $this->url . '/api/parameters/federation-upstream/' . urlencode($vhost) . '/' . $name;
 			$response = $this->get($url);
 
-			if ($response['status'] !== self::HTTP_OK) {
-				throw new InvalidStateException('Failed to get federation upstream.');
+			if ($response['status'] === self::HTTP_NOT_FOUND && isset($response['data']->error)) {
+				return [];
 			}
 		} catch (\JsonException) {
 		}
