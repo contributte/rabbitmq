@@ -7,6 +7,8 @@ namespace Contributte\RabbitMQ\DI\Helpers;
 use Contributte\RabbitMQ\Exchange\ExchangeDeclarator;
 use Contributte\RabbitMQ\Exchange\ExchangeFactory;
 use Contributte\RabbitMQ\Exchange\ExchangesDataBag;
+use Contributte\RabbitMQ\Exchange\IExchange;
+use Contributte\RabbitMQ\Queue\IQueue;
 use Nette\DI\ContainerBuilder;
 use Nette\DI\Definitions\ServiceDefinition;
 use Nette\Schema\Expect;
@@ -41,8 +43,8 @@ final class ExchangesHelper extends AbstractHelper
 					'uri' => Expect::string()->required()->dynamic(),
 					'prefetchCount' => Expect::int(20)->min(1),
 					'reconnectDelay' => Expect::int(1)->min(1),
-					'messageTTL' => Expect::int(3_600_000)->min(1),
-					'expires' => Expect::int(3_600_000)->min(1),
+					'messageTTL' => Expect::int(),
+					'expires' => Expect::int(),
 					'ackMode' => Expect::anyOf(...self::ACK_TYPES)->default(self::ACK_TYPES[0]),
 					'policy' => Expect::structure([
 						'priority' => Expect::int(0),

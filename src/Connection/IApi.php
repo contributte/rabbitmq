@@ -6,7 +6,7 @@ namespace Contributte\RabbitMQ\Connection;
 
 interface IApi
 {
-	public const HTTP_OK = 200;
+	public const HTTP_NOT_FOUND = 404;
 
 	/**
 	 * @return array<int, mixed>
@@ -19,27 +19,24 @@ interface IApi
 	public function getPolicies(): array;
 
 	/**
-	 * @param string $type
-	 * @param string $target
 	 * @param string $vhost
 	 * @param string $uri
 	 * @param int $prefetch
 	 * @param int $reconnectDelay
-	 * @param int $messageTTL
-	 * @param int $expires
+	 * @param ?int $messageTTL
+	 * @param ?int $expires
 	 * @param string $ackMode
 	 * @param array<string, mixed> $policy
 	 * @return bool
 	 */
 	public function createFederation(
-		string $type,
-		string $target,
+		string $name,
 		string $vhost,
 		string $uri,
 		int $prefetch,
 		int $reconnectDelay,
-		int $messageTTL,
-		int $expires,
+		?int $messageTTL,
+		?int $expires,
 		string $ackMode,
 		array $policy
 	): bool;
