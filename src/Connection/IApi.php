@@ -6,13 +6,21 @@ namespace Contributte\RabbitMQ\Connection;
 
 interface IApi
 {
+	public const HTTP_OK = 200;
+
 	/**
 	 * @return array<int, mixed>
 	 */
 	public function getFederations(): array;
 
 	/**
-	 * @param string $exchange
+	 * @return array<int, mixed>
+	 */
+	public function getPolicies(): array;
+
+	/**
+	 * @param string $type
+	 * @param string $target
 	 * @param string $vhost
 	 * @param string $uri
 	 * @param int $prefetch
@@ -24,7 +32,8 @@ interface IApi
 	 * @return bool
 	 */
 	public function createFederation(
-		string $exchange,
+		string $type,
+		string $target,
 		string $vhost,
 		string $uri,
 		int $prefetch,

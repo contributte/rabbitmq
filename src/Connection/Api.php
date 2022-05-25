@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Contributte\RabbitMQ\Connection;
 
+use Nette\InvalidStateException;
+
 class Api implements IApi
 {
 	private string $url;
@@ -34,10 +36,23 @@ class Api implements IApi
 
 	/**
 	 * @throws \JsonException
+	 * @return array<int, mixed>
+	 */
+	public function getPolicies(): array
+	{
+		$url = $this->url . '/api/policies';
+		$response = $this->get($url);
+
+		return (array) $response['data'];
+	}
+
+	/**
+	 * @throws \JsonException
 	 * @param array<string, mixed> $policy
 	 */
 	public function createFederation(
-		string $exchange,
+		string $type,
+		string $target,
 		string $vhost,
 		string $uri,
 		int $prefetch,
@@ -47,9 +62,9 @@ class Api implements IApi
 		string $ackMode,
 		array $policy
 	): bool {
-		$uniqueName = $exchange . '-' . substr(md5($uri), -8);
-		$policyName = $uniqueName . '-policy';
-		$federationName = $uniqueName . '-federation';
+		$uniqueName = "{$type}-{$target}-" . substr(md5($uri), -8);
+		$policyName = "{$uniqueName}-policy";
+		$federationName = "{$uniqueName}-federation";
 
 		$federationParams = [
 			'value' => (object) [
@@ -59,48 +74,20 @@ class Api implements IApi
 				'message-ttl' => $messageTTL,
 				'expires' => $expires,
 				'ack-mode' => $ackMode,
-				'exchange' => $exchange,
+				$type => $target,
 			],
 		];
 		$policyParams = [
-			'pattern' => $exchange,
+			'pattern' => $target,
 			'apply-to' => 'exchanges',
 			'priority' => $policy['priority'],
 			'definition' => (object) ($policy['arguments'] + ['federation-upstream' => $federationName]),
 		];
 
-		$this->createFederationUpstream($federationName, $vhost, $federationParams);
-		$this->createFederationPolicy($policyName, $vhost, $policyParams);
+		$this->createFederationUpstream($vhost, $federationName, $federationParams);
+		$this->createPolicy($vhost, $policyName, $policyParams);
 
 		return true;
-	}
-
-	/**
-	 * @throws \JsonException
-	 * @param array<string, mixed> $params
-	 */
-	private function createFederationUpstream(string $name, string $vhost, array $params): void
-	{
-		$response = $this->put(
-			$this->url . '/api/parameters/federation-upstream/' . urlencode($vhost) . '/' . $name,
-			$params
-		);
-
-		$this->verifyResponse($response);
-	}
-
-	/**
-	 * @throws \JsonException
-	 * @param array<string, mixed> $params
-	 */
-	private function createFederationPolicy(string $name, string $vhost, array $params): void
-	{
-		$response = $this->put(
-			$this->url . '/api/policies/' . urlencode($vhost) . '/' . $name,
-			$params
-		);
-
-		$this->verifyResponse($response);
 	}
 
 	/**
@@ -109,7 +96,7 @@ class Api implements IApi
 	 */
 	private function verifyResponse(array $response): void
 	{
-		if ($response['status'] <= 200 || $response['status'] >= 300) {
+		if ($response['status'] < 200 || $response['status'] >= 300) {
 			throw new \RuntimeException(
 				sprintf(
 					'%s: %s',
@@ -177,5 +164,101 @@ class Api implements IApi
 			'status' => $info['http_code'],
 			'data' => $response ? json_decode((string) $response, flags: JSON_THROW_ON_ERROR) : '',
 		];
+	}
+
+	/** Policies */
+
+	/**
+	 * @param array<string, mixed> $params
+	 */
+	private function existsPolicy(string $vhost, string $name, array $params): bool
+	{
+		$policy = $this->getPolicy($vhost, $name);
+		$params += ['vhost' => $vhost, 'name' => $name];
+		return $policy == $params; // intentionally == as we do not care of order
+	}
+
+	/**
+	 * @return array<string, mixed>
+	 */
+	private function getPolicy(string $vhost, string $name): array
+	{
+		try {
+			$url = $this->url . '/api/policies/' . urlencode($vhost) . '/' . $name;
+			$response = $this->get($url);
+
+			if ($response['status'] !== self::HTTP_OK) {
+				throw new InvalidStateException('Failed to get policy.');
+			}
+		} catch (\JsonException) {
+		}
+
+		return (array) ($response['data'] ?? []);
+	}
+
+
+	/**
+	 * @throws \JsonException
+	 * @param array<string, mixed> $params
+	 */
+	private function createPolicy(string $vhost, string $name, array $params): void
+	{
+		if ($this->existsPolicy($vhost, $name, $params)) {
+			return;
+		}
+
+		$response = $this->put(
+			$this->url . '/api/policies/' . urlencode($vhost) . '/' . $name,
+			$params
+		);
+
+		$this->verifyResponse($response);
+	}
+
+	/** Federations */
+
+	/**
+	 * @param array<string, mixed> $params
+	 */
+	private function existsFederationUpstream(string $vhost, string $name, array $params): bool
+	{
+		$federation = $this->getFederationUpstream($vhost, $name);
+		return isset($federation['value']) && $params['value'] == $federation['value']; // intentionally == as keys may be in different order
+	}
+
+	/**
+	 * @return array<string, mixed>
+	 */
+	private function getFederationUpstream(string $vhost, string $name): array
+	{
+		try {
+			$url = $this->url . '/api/parameters/federation-upstream/' . urlencode($vhost) . '/' . $name;
+			$response = $this->get($url);
+
+			if ($response['status'] !== self::HTTP_OK) {
+				throw new InvalidStateException('Failed to get federation upstream.');
+			}
+		} catch (\JsonException) {
+		}
+
+		return (array) ($response['data'] ?? []);
+	}
+
+	/**
+	 * @throws \JsonException
+	 * @param array<string, mixed> $params
+	 */
+	private function createFederationUpstream(string $vhost, string $name, array $params): void
+	{
+		if ($this->existsFederationUpstream($vhost, $name, $params)) {
+			return;
+		}
+
+		$response = $this->put(
+			$this->url . '/api/parameters/federation-upstream/' . urlencode($vhost) . '/' . $name,
+			$params
+		);
+
+		$this->verifyResponse($response);
 	}
 }
