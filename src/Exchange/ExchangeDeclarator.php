@@ -10,6 +10,8 @@ use Contributte\RabbitMQ\Queue\QueueFactory;
 
 final class ExchangeDeclarator
 {
+	private const FEDERATION_TYPE = 'exchange';
+
 	public function __construct(private ConnectionFactory $connectionFactory, private ExchangesDataBag $exchangesDataBag, private QueueFactory $queueFactory)
 	{
 	}
@@ -56,6 +58,7 @@ final class ExchangeDeclarator
 				$federation = $exchangeData['federation'];
 
 				$api->createFederation(
+					self::FEDERATION_TYPE,
 					$name,
 					$connection->getVhost(),
 					$federation['uri'],
