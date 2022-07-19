@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Contributte\RabbitMQ\Producer;
 
 use Bunny\Exception\ClientException;
+use Contributte\RabbitMQ\Connection\Exception\PublishException;
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
@@ -21,10 +22,10 @@ final class Producer
 	private array $publishCallbacks = [];
 
 	public function __construct(
-		private ?IExchange     $exchange,
-		private ?IQueue        $queue,
-		private string         $contentType,
-		private int            $deliveryMode,
+		private ?IExchange $exchange,
+		private ?IQueue $queue,
+		private string $contentType,
+		private int $deliveryMode,
 		private LazyDeclarator $lazyDeclarator
 	) {
 	}
@@ -74,12 +75,16 @@ final class Producer
 	private function tryPublish(IQueue|IExchange $target, string $message, array $headers, string $exchange, string $routingKey, int $try = 0): void
 	{
 		try {
-			$target->getConnection()->getChannel()->publish(
+			$deliveryTag = $target->getConnection()->getChannel()->publish(
 				$message,
 				$headers,
 				$exchange,
 				$routingKey
 			);
+			$confirm = $target->getConnection()->getPublishConfirm();
+			if ($confirm !== null && $confirm->deliveryTag() === $deliveryTag && !$confirm->isAck()) {
+				throw new PublishException("Publish of message failed.\nExchange:{$exchange}\nRoutingKey:{$routingKey}");
+			}
 		} catch (ClientException $e) {
 			if ($try >= 2) {
 				throw $e;
