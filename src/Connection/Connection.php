@@ -7,8 +7,6 @@ namespace Contributte\RabbitMQ\Connection;
 use Bunny\Channel;
 use Bunny\Exception\ClientException;
 use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
-use Contributte\RabbitMQ\Exchange\IExchange;
-use Contributte\RabbitMQ\Queue\IQueue;
 
 final class Connection implements IConnection
 {
@@ -16,6 +14,7 @@ final class Connection implements IConnection
 	private const HEARTBEAT_INTERVAL = 1;
 
 	private Client $bunnyClient;
+
 	/**
 	 * @var array<string, mixed>
 	 */
@@ -25,8 +24,8 @@ final class Connection implements IConnection
 	private ?Channel $channel = null;
 
 	/**
-	 * @throws \Exception
 	 * @param array<string, mixed> $ssl
+	 * @throws \Exception
 	 */
 	public function __construct(
 		string $host,
@@ -40,7 +39,8 @@ final class Connection implements IConnection
 		string $path,
 		bool $tcpNoDelay,
 		bool $lazy = false,
-		?array $ssl = null
+		?array $ssl = null,
+		?callable $cycleCallback = null
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -55,6 +55,7 @@ final class Connection implements IConnection
 			'path' => $path,
 			'tcp_nodelay' => $tcpNoDelay,
 			'ssl' => $ssl,
+			'cycle_callback' => $cycleCallback,
 		];
 
 		$this->bunnyClient = $this->createNewConnection();
@@ -117,7 +118,6 @@ final class Connection implements IConnection
 		return $this->channel;
 	}
 
-
 	/**
 	 * @throws \Exception
 	 */
@@ -130,7 +130,6 @@ final class Connection implements IConnection
 		$this->bunnyClient->connect();
 	}
 
-
 	public function sendHeartbeat(): void
 	{
 		$now = time();
@@ -139,7 +138,6 @@ final class Connection implements IConnection
 			$this->lastBeat = $now;
 		}
 	}
-
 
 	public function getVhost(): string
 	{
