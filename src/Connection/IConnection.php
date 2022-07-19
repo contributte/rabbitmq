@@ -6,6 +6,7 @@ namespace Contributte\RabbitMQ\Connection;
 
 use Bunny\Channel;
 use Bunny\Exception\BunnyException;
+use Bunny\Protocol\MethodFrame;
 use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
 
 interface IConnection
@@ -22,6 +23,7 @@ interface IConnection
 	public function sendHeartbeat(): void;
 	public function isConnected(): bool;
 	public function getVhost(): string;
+	public function getPublishConfirm(): ?PublishConfirm;
 
 	/** @internal */
 	public function resetChannel(): void;

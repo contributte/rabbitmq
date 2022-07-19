@@ -6,6 +6,8 @@ namespace Contributte\RabbitMQ\Connection;
 
 use Bunny\Channel;
 use Bunny\Exception\ClientException;
+use Bunny\Protocol\MethodBasicAckFrame;
+use Bunny\Protocol\MethodBasicNackFrame;
 use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\Queue\IQueue;
@@ -23,6 +25,7 @@ final class Connection implements IConnection
 	private float $heartbeat;
 	private int $lastBeat = 0;
 	private ?Channel $channel = null;
+	private ?PublishConfirm $publishConfirm = null;
 
 	/**
 	 * @throws \Exception
@@ -40,7 +43,8 @@ final class Connection implements IConnection
 		string $path,
 		bool $tcpNoDelay,
 		bool $lazy = false,
-		?array $ssl = null
+		?array $ssl = null,
+		private bool $confirmMode = false,
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -113,6 +117,11 @@ final class Connection implements IConnection
 
 			$this->channel = $channel;
 		}
+		if ($this->confirmMode) {
+			$this->channel->confirmSelect(function (MethodBasicAckFrame|MethodBasicNackFrame $frame) {
+				$this->publishConfirm = new PublishConfirm($frame instanceof MethodBasicAckFrame, $frame->deliveryTag);
+			});
+		}
 
 		return $this->channel;
 	}
@@ -130,6 +139,10 @@ final class Connection implements IConnection
 		$this->bunnyClient->connect();
 	}
 
+	public function getPublishConfirm(): ?PublishConfirm
+	{
+		return $this->publishConfirm;
+	}
 
 	public function sendHeartbeat(): void
 	{
