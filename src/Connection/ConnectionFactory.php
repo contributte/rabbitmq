@@ -56,6 +56,14 @@ final class ConnectionFactory
 		return $this->requests[$name];
 	}
 
+	public function sendHeartbeat(): bool
+	{
+		foreach ($this->connections as $connection) {
+			$connection->sendHeartbeat();
+		}
+		return true;
+	}
+
 	/**
 	 * @throws ConnectionFactoryException
 	 */
@@ -108,7 +116,9 @@ final class ConnectionFactory
 			$connectionData['path'],
 			$connectionData['tcpNoDelay'],
 			$connectionData['lazy'],
-			$connectionData['ssl']
+			$connectionData['ssl'],
+			fn () => $this->sendHeartbeat(),
+			$connectionData['heartbeatCallback'] ?? null,
 		);
 	}
 }

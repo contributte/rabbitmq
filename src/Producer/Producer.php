@@ -8,8 +8,6 @@ use Bunny\Exception\ClientException;
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
-use Nette\Utils\Callback;
-use Tracy\Dumper;
 
 final class Producer
 {
@@ -39,11 +37,11 @@ final class Producer
 		$headers = array_merge($this->getBasicHeaders(), $headers);
 
 		if ($this->queue !== null) {
-			$this->publishToQueue($message, $headers);
+			$this->tryPublish($this->queue, $message, $headers, '', $this->queue->getName());
 		}
 
 		if ($this->exchange !== null) {
-			$this->publishToExchange($message, $headers, $routingKey ?? '');
+			$this->tryPublish($this->exchange, $message, $headers, $this->exchange->getName(), $routingKey ?? '');
 		}
 
 		foreach ($this->publishCallbacks as $callback) {
@@ -58,18 +56,6 @@ final class Producer
 	}
 
 
-	public function sendHeartbeat(): void
-	{
-		trigger_error(__METHOD__ . '() is deprecated, use dependency ConnectionFactory::sendHeartbeat().', E_USER_DEPRECATED);
-		if ($this->queue !== null) {
-			$this->queue->getConnection()->sendHeartbeat();
-		}
-		if ($this->exchange !== null) {
-			$this->exchange->getConnection()->sendHeartbeat();
-		}
-	}
-
-
 	/**
 	 * @return array<string, string|int>
 	 */
@@ -81,30 +67,6 @@ final class Producer
 		];
 	}
 
-	/**
-	 * @param array<string, string|int> $headers
-	 */
-	private function publishToQueue(string $message, array $headers = []): void
-	{
-		if (null === $queue = $this->queue) {
-			throw new \UnexpectedValueException('Queue is not defined');
-		}
-
-		$this->tryPublish($queue, $message, $headers, '', $queue->getName());
-	}
-
-
-	/**
-	 * @param array<string, string|int> $headers
-	 */
-	private function publishToExchange(string $message, array $headers, string $routingKey): void
-	{
-		if (null === $exchange = $this->exchange) {
-			throw new \UnexpectedValueException('Exchange is not defined');
-		}
-
-		$this->tryPublish($exchange, $message, $headers, $exchange->getName(), $routingKey);
-	}
 
 	/**
 	 * @param array<string, string|int> $headers

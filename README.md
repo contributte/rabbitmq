@@ -31,15 +31,14 @@ For details on how to use this package, check out our [documentation](.docs).
 
 | State  | Version   | Branch   | Nette    | PHP     |
 |--------|-----------|----------|----------|---------|
-| dev    | `^10.x.x` | `master` | `3.0+`   | `>=8.0` |
-| stable | `^10.0.0` | `master` | `3.0+`   | `>=8.0` |
+| dev    | `^10.2.x` | `master` | `3.0+`   | `>=8.0` |
+| stable | `^10.1.0` | `master` | `3.0+`   | `>=8.0` |
 
 ## Development
 
 This package is currently maintaining by these authors.
 
 <a href="https://github.com/bckp"><img width="80" height="80" src="https://avatars.githubusercontent.com/u/179652?v=4&s=80"></a>
-<a href="https://github.com/kucix"><img width="80" height="80" src="https://avatars.githubusercontent.com/u/444459?v=4&s=80"></a>
 <a href="https://github.com/mallgroup"><img width="80" height="80" src="https://avatars.githubusercontent.com/u/23184995?v=4&s=80"></a>
 
 -----
