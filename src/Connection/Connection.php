@@ -45,7 +45,7 @@ final class Connection implements IConnection
 		?array $ssl = null,
 		?callable $cycleCallback = null,
 		?callable $heartbeatCallback = null,
-		private bool $confirmMode = false,
+		private bool $usePublishConfirm = false,
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -120,8 +120,8 @@ final class Connection implements IConnection
 
 			$this->channel = $channel;
 		}
-		
-		if ($this->confirmMode) {
+
+		if ($this->usePublishConfirm) {
 			$this->channel->confirmSelect(function (MethodBasicAckFrame|MethodBasicNackFrame $frame) {
 				$this->publishConfirm = new PublishConfirm($frame instanceof MethodBasicAckFrame, $frame->deliveryTag);
 			});

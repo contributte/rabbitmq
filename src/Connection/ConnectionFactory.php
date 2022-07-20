@@ -105,20 +105,21 @@ final class ConnectionFactory
 		}
 
 		return new Connection(
-			$connectionData['host'],
-			$connectionData['port'],
-			$connectionData['user'],
-			$connectionData['password'],
-			$connectionData['vhost'],
-			$connectionData['heartbeat'],
-			$connectionData['timeout'],
-			$connectionData['persistent'],
-			$connectionData['path'],
-			$connectionData['tcpNoDelay'],
-			$connectionData['lazy'],
-			$connectionData['ssl'],
-			fn () => $this->sendHeartbeat(),
-			$connectionData['heartbeatCallback'] ?? null,
+			host: $connectionData['host'],
+			port: $connectionData['port'],
+			user: $connectionData['user'],
+			password: $connectionData['password'],
+			vhost: $connectionData['vhost'],
+			heartbeat: $connectionData['heartbeat'],
+			timeout: $connectionData['timeout'],
+			persistent: $connectionData['persistent'],
+			path: $connectionData['path'],
+			tcpNoDelay: $connectionData['tcpNoDelay'],
+			lazy: $connectionData['lazy'],
+			ssl: $connectionData['ssl'],
+			cycleCallback: fn () => $this->sendHeartbeat(),
+			heartbeatCallback: $connectionData['heartbeatCallback'] ?? null,
+			usePublishConfirm: $connectionData['publishConfirm'],
 		);
 	}
 }

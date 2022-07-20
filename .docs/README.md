@@ -35,6 +35,7 @@ rabbitmq:
 			host: localhost
 			port: 5672
 			lazy: false
+			publishConfirm: true # enables confirm mode on rabbitmq publish (this inform you about ack/nack due policy, this function is experimental)
 			heartbeatCallback: [@class, function] # Callback that is called every time real heartbeat is send
 
 	queues:
