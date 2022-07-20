@@ -35,6 +35,7 @@ rabbitmq:
 			host: localhost
 			port: 5672
 			lazy: false
+			heartbeatCallback: [@class, function] # Callback that is called every time real heartbeat is send
 
 	queues:
 		testQueue:

@@ -117,7 +117,8 @@ final class ConnectionFactory
 			$connectionData['tcpNoDelay'],
 			$connectionData['lazy'],
 			$connectionData['ssl'],
-			fn () => $this->sendHeartbeat()
+			fn () => $this->sendHeartbeat(),
+			$connectionData['heartbeatCallback'] ?? null,
 		);
 	}
 }

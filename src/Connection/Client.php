@@ -24,9 +24,14 @@ class Client extends BunnyClient
 	 */
 	public function __construct(array $options = [])
 	{
-		// Construct parent
 		parent::__construct($options);
-		$this->options['cycle_callback'] = $options['cycle_callback'];
+
+		$this->options['cycle_callback'] = is_callable($options['cycle_callback'])
+			? $options['cycle_callback']
+			: null;
+		$this->options['heartbeat_callback'] = is_callable($options['heartbeat_callback'])
+			? $options['heartbeat_callback']
+			: null;
 	}
 
 	/**
@@ -37,9 +42,7 @@ class Client extends BunnyClient
 		$this->getWriter()->appendFrame(new HeartbeatFrame(), $this->writeBuffer);
 		$this->flushWriteBuffer();
 
-		if (is_callable($this->options['heartbeat_callback'] ?? null)) {
-			$this->options['heartbeat_callback']->call($this);
-		}
+		$this->options['heartbeat_callback']?->call($this);
 	}
 
 	public function syncDisconnect(): bool
@@ -73,7 +76,7 @@ class Client extends BunnyClient
 	{
 		parent::write();
 		if (($last = error_get_last()) !== null) {
-			if (!Strings::match($last['message'], '~fwrite(): Send of \d+ bytes failed with errno=\d+ broken pipe~i')) {
+			if (!Strings::match($last['message'], '~fwrite\(\): Send of \d+ bytes failed with errno=\d+ broken pipe~i')) {
 				return;
 			}
 
@@ -101,10 +104,7 @@ class Client extends BunnyClient
 		}
 
 		do {
-			if (is_callable($this->options['cycle_callback'] ?? null)) {
-				$this->options['cycle_callback']->call($this);
-			}
-
+			$this->options['cycle_callback']?->call($this);
 			if (!empty($this->queue)) {
 				$frame = array_shift($this->queue);
 			} else {

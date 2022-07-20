@@ -18,7 +18,7 @@ final class ConsumersHelper extends AbstractHelper
 		return Expect::arrayOf(
 			Expect::structure([
 				'queue' => Expect::string()->required(true),
-				'callback' => Expect::array()->required(true),
+				'callback' => Expect::array()->required(true)->assert('is_callable'),
 				'idleTimeout' => Expect::int(30),
 				'bulk' => Expect::structure([
 					'size' => Expect::int()->min(1),

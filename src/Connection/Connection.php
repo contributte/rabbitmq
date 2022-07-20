@@ -40,7 +40,8 @@ final class Connection implements IConnection
 		bool $tcpNoDelay,
 		bool $lazy = false,
 		?array $ssl = null,
-		?callable $cycleCallback = null
+		?callable $cycleCallback = null,
+		?callable $heartbeatCallback = null,
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -56,6 +57,7 @@ final class Connection implements IConnection
 			'tcp_nodelay' => $tcpNoDelay,
 			'ssl' => $ssl,
 			'cycle_callback' => $cycleCallback,
+			'heartbeat_callback' => $heartbeatCallback,
 		];
 
 		$this->bunnyClient = $this->createNewConnection();
