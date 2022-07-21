@@ -42,6 +42,7 @@ final class Connection implements IConnection
 		?array $ssl = null,
 		?callable $cycleCallback = null,
 		?callable $heartbeatCallback = null,
+		private bool $publishConfirm = false,
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -117,6 +118,10 @@ final class Connection implements IConnection
 			$this->channel = $channel;
 		}
 
+		if ($this->publishConfirm) {
+			$this->channel->confirmSelect();
+		}
+
 		return $this->channel;
 	}
 
@@ -130,6 +135,11 @@ final class Connection implements IConnection
 		}
 
 		$this->bunnyClient->connect();
+	}
+
+	public function isPublishConfirm(): bool
+	{
+		return $this->publishConfirm;
 	}
 
 	public function sendHeartbeat(): void

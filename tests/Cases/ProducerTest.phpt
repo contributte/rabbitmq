@@ -301,11 +301,12 @@ final class ProducerTest extends TestCase
 		$channelMock = new ChannelMock();
 
 		$connectionMock = \Mockery::mock(IConnection::class)
-			->shouldReceive('getChannel')->andReturn($channelMock)->getMock();
+		                          ->shouldReceive('getChannel')->andReturn($channelMock)->getMock()
+		                          ->shouldReceive('isPublishConfirm')->andReturnFalse()->getMock();
 
 		$queueMock = \Mockery::mock(IQueue::class)
-			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
-			->shouldReceive('getName')->andReturn($testQueueName)->getMock();
+		                     ->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
+		                     ->shouldReceive('getName')->andReturn($testQueueName)->getMock();
 
 		$producer = new Producer(
 			null,
@@ -324,11 +325,12 @@ final class ProducerTest extends TestCase
 		$channelMock = new ChannelMock();
 
 		$connectionMock = \Mockery::mock(IConnection::class)
-			->shouldReceive('getChannel')->andReturn($channelMock)->getMock();
+		                          ->shouldReceive('getChannel')->andReturn($channelMock)->getMock()
+		                          ->shouldReceive('isPublishConfirm')->andReturnFalse()->getMock();
 
 		$exchangeMock = \Mockery::mock(IExchange::class)
-			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
-			->shouldReceive('getName')->andReturn($testExchange)->getMock();
+		                        ->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
+		                        ->shouldReceive('getName')->andReturn($testExchange)->getMock();
 
 		$producer = new Producer(
 			$exchangeMock,
@@ -344,7 +346,7 @@ final class ProducerTest extends TestCase
 
 	protected function createLazyDeclarator(): LazyDeclarator
 	{
-		return new class extends LazyDeclarator{
+		return new class extends LazyDeclarator {
 			public function __construct()
 			{
 				$this->queuesDataBag = \Mockery::spy(QueuesDataBag::class);
