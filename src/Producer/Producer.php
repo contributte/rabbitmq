@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Contributte\RabbitMQ\Producer;
 
 use Bunny\Exception\ClientException;
+use Bunny\Protocol\MethodBasicNackFrame;
+use Contributte\RabbitMQ\Connection\Client;
 use Contributte\RabbitMQ\Connection\Exception\PublishException;
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\LazyDeclarator;
@@ -81,9 +83,17 @@ final class Producer
 				$exchange,
 				$routingKey
 			);
-			$confirm = $target->getConnection()->getPublishConfirm();
-			if ($confirm !== null && $confirm->deliveryTag() === $deliveryTag && !$confirm->isAck()) {
-				throw new PublishException("Publish of message failed.\nExchange:{$exchange}\nRoutingKey:{$routingKey}");
+
+			if ($target->getConnection()->isPublishConfirm()) {
+				$client = $target->getConnection()->getChannel()->getClient();
+				if (!$client instanceof Client) {
+					return;
+				}
+
+				$frame = $client->waitForConfirm($target->getConnection()->getChannel()->getChannelId());
+				if ($frame instanceof MethodBasicNackFrame && $frame->deliveryTag === $deliveryTag) {
+					throw new PublishException("Publish of message failed.\nExchange:{$exchange}\nRoutingKey:{$routingKey}");
+				}
 			}
 		} catch (ClientException $e) {
 			if ($try >= 2) {

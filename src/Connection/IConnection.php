@@ -23,7 +23,7 @@ interface IConnection
 	public function sendHeartbeat(): void;
 	public function isConnected(): bool;
 	public function getVhost(): string;
-	public function getPublishConfirm(): ?PublishConfirm;
+	public function isPublishConfirm(): bool;
 
 	/** @internal */
 	public function resetChannel(): void;

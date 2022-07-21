@@ -8,8 +8,7 @@ use Bunny\Client as BunnyClient;
 use Bunny\ClientStateEnum;
 use Bunny\Exception\BunnyException;
 use Bunny\Exception\ClientException;
-use Bunny\Protocol\AbstractFrame;
-use Bunny\Protocol\HeartbeatFrame;
+use Bunny\Protocol;
 use Nette\Utils\Strings;
 
 /**
@@ -39,7 +38,7 @@ class Client extends BunnyClient
 	 */
 	public function sendHeartbeat(): void
 	{
-		$this->getWriter()->appendFrame(new HeartbeatFrame(), $this->writeBuffer);
+		$this->getWriter()->appendFrame(new Protocol\HeartbeatFrame(), $this->writeBuffer);
 		$this->flushWriteBuffer();
 
 		$this->options['heartbeat_callback']?->call($this);
@@ -108,7 +107,7 @@ class Client extends BunnyClient
 			if (!empty($this->queue)) {
 				$frame = array_shift($this->queue);
 			} else {
-				/** @var AbstractFrame|null $frame */
+				/** @var Protocol\AbstractFrame|null $frame */
 				$frame = $this->reader->consumeFrame($this->readBuffer);
 				if ($frame === null) {
 					$now = microtime(true);
@@ -152,7 +151,6 @@ class Client extends BunnyClient
 				}
 			}
 
-			/** @var AbstractFrame $frame */
 			if ($frame->channel === 0) {
 				$this->onFrameReceived($frame);
 			} else {
@@ -165,5 +163,34 @@ class Client extends BunnyClient
 				$this->channels[$frame->channel]->onFrameReceived($frame);
 			}
 		} while ($this->running);
+	}
+
+	public function waitForConfirm(int $channel): Protocol\MethodBasicAckFrame|Protocol\MethodBasicNackFrame
+	{
+		$frame = null; // psalm bug
+		while (true) {
+			/**
+			 * @phpstan-ignore-next-line
+			 */
+			while (($frame = $this->getReader()->consumeFrame($this->getReadBuffer())) === null) {
+				$this->feedReadBuffer();
+			}
+
+			if ($frame->channel === $channel && ($frame instanceof Protocol\MethodBasicNackFrame || $frame instanceof Protocol\MethodBasicAckFrame)) {
+				return $frame;
+			}
+
+			if ($frame instanceof Protocol\MethodChannelCloseFrame && $frame->channel === $channel) {
+				$this->channelCloseOk($channel);
+				throw new ClientException($frame->replyText, $frame->replyCode);
+			}
+
+			if ($frame instanceof Protocol\MethodConnectionCloseFrame) {
+				$this->connectionCloseOk();
+				throw new ClientException($frame->replyText, $frame->replyCode);
+			}
+
+			$this->enqueue($frame);
+		}
 	}
 }

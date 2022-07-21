@@ -302,7 +302,7 @@ final class ProducerTest extends TestCase
 
 		$connectionMock = \Mockery::mock(IConnection::class)
 		                          ->shouldReceive('getChannel')->andReturn($channelMock)->getMock()
-		                          ->shouldReceive('getPublishConfirm')->andReturnNull()->getMock();
+		                          ->shouldReceive('isPublishConfirm')->andReturnFalse()->getMock();
 
 		$queueMock = \Mockery::mock(IQueue::class)
 		                     ->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
@@ -326,7 +326,7 @@ final class ProducerTest extends TestCase
 
 		$connectionMock = \Mockery::mock(IConnection::class)
 		                          ->shouldReceive('getChannel')->andReturn($channelMock)->getMock()
-		                          ->shouldReceive('getPublishConfirm')->andReturnNull()->getMock();
+		                          ->shouldReceive('isPublishConfirm')->andReturnFalse()->getMock();
 
 		$exchangeMock = \Mockery::mock(IExchange::class)
 		                        ->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()

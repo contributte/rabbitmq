@@ -119,7 +119,7 @@ final class ConnectionFactory
 			ssl: $connectionData['ssl'],
 			cycleCallback: fn () => $this->sendHeartbeat(),
 			heartbeatCallback: $connectionData['heartbeatCallback'] ?? null,
-			usePublishConfirm: $connectionData['publishConfirm'],
+			publishConfirm: $connectionData['publishConfirm'],
 		);
 	}
 }
