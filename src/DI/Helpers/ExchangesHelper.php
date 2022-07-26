@@ -38,6 +38,7 @@ final class ExchangesHelper extends AbstractHelper
 	 */
 	private array $queueBindingDefaults = [
 		'routingKey' => '',
+		'routingKeys' => [],
 		'noWait' => false,
 		'arguments' => [],
 	];
@@ -67,12 +68,21 @@ final class ExchangesHelper extends AbstractHelper
 
 			if ($exchangeConfig['queueBindings'] !== []) {
 				foreach ($exchangeConfig['queueBindings'] as $queueName => $queueBindingData) {
-					$queueBindingData['routingKey'] = (string) $queueBindingData['routingKey'];
+					if (isset($queueBindingData['routingKey']) && isset($queueBindingData['routingKeys'])) {
+						throw new \InvalidArgumentException(
+							"Options `routingKey` and `routingKeys` cannot be specified at the same time"
+						);
+					}
 
-					$exchangeConfig['queueBindings'][$queueName] = $this->extension->validateConfig(
+					$queueBindingConfig = $this->extension->validateConfig(
 						$this->queueBindingDefaults,
 						$queueBindingData
 					);
+
+					$queueBindingConfig['routingKey'] = (string) $queueBindingConfig['routingKey'];
+					$queueBindingConfig['routingKeys'] = array_map('strval', (array) $queueBindingConfig['routingKeys']);
+
+					$exchangeConfig['queueBindings'][$queueName] = $queueBindingConfig;
 				}
 			}
 
