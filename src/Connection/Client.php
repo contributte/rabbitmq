@@ -6,6 +6,7 @@ namespace Contributte\RabbitMQ\Connection;
 
 use Bunny\Client as BunnyClient;
 use Bunny\ClientStateEnum;
+use Bunny\Constants;
 use Bunny\Exception\BunnyException;
 use Bunny\Exception\ClientException;
 use Bunny\Protocol\AbstractFrame;
@@ -45,7 +46,7 @@ class Client extends BunnyClient
 		$this->options['heartbeat_callback']?->call($this);
 	}
 
-	public function syncDisconnect(): bool
+	public function syncDisconnect(int $replyCode = 0, string $replyText = ""): bool
 	{
 		try {
 			if ($this->state !== ClientStateEnum::CONNECTED) {
@@ -57,11 +58,11 @@ class Client extends BunnyClient
 			foreach ($this->channels as $channel) {
 				$channelId = $channel->getChannelId();
 
-				$this->channelClose($channelId, 0, '', 0, 0);
+				$this->channelClose($channelId, $replyCode, $replyText, 0, 0);
 				$this->removeChannel($channelId);
 			}
 
-			$this->connectionClose(0, '', 0, 0);
+			$this->connectionClose($replyCode, $replyText, 0, 0);
 			$this->closeStream();
 		} catch (ClientException) {
 			// swallow, we do not care we are not connected, we want to close connection anyway
@@ -74,7 +75,13 @@ class Client extends BunnyClient
 
 	protected function write(): void
 	{
+		if (!$this->stream || @feof($this->stream)) {
+			$this->syncDisconnect(Constants::STATUS_RESOURCE_ERROR, "Connection closed by server unexpectedly");
+			throw new ClientException("Broken pipe or closed connection.");
+		}
+
 		parent::write();
+
 		if (($last = error_get_last()) !== null) {
 			if (!Strings::match($last['message'], '~fwrite\(\): Send of \d+ bytes failed with errno=\d+ broken pipe~i')) {
 				return;
