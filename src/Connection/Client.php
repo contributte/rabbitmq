@@ -74,7 +74,7 @@ class Client extends BunnyClient
 
 	protected function write(): void
 	{
-		if (!$this->stream || @feof($this->stream)) {
+		if ($this->stream && !@feof($this->stream)) {
 			$this->syncDisconnect(Constants::STATUS_RESOURCE_ERROR, "Connection closed by server unexpectedly");
 			throw new ClientException("Broken pipe or closed connection.");
 		}
