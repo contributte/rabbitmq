@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Contributte\RabbitMQ\Connection;
 
-use Contributte\RabbitMQ\Exchange\IExchange;
-
 class Api implements IApi
 {
 	private string $url;
