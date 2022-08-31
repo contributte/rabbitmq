@@ -7,6 +7,9 @@ namespace Contributte\RabbitMQ\Connection;
 use Bunny\Channel;
 use Bunny\Exception\ClientException;
 use Contributte\RabbitMQ\Connection\Exception\ConnectionException;
+use function in_array;
+use function max;
+use function time;
 
 final class Connection implements IConnection
 {
@@ -65,6 +68,7 @@ final class Connection implements IConnection
 		$this->heartbeat = max($heartbeat, self::HEARTBEAT_INTERVAL);
 
 		if (!$lazy) {
+			$this->lastBeat = time();
 			$this->bunnyClient->connect();
 		}
 	}
@@ -134,6 +138,7 @@ final class Connection implements IConnection
 			return;
 		}
 
+		$this->lastBeat = time();
 		$this->bunnyClient->connect();
 	}
 

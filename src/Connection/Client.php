@@ -42,7 +42,7 @@ class Client extends BunnyClient
 		$this->getWriter()->appendFrame(new Protocol\HeartbeatFrame(), $this->writeBuffer);
 		$this->flushWriteBuffer();
 
-		$this->options['heartbeat_callback']?->call($this);
+		$this->options['heartbeat_callback'] && $this->options['heartbeat_callback']();
 	}
 
 	public function syncDisconnect(int $replyCode = 0, string $replyText = ""): bool
@@ -110,7 +110,7 @@ class Client extends BunnyClient
 		}
 
 		do {
-			$this->options['cycle_callback']?->call($this);
+			$this->options['cycle_callback'] && $this->options['cycle_callback']();
 			if (!empty($this->queue)) {
 				$frame = array_shift($this->queue);
 			} else {
