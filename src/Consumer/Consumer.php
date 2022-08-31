@@ -33,12 +33,10 @@ class Consumer
 		$this->callback = $callback;
 	}
 
-
 	public function getQueue(): IQueue
 	{
 		return $this->queue;
 	}
-
 
 	public function getCallback(): callable
 	{
@@ -82,50 +80,24 @@ class Consumer
 
 	protected function sendResponse(Message $message, Channel $channel, int $result, Client $client): void
 	{
-		switch ($result) {
-			case IConsumer::MESSAGE_ACK:
-				// Acknowledge message
-				$channel->ack($message);
+		match ($result) {
+			IConsumer::MESSAGE_ACK, IConsumer::MESSAGE_ACK_AND_TERMINATE => $channel->ack($message),
+			IConsumer::MESSAGE_NACK, IConsumer::MESSAGE_NACK_AND_TERMINATE => $channel->nack($message),
+			IConsumer::MESSAGE_REJECT, IConsumer::MESSAGE_REJECT_AND_TERMINATE => $channel->reject($message, false),
+			default => throw new \InvalidArgumentException("Unknown return value of consumer [{$this->name}] user callback"),
+		};
 
-				break;
-
-			case IConsumer::MESSAGE_NACK:
-				// Message will be requeued
-				$channel->nack($message);
-
-				break;
-
-			case IConsumer::MESSAGE_REJECT:
-				// Message will be discarded
-				$channel->reject($message, false);
-
-				break;
-
-			case IConsumer::MESSAGE_REJECT_AND_TERMINATE:
-				// Message will be discarded
-				$channel->reject($message, false);
-				$client->stop();
-
-				break;
-
-			case IConsumer::MESSAGE_ACK_AND_TERMINATE:
-				// Acknowledge message and terminate
-				$channel->ack($message);
-				$client->stop();
-
-				break;
-
-			case IConsumer::MESSAGE_NACK_AND_TERMINATE:
-				// Message will be requeued
-				$channel->nack($message);
-				$client->stop();
-
-				break;
-
-			default:
-				throw new \InvalidArgumentException(
-					"Unknown return value of consumer [{$this->name}] user callback"
-				);
+		if (in_array(
+			$result,
+			[
+				IConsumer::MESSAGE_REJECT_AND_TERMINATE,
+				IConsumer::MESSAGE_ACK_AND_TERMINATE,
+				IConsumer::MESSAGE_NACK_AND_TERMINATE
+			],
+			true
+		)
+		) {
+			$client->stop();
 		}
 	}
 

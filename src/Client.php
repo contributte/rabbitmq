@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Contributte\RabbitMQ;
 
 use Contributte\RabbitMQ\Producer\Exception\ProducerFactoryException;
-use Contributte\RabbitMQ\Producer\Producer;
+use Contributte\RabbitMQ\Producer\IProducer;
 use Contributte\RabbitMQ\Producer\ProducerFactory;
 
 /**
@@ -23,7 +23,7 @@ final class Client
 	/**
 	 * @throws ProducerFactoryException
 	 */
-	public function getProducer(string $name): Producer
+	public function getProducer(string $name): IProducer
 	{
 		return $this->producerFactory->getProducer($name);
 	}
