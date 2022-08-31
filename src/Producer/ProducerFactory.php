@@ -18,20 +18,22 @@ final class ProducerFactory
 	public array $createdCallbacks = [];
 
 	/**
-	 * @var Producer[]
+	 * @var IProducer[]
 	 */
 	private array $producers = [];
 
-
-	public function __construct(private ProducersDataBag $producersDataBag, private QueueFactory $queueFactory, private ExchangeFactory $exchangeFactory, private LazyDeclarator $lazyDeclarator)
-	{
+	public function __construct(
+		private ProducersDataBag $producersDataBag,
+		private QueueFactory $queueFactory,
+		private ExchangeFactory $exchangeFactory,
+		private LazyDeclarator $lazyDeclarator
+	) {
 	}
-
 
 	/**
 	 * @throws ProducerFactoryException
 	 */
-	public function getProducer(string $name): Producer
+	public function getProducer(string $name): IProducer
 	{
 		if (!isset($this->producers[$name])) {
 			$this->producers[$name] = $this->create($name);
@@ -40,17 +42,15 @@ final class ProducerFactory
 		return $this->producers[$name];
 	}
 
-
 	public function addOnCreatedCallback(callable $callback): void
 	{
 		$this->createdCallbacks[] = $callback;
 	}
 
-
 	/**
 	 * @throws ProducerFactoryException
 	 */
-	private function create(string $name): Producer
+	private function create(string $name): IProducer
 	{
 		try {
 			$producerData = $this->producersDataBag->getDataByKey($name);

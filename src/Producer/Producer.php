@@ -12,12 +12,8 @@ use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
 
-final class Producer
+final class Producer implements IProducer
 {
-
-	public const DELIVERY_MODE_NON_PERSISTENT = 1;
-	public const DELIVERY_MODE_PERSISTENT = 2;
-
 	/**
 	 * @var callable[]
 	 */

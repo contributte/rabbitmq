@@ -29,7 +29,7 @@ final class ProducersDataBag extends AbstractDataBag
 	 */
 	public function addProducerByData(string $producerName, array $data): void
 	{
-		$data['deliveryMode'] ??= Producer::DELIVERY_MODE_PERSISTENT;
+		$data['deliveryMode'] ??= IProducer::DELIVERY_MODE_PERSISTENT;
 		$data['contentType'] ??= 'text/plain';
 		$data['exchange'] ??= null;
 		$data['queue'] ??= null;

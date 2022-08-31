@@ -4,7 +4,7 @@ declare (strict_types=1);
 
 namespace Contributte\RabbitMQ\Diagnostics;
 
-use Contributte\RabbitMQ\Producer\Producer;
+use Contributte\RabbitMQ\Producer\IProducer;
 use Contributte\RabbitMQ\Producer\ProducerFactory;
 use Nette\Utils\Html;
 use Tracy\IBarPanel;
@@ -26,7 +26,7 @@ class BarPanel implements IBarPanel
 	public function __construct(private ProducerFactory $producerFactory)
 	{
 		$this->producerFactory->addOnCreatedCallback(
-			function (string $name, Producer $producer): void {
+			function (string $name, IProducer $producer): void {
 				$this->sentMessages[$name] = [];
 				$producer->addOnPublishCallback(
 					function (string $message) use ($name): void {
