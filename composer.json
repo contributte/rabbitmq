@@ -51,7 +51,7 @@
     "tracy/tracy": "^2.5",
     "vimeo/psalm": "^4.9",
     "ninjify/nunjuck": "^0.4",
-    "phpstan/phpstan": "^1.4"
+    "phpstan/phpstan": "^1.8"
   },
   "scripts": {
     "phpcs": "./vendor/bin/phpcs -p -n --standard=phpcsRuleset.xml",
@@ -69,7 +69,7 @@
   "prefer-stable": true,
   "extra": {
     "branch-alias": {
-      "dev-master": "10.2.x-dev"
+      "dev-master": "10.3.x-dev"
     }
   },
   "config": {
