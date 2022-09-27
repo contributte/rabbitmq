@@ -24,6 +24,7 @@ interface IConnection
 	public function isConnected(): bool;
 	public function getVhost(): string;
 	public function isPublishConfirm(): bool;
+	public function getPublishConfirm(): int;
 
 	/** @internal */
 	public function resetChannel(): void;

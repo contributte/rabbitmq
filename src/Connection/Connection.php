@@ -15,6 +15,7 @@ final class Connection implements IConnection
 {
 
 	private const HEARTBEAT_INTERVAL = 1;
+	private const CONFIRM_INTERVAL = 3;
 
 	private Client $bunnyClient;
 
@@ -23,6 +24,7 @@ final class Connection implements IConnection
 	 */
 	private array $connectionParams;
 	private float $heartbeat;
+	private int $publishConfirm;
 	private int $lastBeat = 0;
 	private ?Channel $channel = null;
 
@@ -45,7 +47,7 @@ final class Connection implements IConnection
 		?array $ssl = null,
 		?callable $cycleCallback = null,
 		?callable $heartbeatCallback = null,
-		private bool $publishConfirm = false,
+		bool|int $publishConfirm = false,
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -71,6 +73,10 @@ final class Connection implements IConnection
 			$this->lastBeat = time();
 			$this->bunnyClient->connect();
 		}
+
+		$this->publishConfirm = $publishConfirm === true
+			? self::CONFIRM_INTERVAL
+			: (int) $publishConfirm;
 	}
 
 
@@ -143,6 +149,11 @@ final class Connection implements IConnection
 	}
 
 	public function isPublishConfirm(): bool
+	{
+		return $this->publishConfirm > 0;
+	}
+
+	public function getPublishConfirm(): int
 	{
 		return $this->publishConfirm;
 	}

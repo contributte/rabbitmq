@@ -8,6 +8,7 @@ use Bunny\Exception\ClientException;
 use Bunny\Protocol\MethodBasicNackFrame;
 use Contributte\RabbitMQ\Connection\Client;
 use Contributte\RabbitMQ\Connection\Exception\PublishException;
+use Contributte\RabbitMQ\Connection\Exception\WaitTimeoutException;
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\LazyDeclarator;
 use Contributte\RabbitMQ\Queue\IQueue;
@@ -86,11 +87,16 @@ final class Producer implements IProducer
 					return;
 				}
 
-				$frame = $client->waitForConfirm($target->getConnection()->getChannel()->getChannelId());
+				$frame = $client->waitForConfirm($target->getConnection()->getChannel()->getChannelId(), $target->getConnection()->getPublishConfirm());
 				if ($frame instanceof MethodBasicNackFrame && $frame->deliveryTag === $deliveryTag) {
 					throw new PublishException("Publish of message failed.\nExchange:{$exchange}\nRoutingKey:{$routingKey}");
 				}
 			}
+		} catch (WaitTimeoutException $e) {
+			throw new PublishException(
+				"Confirm message timeout.\nExchange:{$exchange}\nRoutingKey:{$routingKey}\n",
+				previous: $e
+			);
 		} catch (ClientException $e) {
 			if ($try >= 2) {
 				throw $e;

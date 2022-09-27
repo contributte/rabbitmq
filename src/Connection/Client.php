@@ -10,7 +10,9 @@ use Bunny\Constants;
 use Bunny\Exception\BunnyException;
 use Bunny\Exception\ClientException;
 use Bunny\Protocol;
+use Contributte\RabbitMQ\Connection\Exception\WaitTimeoutException;
 use Nette\Utils\Strings;
+use function time;
 
 /**
  * @codeCoverageIgnore
@@ -172,15 +174,26 @@ class Client extends BunnyClient
 		} while ($this->running);
 	}
 
-	public function waitForConfirm(int $channel): Protocol\MethodBasicAckFrame|Protocol\MethodBasicNackFrame
+	public function waitForConfirm(int $channel, ?int $timeout = null): Protocol\MethodBasicAckFrame|Protocol\MethodBasicNackFrame
 	{
 		$frame = null; // psalm bug
+		$time = time();
+
+		$checkTimeout = static function() use ($time, $timeout): void {
+			if ($timeout && $time + $timeout < time()) {
+				throw new WaitTimeoutException('Timeout reached');
+			}
+		};
+
 		while (true) {
+			$checkTimeout();
+
 			/**
 			 * @phpstan-ignore-next-line
 			 */
 			while (($frame = $this->getReader()->consumeFrame($this->getReadBuffer())) === null) {
 				$this->feedReadBuffer();
+				$checkTimeout();
 			}
 
 			if ($frame->channel === $channel && ($frame instanceof Protocol\MethodBasicNackFrame || $frame instanceof Protocol\MethodBasicAckFrame)) {

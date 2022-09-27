@@ -30,7 +30,10 @@ final class ConnectionsHelper extends AbstractHelper
 				'lazy' => Expect::bool(true),
 				'ssl' => Expect::array(null)->required(false),
 				'heartbeatCallback' => Expect::array(null)->required(false),
-				'publishConfirm' => Expect::bool(false),
+				'publishConfirm' => Expect::anyOf(
+					Expect::bool(),
+					Expect::int(),
+				)->default(false),
 				'admin' => Expect::structure([
 					'port' => Expect::int(15672),
 					'secure' => Expect::bool(false),
