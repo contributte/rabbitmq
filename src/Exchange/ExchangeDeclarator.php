@@ -52,14 +52,22 @@ final class ExchangeDeclarator
 		if ($exchangeData['queueBindings'] !== []) {
 			foreach ($exchangeData['queueBindings'] as $queueName => $queueBinding) {
 				$queue = $this->queueFactory->getQueue($queueName);
+				
+				if ($queueBinding['routingKeys'] !== []) {
+					$routingKeysToBind = $queueBinding['routingKeys'];
+				} else {
+					$routingKeysToBind = [$queueBinding['routingKey']];
+				}
 
-				$connection->getChannel()->queueBind(
-					$queue->getName(),
-					$name,
-					$queueBinding['routingKey'],
-					$queueBinding['noWait'],
-					$queueBinding['arguments']
-				);
+				foreach ($routingKeysToBind as $routingKey) {
+					$connection->getChannel()->queueBind(
+						$queue->getName(),
+						$name,
+						$routingKey,
+						$queueBinding['noWait'],
+						$queueBinding['arguments']
+					);
+				}
 			}
 		}
 	}

@@ -52,7 +52,11 @@ rabbitmq:
 			type: fanout
 			queueBindings:
 				testQueue:
+					# use only one option from `routingKey` and `routingKeys`, otherwise an exception will be thrown
 					routingKey: testRoutingKey
+					# routingKeys:
+						# - testRoutingKey1
+						# - testRoutingKey2
 			# force exchange declare on first exchange operation during request
 			# autoCreate: true
 
@@ -160,14 +164,14 @@ final class LongRunningTestQueue
 	 * @var Producer
 	 */
 	private $testProducer;
-	
+
 	/**
-     * @var DataProvider Some data provider 
+     * @var DataProvider Some data provider
      */
 	private $dataProvider;
-	
+
 	/**
-     * @var bool 
+     * @var bool
      */
 	private $running;
 
@@ -177,7 +181,7 @@ final class LongRunningTestQueue
 		$this->testProducer = $testProducer;
 		$this->dataProvider = $dataProvider;
 	}
-	
+
 	public function run(): void {
 	    do {
 	        $message = $this->dataProvider->getMessage();
@@ -185,7 +189,7 @@ final class LongRunningTestQueue
 	            $this->testProducer->sendHeartbeat();
 	            continue;
 	        }
-	        
+
 	        $this->publish($message);
 	    } while ($this->running);
 	}
@@ -265,16 +269,16 @@ final class TestConsumer
 		foreach($messages as $message) {
 			$data[$message->deliveryTag] = json_decode($message->content);
 		}
-		
+
 		/**
 		 * @todo bulk message action
-		 */ 
-		 
+		 */
+
 		 foreach(array_keys($data) as $tag) {
 			$return[$tag] = IConsumer::MESSAGE_ACK; // Or ::MESSAGE_NACK || ::MESSAGE_REJECT
 		 }
-		
-		return $return; 
+
+		return $return;
 	}
 
 }
