@@ -79,7 +79,7 @@ final class ExchangeFactory
 				$queueBindings[] = new QueueBinding(
 					$queue,
 					$queueBinding['routingKey'],
-					...$queueBinding['routingKeys']
+					...$queueBinding['routingKeys'] ?? []
 				);
 			}
 		}
