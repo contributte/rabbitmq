@@ -30,7 +30,8 @@ final class Connection implements IConnection
 		bool $persistent,
 		string $path,
 		bool $tcpNoDelay,
-		bool $lazy = false
+		bool $lazy = false,
+		?array $ssl = null
 	) {
 		$this->connectionParams = [
 			'host' => $host,
@@ -43,6 +44,7 @@ final class Connection implements IConnection
 			'persistent' => $persistent,
 			'path' => $path,
 			'tcp_nodelay' => $tcpNoDelay,
+			'ssl' => $ssl,
 		];
 
 		$this->bunnyClient = $this->createNewConnection();

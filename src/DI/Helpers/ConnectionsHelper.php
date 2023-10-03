@@ -27,6 +27,7 @@ final class ConnectionsHelper extends AbstractHelper
 		'path' => '/',
 		'tcpNoDelay' => false,
 		'lazy' => false,
+		'ssl' => null,
 	];
 
 

@@ -81,6 +81,25 @@ tracy:
 		- Contributte\RabbitMQ\Diagnostics\BarPanel
 ```
 
+#### SSL configuration
+
+See examples in [jakubkulhan/bunny documentation](https://github.com/jakubkulhan/bunny/tree/master/examples/ssl).
+
+```neon
+rabbitmq:
+	connections:
+		default:
+			user: guest
+			password: guest
+			host: localhost
+			port: 5672
+			lazy: false
+			ssl:
+			    cafile: 'ca.pem'
+			    allow_self_signed: true
+			    veirfy_peer: true
+```
+
 ### Declaring Queues and Exchanges
 
 Since v3.0, all queues and exchanges are by default declared on demand using the console command:

@@ -59,7 +59,8 @@ final class ConnectionFactory
 			(bool) $connectionData['persistent'],
 			$connectionData['path'],
 			(bool) $connectionData['tcpNoDelay'],
-			(bool) $connectionData['lazy']
+			(bool) $connectionData['lazy'],
+			$connectionData['ssl'],
 		);
 	}
 
