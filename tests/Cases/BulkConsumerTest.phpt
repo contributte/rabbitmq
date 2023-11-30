@@ -11,8 +11,7 @@ use Contributte\RabbitMQ\Consumer\BulkConsumer;
 use Contributte\RabbitMQ\Consumer\Exception\UnexpectedConsumerResultTypeException;
 use Contributte\RabbitMQ\Consumer\IConsumer;
 use Contributte\RabbitMQ\Queue\IQueue;
-use Contributte\RabbitMQ\Tests\Mocks\ChannelMock;
-use Contributte\RabbitMQ\Tests\Mocks\QueueMock;
+use Contributte\RabbitMQ\Tests\Fixtures\ChannelMock;
 use Tester\Assert;
 use Tester\TestCase;
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Contributte\RabbitMQ\Tests\Mocks;
+namespace Contributte\RabbitMQ\Tests\Fixtures;
 
 use Bunny\Channel;
 use Bunny\Message;
-use Contributte\RabbitMQ\Tests\Mocks\Helper\RabbitMQMessageHelper;
+use Contributte\RabbitMQ\Tests\Fixtures\Helper\RabbitMQMessageHelper;
 use Nette\Neon\Neon;
 
 final class ChannelMock extends Channel
@@ -27,7 +27,7 @@ final class ChannelMock extends Channel
 
 	public function __construct()
 	{
-		$config = Neon::decode(file_get_contents(__DIR__ . '/../config/config.test.neon'));
+		$config = Neon::decode(file_get_contents(__DIR__ . '/config/config.test.neon'));
 
 		$this->messageHelper = RabbitMQMessageHelper::getInstance($config['rabbitmq']);
 	}

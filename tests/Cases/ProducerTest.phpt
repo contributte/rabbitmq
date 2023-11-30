@@ -8,8 +8,8 @@ use Contributte\RabbitMQ\Connection\IConnection;
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\Producer\Producer;
 use Contributte\RabbitMQ\Queue\IQueue;
-use Contributte\RabbitMQ\Tests\Mocks\ChannelMock;
-use Contributte\RabbitMQ\Tests\Mocks\Helper\RabbitMQMessageHelper;
+use Contributte\RabbitMQ\Tests\Fixtures\ChannelMock;
+use Contributte\RabbitMQ\Tests\Fixtures\Helper\RabbitMQMessageHelper;
 use Tester\Assert;
 use Tester\TestCase;
 
