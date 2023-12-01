@@ -1,53 +1,51 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace Contributte\RabbitMQ\Tests\Fixtures\Helper;
+namespace Tests\Fixtures\Helper;
 
 final class RabbitMQMessageHelper
 {
 
-	/**
-	 * @var RabbitMQMessageHelper
-	 */
-	private static $self;
+	private static ?RabbitMQMessageHelper $self = null;
+
+	/** @var string[][] */
+	private array $queueMessages = [];
+
+	/** @var array<mixed> */
+	private array $config;
 
 	/**
-	 * @var string[][]
+	 * @param array<mixed> $config
 	 */
-	private $queueMessages = [];
-
-	/**
-	 * @var array
-	 */
-	private $config;
-
-
 	private function __construct(array $config)
 	{
 		self::$self = $this;
 		$this->config = $config;
 	}
 
-
-	public static function getInstance(array $config = null): self
+	/**
+	 * @param array<mixed>|null $config
+	 */
+	public static function getInstance(?array $config = null): self
 	{
 		if (self::$self === null) {
 			if ($config === null) {
 				throw new \Exception('Missing config');
 			}
+
 			self::$self = new RabbitMQMessageHelper($config);
 		}
 
 		return self::$self;
 	}
 
-
 	public function reinit(): void
 	{
 		$this->queueMessages = [];
 	}
 
+	/**
+	 * @param array<string> $headers
+	 */
 	public function publishToQueueDirectly(
 		string $queueName,
 		string $body,
@@ -60,7 +58,9 @@ final class RabbitMQMessageHelper
 		];
 	}
 
-
+	/**
+	 * @param array<string> $headers
+	 */
 	public function publishToExchange(
 		string $exchangeName,
 		string $body,
@@ -87,22 +87,20 @@ final class RabbitMQMessageHelper
 				break;
 
 		}
-
 	}
 
-
-	public function getQueueMessages(string $queueName = null): array
+	/**
+	 * @return string[][]
+	 */
+	public function getQueueMessages(?string $queueName = null): array
 	{
-		if ($queueName === null) {
-			$messages = $this->queueMessages;
-		} else {
-			$messages = $this->queueMessages[$queueName] ?? [];
-		}
-
-		return $messages;
+		return $queueName === null ? $this->queueMessages : $this->queueMessages[$queueName] ?? [];
 	}
 
-
+	/**
+	 * @param array<mixed> $exchangeConfig
+	 * @param array<string> $headers
+	 */
 	private function publishFanoutMessage(
 		array $exchangeConfig,
 		string $body,
@@ -114,7 +112,10 @@ final class RabbitMQMessageHelper
 		}
 	}
 
-
+	/**
+	 * @param array<mixed> $exchangeConfig
+	 * @param array<string> $headers
+	 */
 	private function publishDirectMessage(
 		array $exchangeConfig,
 		string $body,
@@ -129,23 +130,29 @@ final class RabbitMQMessageHelper
 		}
 	}
 
-
+	/**
+	 * @param array<mixed> $exchangeConfig
+	 * @param array<string> $headers
+	 */
 	private function publishHeadersMessage(
 		array $exchangeConfig,
 		string $body,
 		array $headers
-	)
+	): void
 	{
 		throw new \LogicException('Not implemented');
 	}
 
-
+	/**
+	 * @param array<mixed> $exchangeConfig
+	 * @param array<string> $headers
+	 */
 	private function publishTopicMessage(
 		array $exchangeConfig,
 		string $body,
 		array $headers,
 		string $routingKey
-	)
+	): void
 	{
 		throw new \LogicException('Not implemented');
 	}

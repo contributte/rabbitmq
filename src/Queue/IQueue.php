@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Queue;
 
@@ -11,6 +9,6 @@ interface IQueue
 
 	public function getName(): string;
 
-
 	public function getConnection(): IConnection;
+
 }

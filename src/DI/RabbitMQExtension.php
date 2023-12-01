@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\DI;
 
@@ -18,9 +16,7 @@ use Nette\DI\CompilerExtension;
 final class RabbitMQExtension extends CompilerExtension
 {
 
-	/**
-	 * @var array
-	 */
+	/** @var array<string, mixed> */
 	private array $defaults = [
 		'connections' => [],
 		'queues' => [],
@@ -28,12 +24,16 @@ final class RabbitMQExtension extends CompilerExtension
 		'producers' => [],
 		'consumers' => [],
 	];
-	private ConnectionsHelper $connectionsHelper;
-	private QueuesHelper $queuesHelper;
-	private ProducersHelper $producersHelper;
-	private ExchangesHelper $exchangesHelper;
-	private ConsumersHelper $consumersHelper;
 
+	private ConnectionsHelper $connectionsHelper;
+
+	private QueuesHelper $queuesHelper;
+
+	private ProducersHelper $producersHelper;
+
+	private ExchangesHelper $exchangesHelper;
+
+	private ConsumersHelper $consumersHelper;
 
 	public function __construct()
 	{
@@ -44,49 +44,23 @@ final class RabbitMQExtension extends CompilerExtension
 		$this->consumersHelper = new ConsumersHelper($this);
 	}
 
-
-	/**
-	 * @throws \InvalidArgumentException
-	 */
 	public function loadConfiguration(): void
 	{
-		$config = $this->validateConfig($this->defaults);
+		$config = $this->validateConfig($this->defaults); // @phpstan-ignore-line
 		$builder = $this->getContainerBuilder();
 
-		/**
-		 * Connections
-		 */
 		$this->connectionsHelper->setup($builder, $config['connections']);
-
-		/**
-		 * Queues
-		 */
 		$this->queuesHelper->setup($builder, $config['queues']);
-
-		/**
-		 * Exchanges
-		 */
 		$this->exchangesHelper->setup($builder, $config['exchanges']);
-
-		/**
-		 * Producers
-		 */
 		$this->producersHelper->setup($builder, $config['producers']);
-
-		/**
-		 * Consumers
-		 */
 		$this->consumersHelper->setup($builder, $config['consumers']);
 
-		/**
-		 * Register Client class
-		 */
+		// Register Client class
 		$builder->addDefinition($this->prefix('client'))
 			->setFactory(Client::class);
 
 		$this->setupConsoleCommand();
 	}
-
 
 	public function setupConsoleCommand(): void
 	{
@@ -104,4 +78,5 @@ final class RabbitMQExtension extends CompilerExtension
 			->setFactory(DeclareQueuesAndExchangesCommand::class)
 			->setTags(['console.command' => 'rabbitmq:declareQueuesAndExchanges']);
 	}
+
 }

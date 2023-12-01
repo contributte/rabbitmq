@@ -1,29 +1,26 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace Contributte\RabbitMQ\Tests\Fixtures;
+namespace Tests\Fixtures;
 
 use Bunny\Channel;
 use Bunny\Message;
-use Contributte\RabbitMQ\Tests\Fixtures\Helper\RabbitMQMessageHelper;
 use Nette\Neon\Neon;
+use Tests\Fixtures\Helper\RabbitMQMessageHelper;
 
 final class ChannelMock extends Channel
 {
 
-	/**
-	 * @var RabbitMQMessageHelper
-	 */
-	private $messageHelper;
-
-	public $callback;
-
+	/** @var array<mixed> */
 	public array $acks = [];
+
 	public int $ackPos = 0;
 
+	/** @var array<mixed> */
 	public array $nacks = [];
+
 	public int $nackPos = 0;
+
+	private RabbitMQMessageHelper $messageHelper;
 
 	public function __construct()
 	{
@@ -32,7 +29,9 @@ final class ChannelMock extends Channel
 		$this->messageHelper = RabbitMQMessageHelper::getInstance($config['rabbitmq']);
 	}
 
-
+	/**
+	 * @param array<string> $headers
+	 */
 	public function publish(
 		$body,
 		array $headers = [],
@@ -40,7 +39,7 @@ final class ChannelMock extends Channel
 		$routingKey = '',
 		$mandatory = false,
 		$immediate = false
-	)
+	): void
 	{
 		if ($exchange === '') {
 			$this->messageHelper->publishToQueueDirectly($routingKey, $body, $headers);
@@ -49,27 +48,33 @@ final class ChannelMock extends Channel
 		}
 	}
 
-	public function consume(callable $callback, $queue = "", $consumerTag = "", $noLocal = false, $noAck = false, $exclusive = false, $nowait = false, $arguments = [])
+	public function consume(callable $callback, $queue = '', $consumerTag = '', $noLocal = false, $noAck = false, $exclusive = false, $nowait = false, $arguments = []): void
 	{
 		$this->client->setCallback($callback);
 	}
 
-	public function ack(Message $message, $multiple = false){
-		if(!isset($this->acks[$this->ackPos])){
+	public function ack(Message $message, $multiple = false): void
+	{
+		if (!isset($this->acks[$this->ackPos])) {
 			$this->acks[$this->ackPos] = [];
 		}
+
 		$this->acks[$this->ackPos][$message->deliveryTag] = $message->content;
 	}
 
-	public function nack(Message $message, $multiple = false, $requeue = false){
-		if(!isset($this->nacks[$this->nackPos])){
+	public function nack(Message $message, $multiple = false, $requeue = false): void
+	{
+		if (!isset($this->nacks[$this->nackPos])) {
 			$this->nacks[$this->nackPos] = [];
 		}
+
 		$this->nacks[$this->nackPos][$message->deliveryTag] = $message->content;
 	}
 
-	public function setClient($client) {
+	public function setClient($client): void
+	{
 		$this->client = $client;
 		$this->client->setChannel($this);
 	}
+
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Connection;
 
@@ -11,17 +9,13 @@ final class ConnectionFactory
 
 	private ConnectionsDataBag $connectionsDataBag;
 
-	/**
-	 * @var IConnection[]
-	 */
+	/** @var IConnection[] */
 	private array $connections = [];
-
 
 	public function __construct(ConnectionsDataBag $connectionsDataBag)
 	{
 		$this->connectionsDataBag = $connectionsDataBag;
 	}
-
 
 	/**
 	 * @throws ConnectionFactoryException
@@ -35,7 +29,6 @@ final class ConnectionFactory
 		return $this->connections[$name];
 	}
 
-
 	/**
 	 * @throws ConnectionFactoryException
 	 */
@@ -45,7 +38,7 @@ final class ConnectionFactory
 			$connectionData = $this->connectionsDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
-			throw new ConnectionFactoryException("Connection [$name] does not exist");
+			throw new ConnectionFactoryException(sprintf('Connection [%s] does not exist', $name));
 		}
 
 		return new Connection(

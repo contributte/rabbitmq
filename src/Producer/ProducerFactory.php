@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Producer;
 
@@ -11,30 +9,28 @@ use Contributte\RabbitMQ\Queue\QueueFactory;
 final class ProducerFactory
 {
 
-	/**
-	 * @var callable[]
-	 */
+	/** @var callable[] */
 	public array $createdCallbacks = [];
+
 	private ProducersDataBag $producersDataBag;
+
 	private QueueFactory $queueFactory;
+
 	private ExchangeFactory $exchangeFactory;
 
-	/**
-	 * @var Producer[]
-	 */
+	/** @var Producer[] */
 	private array $producers = [];
-
 
 	public function __construct(
 		ProducersDataBag $producersDataBag,
 		QueueFactory $queueFactory,
 		ExchangeFactory $exchangeFactory
-	) {
+	)
+	{
 		$this->producersDataBag = $producersDataBag;
 		$this->queueFactory = $queueFactory;
 		$this->exchangeFactory = $exchangeFactory;
 	}
-
 
 	/**
 	 * @throws ProducerFactoryException
@@ -48,12 +44,10 @@ final class ProducerFactory
 		return $this->producers[$name];
 	}
 
-
 	public function addOnCreatedCallback(callable $callback): void
 	{
 		$this->createdCallbacks[] = $callback;
 	}
-
 
 	/**
 	 * @throws ProducerFactoryException
@@ -64,13 +58,13 @@ final class ProducerFactory
 			$producerData = $this->producersDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
-			throw new ProducerFactoryException("Producer [$name] does not exist");
+			throw new ProducerFactoryException(sprintf('Producer [%s] does not exist', $name));
 		}
 
 		$exchange = null;
 		$queue = null;
 
-		if ($producerData['exchange']) {
+		if (isset($producerData['exchange'])) {
 			$exchange = $this->exchangeFactory->getExchange($producerData['exchange']);
 		}
 
@@ -91,4 +85,5 @@ final class ProducerFactory
 
 		return $producer;
 	}
+
 }

@@ -1,20 +1,16 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\DI\Helpers;
 
 use Contributte\RabbitMQ\Consumer\ConsumerFactory;
 use Contributte\RabbitMQ\Consumer\ConsumersDataBag;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
 
 final class ConsumersHelper extends AbstractHelper
 {
 
-	/**
-	 * @var array
-	 */
+	/** @var array<string, mixed> */
 	protected array $defaults = [
 		'queue' => null,
 		'callback' => null,
@@ -25,16 +21,19 @@ final class ConsumersHelper extends AbstractHelper
 		],
 		'qos' => [
 			'prefetchSize' => null, // 0
-			'prefetchCount' =>  null, // 50
+			'prefetchCount' => null, // 50
 		],
 	];
 
-
+	/**
+	 * @param array<string, mixed> $config
+	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$consumersConfig = [];
 
 		foreach ($config as $consumerName => $consumerData) {
+			// @phpstan-ignore-next-line
 			$consumerConfig = $this->extension->validateConfig(
 				$this->getDefaults(),
 				$consumerData
@@ -57,4 +56,5 @@ final class ConsumersHelper extends AbstractHelper
 			->setFactory(ConsumerFactory::class)
 			->setArguments([$consumersDataBag]);
 	}
+
 }

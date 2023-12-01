@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\DI\Helpers;
 
@@ -8,7 +6,7 @@ use Contributte\RabbitMQ\Producer\Producer;
 use Contributte\RabbitMQ\Producer\ProducerFactory;
 use Contributte\RabbitMQ\Producer\ProducersDataBag;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
 
 final class ProducersHelper extends AbstractHelper
 {
@@ -18,9 +16,7 @@ final class ProducersHelper extends AbstractHelper
 		Producer::DELIVERY_MODE_PERSISTENT,
 	];
 
-	/**
-	 * @var array
-	 */
+	/** @var array<string, mixed> */
 	protected array $defaults = [
 		'exchange' => null,
 		'queue' => null,
@@ -28,12 +24,15 @@ final class ProducersHelper extends AbstractHelper
 		'deliveryMode' => Producer::DELIVERY_MODE_PERSISTENT,
 	];
 
-
+	/**
+	 * @param array<string, mixed> $config
+	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$producersConfig = [];
 
 		foreach ($config as $producerName => $producerData) {
+			// @phpstan-ignore-next-line
 			$producerConfig = $this->extension->validateConfig(
 				$this->getDefaults(),
 				$producerData
@@ -50,4 +49,5 @@ final class ProducersHelper extends AbstractHelper
 			->setFactory(ProducerFactory::class)
 			->setArguments([$producersDataBag]);
 	}
+
 }

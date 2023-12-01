@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Producer;
 
@@ -11,6 +9,7 @@ final class ProducersDataBag extends AbstractDataBag
 {
 
 	/**
+	 * @param array<string, mixed> $data
 	 * @throws \InvalidArgumentException
 	 */
 	public function __construct(array $data)
@@ -22,8 +21,8 @@ final class ProducersDataBag extends AbstractDataBag
 		}
 	}
 
-
 	/**
+	 * @param array<string, mixed> $data
 	 * @throws \InvalidArgumentException
 	 */
 	public function addProducerByData(string $producerName, array $data): void
@@ -35,7 +34,7 @@ final class ProducersDataBag extends AbstractDataBag
 
 		if (!in_array($data['deliveryMode'], ProducersHelper::DELIVERY_MODES, true)) {
 			throw new \InvalidArgumentException(
-				"Unknown exchange type [{$data['type']}]"
+				sprintf('Unknown exchange type [%s]', $data['type'])
 			);
 		}
 
@@ -51,4 +50,5 @@ final class ProducersDataBag extends AbstractDataBag
 
 		$this->data[$producerName] = $data;
 	}
+
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Console\Command;
 
@@ -20,7 +18,6 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 		$this->addArgument('amountOfMessages', InputArgument::REQUIRED, 'Amount of messages to consume');
 	}
 
-
 	/**
 	 * @throws \InvalidArgumentException
 	 */
@@ -30,11 +27,11 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 		$amountOfMessages = $input->getArgument('amountOfMessages');
 
 		if (!is_string($consumerName)) {
-			throw new \UnexpectedValueException;
+			throw new \UnexpectedValueException();
 		}
 
 		if (!is_numeric($amountOfMessages)) {
-			throw new \UnexpectedValueException;
+			throw new \UnexpectedValueException();
 		}
 
 		$amountOfMessages = (int) $amountOfMessages;
@@ -48,7 +45,6 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 		return 0;
 	}
 
-
 	/**
 	 * @throws \InvalidArgumentException
 	 */
@@ -60,4 +56,5 @@ final class StaticConsumerCommand extends AbstractConsumerCommand
 			);
 		}
 	}
+
 }

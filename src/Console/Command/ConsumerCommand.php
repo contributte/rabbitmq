@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Console\Command;
 
@@ -20,7 +18,6 @@ final class ConsumerCommand extends AbstractConsumerCommand
 		$this->addArgument('secondsToLive', InputArgument::OPTIONAL, 'Max seconds for consumer to run, skip parameter to run indefinitely');
 	}
 
-
 	/**
 	 * @throws \InvalidArgumentException
 	 */
@@ -30,14 +27,14 @@ final class ConsumerCommand extends AbstractConsumerCommand
 		$secondsToLive = $input->getArgument('secondsToLive');
 
 		if (!is_string($consumerName)) {
-			throw new \UnexpectedValueException;
+			throw new \UnexpectedValueException();
 		}
 
 		$this->validateConsumerName($consumerName);
 
 		if ($secondsToLive !== null) {
 			if (!is_numeric($secondsToLive)) {
-				throw new \UnexpectedValueException;
+				throw new \UnexpectedValueException();
 			}
 
 			$secondsToLive = (int) $secondsToLive;
@@ -50,7 +47,6 @@ final class ConsumerCommand extends AbstractConsumerCommand
 		return 0;
 	}
 
-
 	/**
 	 * @throws \InvalidArgumentException
 	 */
@@ -62,4 +58,5 @@ final class ConsumerCommand extends AbstractConsumerCommand
 			);
 		}
 	}
+
 }

@@ -1,20 +1,16 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\DI\Helpers;
 
 use Contributte\RabbitMQ\Connection\ConnectionFactory;
 use Contributte\RabbitMQ\Connection\ConnectionsDataBag;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
 
 final class ConnectionsHelper extends AbstractHelper
 {
 
-	/**
-	 * @var array
-	 */
+	/** @var array<string, mixed> */
 	protected array $defaults = [
 		'host' => '127.0.0.1',
 		'port' => 5672,
@@ -30,12 +26,15 @@ final class ConnectionsHelper extends AbstractHelper
 		'ssl' => null,
 	];
 
-
+	/**
+	 * @param array<string, mixed> $config
+	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$connectionsConfig = [];
 
 		foreach ($config as $connectionName => $connectionData) {
+			// @phpstan-ignore-next-line
 			$connectionsConfig[$connectionName] = $this->extension->validateConfig(
 				$this->getDefaults(),
 				$connectionData

@@ -43,7 +43,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Contributte\\RabbitMQ\\Tests\\": "tests"
+      "Tests\\": "tests"
     }
   },
   "suggest": {

@@ -1,17 +1,15 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace Contributte\RabbitMQ\Tests\Cases;
+namespace Tests\Cases;
 
 use Contributte\RabbitMQ\Connection\IConnection;
 use Contributte\RabbitMQ\Exchange\IExchange;
 use Contributte\RabbitMQ\Producer\Producer;
 use Contributte\RabbitMQ\Queue\IQueue;
-use Contributte\RabbitMQ\Tests\Fixtures\ChannelMock;
-use Contributte\RabbitMQ\Tests\Fixtures\Helper\RabbitMQMessageHelper;
 use Tester\Assert;
 use Tester\TestCase;
+use Tests\Fixtures\ChannelMock;
+use Tests\Fixtures\Helper\RabbitMQMessageHelper;
 
 require __DIR__ . '/../bootstrap.php';
 
@@ -45,7 +43,6 @@ final class ProducerTest extends TestCase
 		);
 	}
 
-
 	public function testDirectExchange(): void
 	{
 		$exchangeName = 'testDirectExchange';
@@ -57,8 +54,6 @@ final class ProducerTest extends TestCase
 		$producer->publish('should not appear anywhere', [], $routingKey);
 
 		Assert::same([], $messageHelper->getQueueMessages());
-
-		/**************************************************************************************************************/
 
 		$routingKey = 'test-queue-direct-exchange';
 		$producer->publish('should appear in one queue', [], $routingKey);
@@ -77,8 +72,6 @@ final class ProducerTest extends TestCase
 			],
 			$messageHelper->getQueueMessages()
 		);
-
-		/**************************************************************************************************************/
 
 		$routingKey = 'test-queue-direct-exchange';
 		$producer->publish('should appear in one queue 2', [], $routingKey);
@@ -105,8 +98,6 @@ final class ProducerTest extends TestCase
 			$messageHelper->getQueueMessages()
 		);
 
-		/**************************************************************************************************************/
-
 		$routingKey = 'non-existent-routing-key';
 		$producer->publish('should not appear anywhere', [], $routingKey);
 
@@ -131,8 +122,6 @@ final class ProducerTest extends TestCase
 			],
 			$messageHelper->getQueueMessages()
 		);
-
-		/**************************************************************************************************************/
 
 		$routingKey = 'test-queue-direct-routing-key1';
 		$producer->publish('should appear in 2 queues', [], $routingKey);
@@ -177,7 +166,6 @@ final class ProducerTest extends TestCase
 			$messageHelper->getQueueMessages()
 		);
 	}
-
 
 	public function testFanoutExchange(): void
 	{
@@ -289,7 +277,6 @@ final class ProducerTest extends TestCase
 		);
 	}
 
-
 	private function createQueueProducer(string $testQueueName): Producer
 	{
 		$channelMock = new ChannelMock();
@@ -301,16 +288,13 @@ final class ProducerTest extends TestCase
 			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
 			->shouldReceive('getName')->andReturn($testQueueName)->getMock();
 
-		$producer = new Producer(
+		return new Producer(
 			null,
 			$queueMock,
 			'application/json',
 			2
 		);
-
-		return $producer;
 	}
-
 
 	private function createExchangeProducer(string $testExchange): Producer
 	{
@@ -323,14 +307,12 @@ final class ProducerTest extends TestCase
 			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
 			->shouldReceive('getName')->andReturn($testExchange)->getMock();
 
-		$producer = new Producer(
+		return new Producer(
 			$exchangeMock,
 			null,
 			'application/json',
 			2
 		);
-
-		return $producer;
 	}
 
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Consumer;
 
@@ -11,22 +9,20 @@ final class ConsumerFactory
 {
 
 	private ConsumersDataBag $consumersDataBag;
+
 	private QueueFactory $queueFactory;
 
-	/**
-	 * @var Consumer[]
-	 */
+	/** @var Consumer[] */
 	private array $consumers = [];
-
 
 	public function __construct(
 		ConsumersDataBag $consumersDataBag,
 		QueueFactory $queueFactory
-	) {
+	)
+	{
 		$this->consumersDataBag = $consumersDataBag;
 		$this->queueFactory = $queueFactory;
 	}
-
 
 	/**
 	 * @throws ConsumerFactoryException
@@ -40,7 +36,6 @@ final class ConsumerFactory
 		return $this->consumers[$name];
 	}
 
-
 	/**
 	 * @throws ConsumerFactoryException
 	 */
@@ -50,13 +45,13 @@ final class ConsumerFactory
 			$consumerData = $this->consumersDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
-			throw new ConsumerFactoryException("Consumer [$name] does not exist");
+			throw new ConsumerFactoryException(sprintf('Consumer [%s] does not exist', $name));
 		}
 
 		$queue = $this->queueFactory->getQueue($consumerData['queue']);
 
 		if (!is_callable($consumerData['callback'])) {
-			throw new ConsumerFactoryException("Consumer [$name] has invalid callback");
+			throw new ConsumerFactoryException(sprintf('Consumer [%s] has invalid callback', $name));
 		}
 
 		$prefetchSize = null;
@@ -89,6 +84,6 @@ final class ConsumerFactory
 			$prefetchSize,
 			$prefetchCount
 		);
-
 	}
+
 }

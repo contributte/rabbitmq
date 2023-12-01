@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Queue;
 
@@ -12,14 +10,13 @@ final class QueueFactory
 {
 
 	private QueuesDataBag $queuesDataBag;
+
 	private ConnectionFactory $connectionFactory;
 
-	/**
-	 * @var IQueue[]
-	 */
+	/** @var IQueue[] */
 	private array $queues;
-	private QueueDeclarator $queueDeclarator;
 
+	private QueueDeclarator $queueDeclarator;
 
 	public function __construct(
 		QueuesDataBag $queuesDataBag,
@@ -31,7 +28,6 @@ final class QueueFactory
 		$this->connectionFactory = $connectionFactory;
 		$this->queueDeclarator = $queueDeclarator;
 	}
-
 
 	/**
 	 * @throws QueueFactoryException
@@ -45,7 +41,6 @@ final class QueueFactory
 		return $this->queues[$name];
 	}
 
-
 	/**
 	 * @throws QueueFactoryException
 	 * @throws ConnectionFactoryException
@@ -56,13 +51,12 @@ final class QueueFactory
 			$queueData = $this->queuesDataBag->getDataBykey($name);
 
 		} catch (\InvalidArgumentException $e) {
-			throw new QueueFactoryException("Queue [$name] does not exist");
+			throw new QueueFactoryException(sprintf('Queue [%s] does not exist', $name));
 		}
 
-		// (ConnectionFactoryException)
 		$connection = $this->connectionFactory->getConnection($queueData['connection']);
 
-		if ($queueData['autoCreate']) {
+		if (isset($queueData['autoCreate']) && $queueData['autoCreate'] === true) {
 			$this->queueDeclarator->declareQueue($name);
 		}
 

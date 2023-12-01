@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\DI\Helpers;
 
@@ -8,16 +6,14 @@ use Contributte\RabbitMQ\Exchange\ExchangeDeclarator;
 use Contributte\RabbitMQ\Exchange\ExchangeFactory;
 use Contributte\RabbitMQ\Exchange\ExchangesDataBag;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
 
 final class ExchangesHelper extends AbstractHelper
 {
 
 	public const EXCHANGE_TYPES = ['direct', 'topic', 'headers', 'fanout', 'x-delayed-message'];
 
-	/**
-	 * @var array
-	 */
+	/** @var array<string, mixed> */
 	protected array $defaults = [
 		'connection' => 'default',
 		// direct/topic/headers/fanout
@@ -33,9 +29,7 @@ final class ExchangesHelper extends AbstractHelper
 		'autoCreate' => false,
 	];
 
-	/**
-	 * @var array
-	 */
+	/** @var array<string, mixed> */
 	private array $queueBindingDefaults = [
 		'routingKey' => '',
 		'routingKeys' => [],
@@ -43,26 +37,24 @@ final class ExchangesHelper extends AbstractHelper
 		'arguments' => [],
 	];
 
-
 	/**
-	 * @throws \InvalidArgumentException
+	 * @param array<string, mixed> $config
 	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$exchangesConfig = [];
 
 		foreach ($config as $exchangeName => $exchangeData) {
+			// @phpstan-ignore-next-line
 			$exchangeConfig = $this->extension->validateConfig(
 				$this->getDefaults(),
 				$exchangeData
 			);
 
-			/**
-			 * Validate exchange type
-			 */
+			// Validate exchange type
 			if (!in_array($exchangeConfig['type'], self::EXCHANGE_TYPES, true)) {
 				throw new \InvalidArgumentException(
-					"Unknown exchange type [{$exchangeConfig['type']}]"
+					sprintf('Unknown exchange type [%s]', $exchangeConfig['type'])
 				);
 			}
 
@@ -70,10 +62,11 @@ final class ExchangesHelper extends AbstractHelper
 				foreach ($exchangeConfig['queueBindings'] as $queueName => $queueBindingData) {
 					if (isset($queueBindingData['routingKey']) && isset($queueBindingData['routingKeys'])) {
 						throw new \InvalidArgumentException(
-							"Options `routingKey` and `routingKeys` cannot be specified at the same time"
+							'Options `routingKey` and `routingKeys` cannot be specified at the same time'
 						);
 					}
 
+					// @phpstan-ignore-next-line
 					$queueBindingConfig = $this->extension->validateConfig(
 						$this->queueBindingDefaults,
 						$queueBindingData
@@ -100,4 +93,5 @@ final class ExchangesHelper extends AbstractHelper
 			->setFactory(ExchangeFactory::class)
 			->setArguments([$exchangesDataBag]);
 	}
+
 }

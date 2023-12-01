@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Console\Command;
 
@@ -13,8 +11,8 @@ abstract class AbstractConsumerCommand extends Command
 {
 
 	protected ConsumersDataBag $consumersDataBag;
-	protected ConsumerFactory $consumerFactory;
 
+	protected ConsumerFactory $consumerFactory;
 
 	public function __construct(ConsumersDataBag $consumersDataBag, ConsumerFactory $consumerFactory)
 	{
@@ -23,7 +21,6 @@ abstract class AbstractConsumerCommand extends Command
 		$this->consumersDataBag = $consumersDataBag;
 		$this->consumerFactory = $consumerFactory;
 	}
-
 
 	/**
 	 * @throws \InvalidArgumentException
@@ -40,7 +37,7 @@ abstract class AbstractConsumerCommand extends Command
 					$e->getMessage(),
 					implode(
 						'',
-						array_map(static fn ($s): string => "\n\t- [{$s}]", $this->consumersDataBag->getDataKeys())
+						array_map(static fn ($s): string => sprintf("\n\t- [%s]", $s), $this->consumersDataBag->getDataKeys())
 					)
 				)
 			);

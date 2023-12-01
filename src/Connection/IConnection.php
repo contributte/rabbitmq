@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Connection;
 
@@ -20,4 +18,5 @@ interface IConnection
 	 * @throws BunnyException
 	 */
 	public function sendHeartbeat(): void;
+
 }

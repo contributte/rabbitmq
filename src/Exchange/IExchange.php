@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Exchange;
 
@@ -11,9 +9,11 @@ interface IExchange
 
 	public function getName(): string;
 
-
+	/**
+	 * @return array<QueueBinding>
+	 */
 	public function getQueueBindings(): array;
 
-
 	public function getConnection(): IConnection;
+
 }

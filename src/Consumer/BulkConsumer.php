@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Consumer;
 
@@ -13,12 +11,14 @@ use Contributte\RabbitMQ\Queue\IQueue;
 
 class BulkConsumer extends Consumer
 {
-	/**
-	 * @var BulkMessage[]
-	 */
+
+	/** @var BulkMessage[] */
 	protected array $buffer = [];
+
 	protected int $bulkSize;
+
 	protected int $bulkTime;
+
 	protected ?int $stopTime = null;
 
 	public function __construct(
@@ -29,14 +29,15 @@ class BulkConsumer extends Consumer
 		?int $prefetchCount,
 		int $bulkSize,
 		int $bulkTime
-	) {
+	)
+	{
 		parent::__construct($name, $queue, $callback, $prefetchSize, $prefetchCount);
 
 		if ($bulkSize > 0 && $bulkTime > 0) {
 			$this->bulkSize = $bulkSize;
 			$this->bulkTime = $bulkTime;
 		} else {
-			throw new \InvalidArgumentException("Configuration values bulkSize and bulkTime must have value greater than zero");
+			throw new \InvalidArgumentException('Configuration values bulkSize and bulkTime must have value greater than zero');
 		}
 	}
 
@@ -115,6 +116,7 @@ class BulkConsumer extends Consumer
 				'Unexpected result from consumer. Expected array(delivery_tag => MESSAGE_STATUS [constant from IConsumer]) but get ' . gettype($result)
 			);
 		}
+
 		$result = array_map('intval', $result);
 
 		$this->sendResultsBack($client, $result);
@@ -122,6 +124,9 @@ class BulkConsumer extends Consumer
 		$this->buffer = [];
 	}
 
+	/**
+	 * @param array<mixed> $result
+	 */
 	private function sendResultsBack(AbstractClient $client, array $result): void
 	{
 		if ($client instanceof Client) {
@@ -149,4 +154,5 @@ class BulkConsumer extends Consumer
 
 		return $this->bulkTime;
 	}
+
 }

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Console\Command;
 
@@ -16,10 +14,12 @@ final class DeclareQueuesAndExchangesCommand extends Command
 {
 
 	private QueuesDataBag $queuesDataBag;
-	private ExchangesDataBag $exchangesDataBag;
-	private QueueDeclarator $queueDeclarator;
-	private ExchangeDeclarator $exchangeDeclarator;
 
+	private ExchangesDataBag $exchangesDataBag;
+
+	private QueueDeclarator $queueDeclarator;
+
+	private ExchangeDeclarator $exchangeDeclarator;
 
 	public function __construct(
 		QueuesDataBag $queuesDataBag,
@@ -36,14 +36,12 @@ final class DeclareQueuesAndExchangesCommand extends Command
 		$this->exchangeDeclarator = $exchangeDeclarator;
 	}
 
-
 	protected function configure(): void
 	{
 		$this->setDescription(
 			'Creates all queues and exchanges defined in configs. Intended to run during deploy process'
 		);
 	}
-
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
@@ -67,4 +65,5 @@ final class DeclareQueuesAndExchangesCommand extends Command
 
 		return 0;
 	}
+
 }

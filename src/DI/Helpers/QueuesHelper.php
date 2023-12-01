@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\DI\Helpers;
 
@@ -8,14 +6,12 @@ use Contributte\RabbitMQ\Queue\QueueDeclarator;
 use Contributte\RabbitMQ\Queue\QueueFactory;
 use Contributte\RabbitMQ\Queue\QueuesDataBag;
 use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
 
 final class QueuesHelper extends AbstractHelper
 {
 
-	/**
-	 * @var array
-	 */
+	/** @var array<string, mixed> */
 	protected array $defaults = [
 		'connection' => 'default',
 		'passive' => false,
@@ -27,12 +23,15 @@ final class QueuesHelper extends AbstractHelper
 		'autoCreate' => false,
 	];
 
-
+	/**
+	 * @param array<string, mixed> $config
+	 */
 	public function setup(ContainerBuilder $builder, array $config = []): ServiceDefinition
 	{
 		$queuesConfig = [];
 
 		foreach ($config as $queueName => $queueData) {
+			// @phpstan-ignore-next-line
 			$queuesConfig[$queueName] = $this->extension->validateConfig(
 				$this->getDefaults(),
 				$queueData

@@ -1,6 +1,4 @@
-<?php
-
-declare (strict_types=1);
+<?php declare (strict_types = 1);
 
 namespace Contributte\RabbitMQ\Diagnostics;
 
@@ -16,12 +14,12 @@ class BarPanel implements IBarPanel
 	 * how many messages to display maximum on tracy bar, set 0 for unlimited?
 	 */
 	public static int $displayCount = 100;
+
 	private ProducerFactory $producerFactory;
 
-	/**
-	 * @var array<string, string[]>
-	 */
+	/** @var array<string, string[]> */
 	private array $sentMessages = [];
+
 	private int $totalMessages = 0;
 
 	public function __construct(ProducerFactory $producerFactory)
@@ -44,7 +42,6 @@ class BarPanel implements IBarPanel
 		);
 	}
 
-
 	public function getTab(): string
 	{
 		$img = Html::el('')->addHtml((string) file_get_contents(__DIR__ . '/rabbitmq-icon.svg'));
@@ -58,10 +55,10 @@ class BarPanel implements IBarPanel
 		return (string) $tab;
 	}
 
-
-	function getPanel(): string
+	public function getPanel(): string
 	{
-		ob_start(static function (): void {});
+		ob_start(static function (): void {
+		});
 
 		// @codingStandardsIgnoreStart
 		$sentMessages = $this->sentMessages;
@@ -79,4 +76,5 @@ class BarPanel implements IBarPanel
 			throw $e;
 		}
 	}
+
 }

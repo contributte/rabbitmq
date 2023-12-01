@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types = 1);
-
-namespace Contributte\RabbitMQ\Tests\Cases\DI;
+namespace Tests\Cases\DI;
 
 use Contributte\RabbitMQ\Connection\ConnectionFactory;
 use Contributte\RabbitMQ\DI\RabbitMQExtension24;

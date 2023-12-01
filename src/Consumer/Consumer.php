@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Consumer;
 
@@ -13,17 +11,19 @@ class Consumer
 {
 
 	protected string $name;
+
 	protected IQueue $queue;
 
-	/**
-	 * @var callable
-	 */
+	/** @var callable */
 	protected $callback;
-	protected int $messages = 0;
-	protected ?int $prefetchSize = null;
-	protected ?int $prefetchCount = null;
-	protected ?int $maxMessages = null;
 
+	protected int $messages = 0;
+
+	protected ?int $prefetchSize = null;
+
+	protected ?int $prefetchCount = null;
+
+	protected ?int $maxMessages = null;
 
 	public function __construct(
 		string $name,
@@ -31,7 +31,8 @@ class Consumer
 		callable $callback,
 		?int $prefetchSize,
 		?int $prefetchCount
-	) {
+	)
+	{
 		$this->name = $name;
 		$this->queue = $queue;
 		$this->callback = $callback;
@@ -39,12 +40,10 @@ class Consumer
 		$this->prefetchCount = $prefetchCount;
 	}
 
-
 	public function getQueue(): IQueue
 	{
 		return $this->queue;
 	}
-
 
 	public function getCallback(): callable
 	{
@@ -114,7 +113,7 @@ class Consumer
 
 			default:
 				throw new \InvalidArgumentException(
-					"Unknown return value of consumer [{$this->name}] user callback"
+					sprintf('Unknown return value of consumer [%s] user callback', $this->name)
 				);
 		}
 	}

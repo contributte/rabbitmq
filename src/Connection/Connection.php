@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Connection;
 
@@ -14,11 +12,17 @@ final class Connection implements IConnection
 	private const HEARTBEAT_INTERVAL = 1;
 
 	private Client $bunnyClient;
+
+	/** @var array<string, mixed> */
 	private array $connectionParams;
+
 	private int $lastBeat = 0;
+
 	private ?Channel $channel = null;
 
-
+	/**
+	 * @param array<mixed>|null $ssl
+	 */
 	public function __construct(
 		string $host,
 		int $port,
@@ -32,7 +36,8 @@ final class Connection implements IConnection
 		bool $tcpNoDelay,
 		bool $lazy = false,
 		?array $ssl = null
-	) {
+	)
+	{
 		$this->connectionParams = [
 			'host' => $host,
 			'port' => $port,
@@ -54,14 +59,12 @@ final class Connection implements IConnection
 		}
 	}
 
-
 	public function __destruct()
 	{
 		if ($this->bunnyClient->isConnected()) {
 			$this->bunnyClient->syncDisconnect();
 		}
 	}
-
 
 	/**
 	 * @throws ConnectionException
@@ -77,16 +80,12 @@ final class Connection implements IConnection
 			$channel = $this->bunnyClient->channel();
 
 			if (!$channel instanceof Channel) {
-				throw new \UnexpectedValueException;
+				throw new \UnexpectedValueException();
 			}
 
 			$this->channel = $channel;
 		} catch (ClientException $e) {
-			if (!in_array(
-				$e->getMessage(),
-				['Broken pipe or closed connection.', 'Could not write data to socket.'],
-				true
-			)) {
+			if (!in_array($e->getMessage(), ['Broken pipe or closed connection.', 'Could not write data to socket.'], true)) {
 				throw new ConnectionException($e->getMessage(), $e->getCode(), $e);
 			}
 
@@ -98,7 +97,7 @@ final class Connection implements IConnection
 			$channel = $this->bunnyClient->channel();
 
 			if (!$channel instanceof Channel) {
-				throw new \UnexpectedValueException;
+				throw new \UnexpectedValueException();
 			}
 
 			$this->channel = $channel;
@@ -106,7 +105,6 @@ final class Connection implements IConnection
 
 		return $this->channel;
 	}
-
 
 	public function connectIfNeeded(): void
 	{
@@ -117,7 +115,6 @@ final class Connection implements IConnection
 		$this->bunnyClient->connect();
 	}
 
-
 	public function sendHeartbeat(): void
 	{
 		$now = time();
@@ -127,9 +124,9 @@ final class Connection implements IConnection
 		}
 	}
 
-
 	private function createNewConnection(): Client
 	{
 		return new Client($this->connectionParams);
 	}
+
 }

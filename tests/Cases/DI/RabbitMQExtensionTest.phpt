@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types = 1);
-
-namespace Contributte\RabbitMQ\Tests\Cases\DI;
+namespace Tests\Cases\DI;
 
 use Contributte\RabbitMQ\Connection\ConnectionFactory;
 use Contributte\RabbitMQ\DI\RabbitMQExtension24;
@@ -23,15 +21,15 @@ final class RabbitMQExtensionTest extends TestCase
 			->withCompiler(function (Compiler $compiler): void {
 				$compiler->addExtension('rabbitmq', new RabbitMQExtension24());
 				$compiler->addConfig(Neonkit::load('
-			rabbitmq:
-				connections:
-					default:
-						user: guest
-						password: guest
-						host: localhost
-						port: 5672
-						lazy: false
-			'));
+				rabbitmq:
+					connections:
+						default:
+							user: guest
+							password: guest
+							host: localhost
+							port: 5672
+							lazy: false
+				'));
 				$compiler->addDependencies([__FILE__]);
 			})
 			->build();

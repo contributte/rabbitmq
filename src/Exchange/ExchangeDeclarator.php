@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace Contributte\RabbitMQ\Exchange;
 
@@ -12,9 +10,10 @@ final class ExchangeDeclarator
 {
 
 	private ConnectionFactory $connectionFactory;
-	private ExchangesDataBag $exchangesDataBag;
-	private QueueFactory $queueFactory;
 
+	private ExchangesDataBag $exchangesDataBag;
+
+	private QueueFactory $queueFactory;
 
 	public function __construct(
 		ConnectionFactory $connectionFactory,
@@ -27,13 +26,12 @@ final class ExchangeDeclarator
 		$this->queueFactory = $queueFactory;
 	}
 
-
 	public function declareExchange(string $name): void
 	{
 		try {
 			$exchangeData = $this->exchangesDataBag->getDataBykey($name);
 		} catch (\InvalidArgumentException $e) {
-			throw new ExchangeFactoryException("Exchange [$name] does not exist");
+			throw new ExchangeFactoryException(sprintf('Exchange [%s] does not exist', $name));
 		}
 
 		$connection = $this->connectionFactory->getConnection($exchangeData['connection']);
@@ -75,4 +73,5 @@ final class ExchangeDeclarator
 			}
 		}
 	}
+
 }
