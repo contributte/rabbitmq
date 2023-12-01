@@ -1,0 +1,18 @@
+includes:
+	- vendor/contributte/phpstan/phpstan.neon
+
+parameters:
+	level: 8
+	phpVersion: 80100
+
+	scanDirectories:
+		- src
+
+	fileExtensions:
+		- php
+
+	paths:
+		- src
+		- .docs
+
+	ignoreErrors:
