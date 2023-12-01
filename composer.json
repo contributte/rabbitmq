@@ -23,18 +23,18 @@
   ],
   "require": {
     "php": ">=8.1",
-    "bunny/bunny": "^0.2.4 || ^0.3 || ^0.4 || ^0.5",
-    "symfony/console": "~3.3 || ^4.0 || ^5.0 || ^6.0",
-    "nette/di": "^2.4.17 || ^3.0.7",
-    "nette/utils": "^2.5.4 || ^3.2.0 || ^4.0.0"
+    "bunny/bunny": "^0.5",
+    "symfony/console": "^6.0",
+    "nette/di": "^3.0.7",
+    "nette/utils": "^4.0.0"
   },
   "require-dev": {
     "mockery/mockery": "^1.6.6",
     "contributte/qa": "^0.4",
     "contributte/tester": "^0.4",
     "contributte/phpstan": "^0.1",
-    "nette/neon": "^2.4.3 || ^3.2.1",
-    "tracy/tracy": "^2.5"
+    "nette/neon": "^3.2.1",
+    "tracy/tracy": "^2.10.5"
   },
   "autoload": {
     "psr-4": {
