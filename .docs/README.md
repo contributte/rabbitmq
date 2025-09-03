@@ -306,7 +306,7 @@ final class TestConsumer
 
 ### Running a consumer trough CLI
 
-There are two consumer commands prepared. `rabbitmq:consumer` wiil consume messages for specified amount of time (in
+There are two consumer commands prepared. `rabbitmq:consumer` will consume messages for specified amount of time (in
 seconds), to run indefinitely skip this parameter. Following command will be consuming messages for one hour:
 
 ```bash
