@@ -32,18 +32,18 @@ final class BulkConsumerTest extends TestCase
 			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
 			->shouldReceive('getName')->andReturn('testQueue')->getMock();
 
-		$countOfConsumerCallbackCalls = 0;
-		$callback = function ($messages) use (&$countOfConsumerCallbackCalls) {
-			$countOfConsumerCallbackCalls++;
+		$counter = (object) ['value' => 0];
+		$callback = function (array $messages) use ($counter): array {
+			$counter->value++;
 
-			return array_map(fn ($message) => IConsumer::MESSAGE_ACK, $messages);
+			return array_map(fn (Message $message): int => IConsumer::MESSAGE_ACK, $messages);
 		};
 
 		$instance = new BulkConsumer('bulkTest', $queueMock, $callback, null, null, 3, 2);
 
 		$instance->consume(2);
 
-		Assert::same(2, $countOfConsumerCallbackCalls, 'Number of consumer callback calls');
+		Assert::same(2, $counter->value, 'Number of consumer callback calls');
 		Assert::count(2, $channelMock->acks, 'Number of ACKs');
 		Assert::same([
 			1 => [
@@ -72,9 +72,9 @@ final class BulkConsumerTest extends TestCase
 			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
 			->shouldReceive('getName')->andReturn('testQueue')->getMock();
 
-		$countOfConsumerCallbackCalls = 0;
-		$callback = function ($messages) use (&$countOfConsumerCallbackCalls): void {
-			$countOfConsumerCallbackCalls++;
+		$counter = (object) ['value' => 0];
+		$callback = function (array $messages) use ($counter): void {
+			$counter->value++;
 
 			throw new \Exception('test');
 		};
@@ -83,7 +83,7 @@ final class BulkConsumerTest extends TestCase
 
 		$instance->consume(2);
 
-		Assert::same(2, $countOfConsumerCallbackCalls, 'Number of consumer callback calls');
+		Assert::same(2, $counter->value, 'Number of consumer callback calls');
 		Assert::count(2, $channelMock->nacks, 'Number of NACKs');
 		Assert::same([
 			1 => [
@@ -112,9 +112,9 @@ final class BulkConsumerTest extends TestCase
 			->shouldReceive('getConnection')->andReturn($connectionMock)->getMock()
 			->shouldReceive('getName')->andReturn('testQueue')->getMock();
 
-		$countOfConsumerCallbackCalls = 0;
-		$callback = function ($messages) use (&$countOfConsumerCallbackCalls) {
-			$countOfConsumerCallbackCalls++;
+		$counter = (object) ['value' => 0];
+		$callback = function (array $messages) use ($counter): bool {
+			$counter->value++;
 
 			return true;
 		};
@@ -123,7 +123,7 @@ final class BulkConsumerTest extends TestCase
 
 		Assert::exception(fn () => $instance->consume(2), UnexpectedConsumerResultTypeException::class);
 
-		Assert::same(1, $countOfConsumerCallbackCalls, 'Number of consumer callback calls');
+		Assert::same(1, $counter->value, 'Number of consumer callback calls');
 		Assert::count(1, $channelMock->nacks, 'Number of NACKs');
 		Assert::same([
 			1 => [
@@ -144,31 +144,44 @@ final class BulkConsumerTest extends TestCase
 			['key' => '5', 'content' => '{"test":"5"}'],
 		]) extends Client {
 
+			/** @var array<array{key: string, content: string}> */
 			private array $dataToConsume;
 
-			private $callback;
+			/** @var callable|null */
+			private mixed $callback = null;
 
-			private $channel;
+			private ?ChannelMock $channel = null;
 
-			public function __construct($dataToConsume)
+			/**
+			 * @param array<array{key: string, content: string}> $dataToConsume
+			 */
+			public function __construct(array $dataToConsume)
 			{
 				$this->dataToConsume = $dataToConsume;
 			}
 
-			public function setCallback($callback): void
+			public function setCallback(callable $callback): void
 			{
 				$this->callback = $callback;
 			}
 
-			public function setChannel($channel): void
+			public function setChannel(ChannelMock $channel): void
 			{
 				$this->channel = $channel;
 			}
 
+			/**
+			 * @param int $replyCode
+			 * @param string $replyText
+			 */
 			public function disconnect($replyCode = 0, $replyText = ''): void
 			{
+				// intentionally empty - mock
 			}
 
+			/**
+			 * @param float|null $maxSeconds
+			 */
 			public function run($maxSeconds = null): void
 			{
 				$this->channel->ackPos++;
@@ -186,10 +199,12 @@ final class BulkConsumerTest extends TestCase
 
 			protected function feedReadBuffer(): void
 			{
+				// intentionally empty - mock
 			}
 
 			protected function flushWriteBuffer(): void
 			{
+				// intentionally empty - mock
 			}
 
 		};

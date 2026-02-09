@@ -8,4 +8,3 @@ if (@!include __DIR__ . '/../vendor/autoload.php') {
 }
 
 Environment::setup(__DIR__);
-Environment::setupFinals();

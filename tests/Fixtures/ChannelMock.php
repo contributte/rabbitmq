@@ -3,6 +3,7 @@
 namespace Tests\Fixtures;
 
 use Bunny\Channel;
+use Bunny\Client;
 use Bunny\Message;
 use Nette\Neon\Neon;
 use Tests\Fixtures\Helper\RabbitMQMessageHelper;
@@ -30,7 +31,12 @@ final class ChannelMock extends Channel
 	}
 
 	/**
+	 * @param string $body
 	 * @param array<string> $headers
+	 * @param string $exchange
+	 * @param string $routingKey
+	 * @param bool $mandatory
+	 * @param bool $immediate
 	 */
 	public function publish(
 		$body,
@@ -48,11 +54,23 @@ final class ChannelMock extends Channel
 		}
 	}
 
+	/**
+	 * @param string $queue
+	 * @param string $consumerTag
+	 * @param bool $noLocal
+	 * @param bool $noAck
+	 * @param bool $exclusive
+	 * @param bool $nowait
+	 * @param array<mixed> $arguments
+	 */
 	public function consume(callable $callback, $queue = '', $consumerTag = '', $noLocal = false, $noAck = false, $exclusive = false, $nowait = false, $arguments = []): void
 	{
 		$this->client->setCallback($callback);
 	}
 
+	/**
+	 * @param bool $multiple
+	 */
 	public function ack(Message $message, $multiple = false): void
 	{
 		if (!isset($this->acks[$this->ackPos])) {
@@ -62,6 +80,10 @@ final class ChannelMock extends Channel
 		$this->acks[$this->ackPos][$message->deliveryTag] = $message->content;
 	}
 
+	/**
+	 * @param bool $multiple
+	 * @param bool $requeue
+	 */
 	public function nack(Message $message, $multiple = false, $requeue = false): void
 	{
 		if (!isset($this->nacks[$this->nackPos])) {
@@ -71,7 +93,7 @@ final class ChannelMock extends Channel
 		$this->nacks[$this->nackPos][$message->deliveryTag] = $message->content;
 	}
 
-	public function setClient($client): void
+	public function setClient(Client $client): void
 	{
 		$this->client = $client;
 		$this->client->setChannel($this);
