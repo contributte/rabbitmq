@@ -37,7 +37,7 @@ $ composer require contributte/rabbitmq
 
 ## Contents
 
-- [Usage - how use it](#usage)
+- [Usage](#usage)
 
     - [Extension registration](#extension-registration)
     - [Example configuration](#example-configuration)
@@ -54,11 +54,7 @@ config.neon:
 
 ```neon
 extensions:
-	# Nette 3.0+
 	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension
-
-	# Nette 2.4
-	rabbitmq: Contributte\RabbitMQ\DI\RabbitMQExtension24
 ```
 
 ### Example configuration
@@ -133,7 +129,7 @@ rabbitmq:
 			ssl:
 			    cafile: 'ca.pem'
 			    allow_self_signed: true
-			    veirfy_peer: true
+			    verify_peer: true
 ```
 
 ### Declaring Queues and Exchanges
@@ -365,7 +361,7 @@ php index.php rabbitmq:staticConsumer testConsumer 20
 
 See [how to contribute](https://contributte.org/contributing.html) to this package.
 
-This package is currently maintaining by these authors.
+This package is currently maintained by these authors.
 
 <a href="https://github.com/f3l1x">
 	<img width="80" height="80" src="https://avatars0.githubusercontent.com/u/538058?v=3&s=80">
